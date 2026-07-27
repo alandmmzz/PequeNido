@@ -67,7 +67,7 @@ export function HeroCarousel() {
       aria-roledescription="carrusel"
       aria-label="Destacados de la tienda"
     >
-      <div className="relative aspect-[16/10] w-full sm:aspect-[21/9] lg:aspect-[24/8]">
+      <div className="relative min-h-[440px] w-full sm:aspect-[21/9] sm:min-h-0 lg:aspect-[24/8]">
         {slides.map((slide, i) => (
           <div
             key={slide.image}
@@ -85,12 +85,12 @@ export function HeroCarousel() {
             />
             <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/55 to-transparent" />
 
-            <div className="relative mx-auto flex h-full max-w-6xl items-center px-6 sm:px-8">
+            <div className="relative mx-auto flex h-full max-w-6xl items-center px-6 pb-14 sm:px-8 sm:pb-0">
               <div className="max-w-lg">
                 <span className="inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
                   {slide.eyebrow}
                 </span>
-                <h2 className="mt-3 font-serif text-3xl font-semibold leading-tight tracking-tight text-foreground text-balance sm:text-4xl lg:text-5xl">
+                <h2 className="mt-3 font-serif text-2xl font-semibold leading-tight tracking-tight text-foreground text-balance sm:text-4xl lg:text-5xl">
                   {slide.title}
                 </h2>
                 <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground text-pretty sm:text-base">
@@ -98,7 +98,7 @@ export function HeroCarousel() {
                 </p>
                 <Link
                   href={slide.cta.href}
-                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:mt-6"
                 >
                   {slide.cta.label}
                   <ArrowRight className="size-4" aria-hidden="true" />
