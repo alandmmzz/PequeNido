@@ -16,7 +16,7 @@ type Slide = {
 
 const slides: Slide[] = [
   {
-    image: "/images/banner-toys.png",
+    image: "/images/hero-toys.png",
     alt: "Juguetes de madera para bebés",
     eyebrow: "Nueva temporada",
     title: "Juguetes que crecen con tu bebé",
@@ -24,7 +24,7 @@ const slides: Slide[] = [
     cta: { href: "/juguetes", label: "Ver juguetes" },
   },
   {
-    image: "/images/banner-books.png",
+    image: "/images/hero-books.png",
     alt: "Libros para bebés y peques",
     eyebrow: "Para leer juntos",
     title: "Primeras historias, grandes momentos",
@@ -32,7 +32,7 @@ const slides: Slide[] = [
     cta: { href: "/libros", label: "Explorar libros" },
   },
   {
-    image: "/images/banner-nursery.png",
+    image: "/images/hero-nursery.png",
     alt: "Rincón de juego para bebés",
     eyebrow: "Envío gratis +39 €",
     title: "Todo para su rincón favorito",
