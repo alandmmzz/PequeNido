@@ -34,6 +34,7 @@ export default function LibrosPage() {
             {books.map((book) => (
               <ProductCard
                 key={book.id}
+                id={book.id}
                 name={book.name}
                 description={book.description}
                 price={book.price}

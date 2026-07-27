@@ -22,7 +22,7 @@ export function SiteFooter() {
             <ul className="mt-4 flex flex-col gap-2 text-sm text-muted-foreground">
               <li><Link href="/juguetes" className="hover:text-foreground">Juguetes</Link></li>
               <li><Link href="/libros" className="hover:text-foreground">Libros</Link></li>
-              <li><Link href="/juguetes" className="hover:text-foreground">Novedades</Link></li>
+              <li><Link href="/nosotros" className="hover:text-foreground">Nosotros</Link></li>
             </ul>
           </div>
 

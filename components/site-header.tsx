@@ -6,16 +6,19 @@ import { useState } from "react"
 import { Menu, ShoppingBag, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { useCart } from "@/components/cart-provider"
 
 const nav = [
   { href: "/", label: "Inicio" },
   { href: "/juguetes", label: "Juguetes" },
   { href: "/libros", label: "Libros" },
+  { href: "/nosotros", label: "Nosotros" },
 ]
 
 export function SiteHeader() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
+  const { count, openCart } = useCart()
 
   return (
     <>
@@ -56,9 +59,20 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" className="hidden rounded-full sm:inline-flex">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={openCart}
+            className="relative rounded-full"
+            aria-label={`Abrir cesta${count > 0 ? `, ${count} artículos` : ""}`}
+          >
             <ShoppingBag className="size-4" aria-hidden="true" />
-            Cesta
+            <span className="hidden sm:inline">Cesta</span>
+            {count > 0 && (
+              <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
+                {count}
+              </span>
+            )}
           </Button>
           <button
             type="button"

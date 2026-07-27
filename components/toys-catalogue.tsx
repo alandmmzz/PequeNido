@@ -55,6 +55,7 @@ export function ToysCatalogue({ initialAge }: { initialAge?: AgeRange }) {
             return (
               <ProductCard
                 key={toy.id}
+                id={toy.id}
                 name={toy.name}
                 description={toy.description}
                 price={toy.price}

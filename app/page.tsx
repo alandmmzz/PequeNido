@@ -125,6 +125,7 @@ export default function HomePage() {
               return (
                 <ProductCard
                   key={toy.id}
+                  id={toy.id}
                   name={toy.name}
                   description={toy.description}
                   price={toy.price}
@@ -176,6 +177,7 @@ export default function HomePage() {
             {librosDestacados.map((book) => (
               <ProductCard
                 key={book.id}
+                id={book.id}
                 name={book.name}
                 description={book.description}
                 price={book.price}

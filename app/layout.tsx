@@ -1,6 +1,7 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Nunito, Fraunces } from 'next/font/google'
+import { CartProvider } from '@/components/cart-provider'
 import './globals.css'
 
 const nunito = Nunito({
@@ -55,7 +56,7 @@ export default function RootLayout({
       className={`light bg-background ${nunito.variable} ${fraunces.variable}`}
     >
       <body className="font-sans antialiased">
-        {children}
+        <CartProvider>{children}</CartProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
