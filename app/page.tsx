@@ -4,6 +4,7 @@ import { ArrowRight, Leaf, Sparkles, Truck } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ProductCard } from "@/components/product-card"
+import { HeroCarousel } from "@/components/hero-carousel"
 import { ageRanges, books, toys } from "@/lib/products"
 
 export default function HomePage() {
@@ -15,50 +16,48 @@ export default function HomePage() {
       <SiteHeader />
 
       <main className="flex-1">
-        {/* Hero */}
-        <section className="mx-auto max-w-6xl px-4 pb-12 pt-10 sm:px-6 lg:pt-16">
-          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
-            <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-                <Leaf className="size-3.5" aria-hidden="true" />
-                Materiales naturales y seguros
-              </span>
-              <h1 className="mt-4 font-serif text-4xl font-semibold leading-tight tracking-tight text-foreground text-balance sm:text-5xl lg:text-6xl">
-                Juguetes y libros que crecen con tu bebé
-              </h1>
-              <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground text-pretty">
-                En Pequeñido elegimos cada pieza con cariño para acompañar el juego, el descanso y los
-                primeros descubrimientos, desde los 0 meses en adelante.
-              </p>
-              <div className="mt-7 flex flex-wrap gap-3">
-                <Link
-                  href="/juguetes"
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-                >
-                  Ver juguetes
-                  <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
-                <Link
-                  href="/libros"
-                  className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-6 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
-                >
-                  Explorar libros
-                </Link>
-              </div>
-            </div>
+        {/* Carrusel */}
+        <HeroCarousel />
 
-            <div className="relative">
-              <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border/70 bg-secondary/50">
+        {/* Categorías */}
+        <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              {
+                href: "/juguetes",
+                image: "/images/banner-toys.png",
+                title: "Juguetes",
+                text: "De madera y materiales nobles",
+              },
+              {
+                href: "/libros",
+                image: "/images/banner-books.png",
+                title: "Libros",
+                text: "Para los primeros lectores",
+              },
+            ].map((cat) => (
+              <Link
+                key={cat.href}
+                href={cat.href}
+                className="group relative flex aspect-[16/9] items-end overflow-hidden rounded-3xl border border-border/70"
+              >
                 <Image
-                  src="/images/hero.png"
-                  alt="Juguetes de madera y libros para bebés sobre una manta de lino"
+                  src={cat.image || "/placeholder.svg"}
+                  alt={cat.title}
                   fill
-                  priority
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="object-cover"
+                  sizes="(min-width: 640px) 50vw, 100vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-              </div>
-            </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 to-transparent" />
+                <div className="relative p-6">
+                  <h2 className="font-serif text-2xl font-semibold text-background">{cat.title}</h2>
+                  <p className="mt-1 flex items-center gap-1.5 text-sm text-background/90">
+                    {cat.text}
+                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                  </p>
+                </div>
+              </Link>
+            ))}
           </div>
         </section>
 

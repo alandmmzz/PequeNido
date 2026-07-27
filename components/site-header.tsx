@@ -18,8 +18,14 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+    <>
+      <div className="bg-primary text-primary-foreground">
+        <p className="mx-auto max-w-6xl px-4 py-1.5 text-center text-xs font-medium sm:px-6">
+          Envío gratis a partir de 39 € · Entrega en 24-48 h
+        </p>
+      </div>
+      <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2" aria-label="Pequeñido, inicio">
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground font-serif text-lg font-semibold">
             p
@@ -91,6 +97,7 @@ export function SiteHeader() {
           </ul>
         </nav>
       )}
-    </header>
+      </header>
+    </>
   )
 }
