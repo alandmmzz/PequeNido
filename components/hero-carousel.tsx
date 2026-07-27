@@ -67,7 +67,7 @@ export function HeroCarousel() {
       aria-roledescription="carrusel"
       aria-label="Destacados de la tienda"
     >
-      <div className="relative min-h-[440px] w-full sm:aspect-[21/9] sm:min-h-0 lg:aspect-[24/8]">
+      <div className="relative aspect-[3/4] w-full sm:aspect-[21/9] lg:aspect-[24/8]">
         {slides.map((slide, i) => (
           <div
             key={slide.image}
