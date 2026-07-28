@@ -6,13 +6,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
+    "@neondatabase/serverless": "^0.10.4",
+    "@vercel/blob": "^0.27.1",
     "@vercel/analytics": "1.6.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.36.4",
     "lucide-react": "^1.16.0",
     "next": "16.2.6",
     "react": "^19",
@@ -26,8 +32,11 @@
     "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^16.4.5",
+    "drizzle-kit": "^0.28.1",
     "postcss": "^8.5",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.19.2",
     "typescript": "5.7.3"
   },
   "pnpm": {
