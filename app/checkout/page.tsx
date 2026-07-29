@@ -132,6 +132,14 @@ export default function CheckoutPage() {
             </div>
           </div>
 
+          <p className="text-xs text-muted-foreground">
+            Conocé nuestra{" "}
+            <Link href="/envios-y-devoluciones" target="_blank" className="font-medium text-foreground hover:underline">
+              política de envíos y devoluciones
+            </Link>
+            .
+          </p>
+
           <div>
             <label className="mb-1 block text-sm font-medium text-foreground">Notas para la entrega (opcional)</label>
             <textarea

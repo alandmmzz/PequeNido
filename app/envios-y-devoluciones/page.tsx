@@ -1,0 +1,83 @@
+import type { Metadata } from "next"
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
+
+export const metadata: Metadata = {
+  title: "Envíos y devoluciones | Pequeñido",
+  description: "Política de envíos, cambios y devoluciones de Pequeñido.",
+}
+
+// TODO: reemplazar por el teléfono y el email reales de Pequeñido cuando los tengas.
+const CONTACT_PHONE = "099242467"
+const CONTACT_EMAIL = "jusababyandkids@gmail.com"
+
+export default function EnviosYDevolucionesPage() {
+  return (
+    <div className="flex min-h-dvh flex-col">
+      <SiteHeader />
+      <main className="flex-1">
+        <section className="border-b border-border/70 bg-secondary/30">
+          <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+            <p className="text-sm font-medium uppercase tracking-wide text-primary">Ayuda</p>
+            <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight text-foreground text-balance">
+              Política de envíos, cambios y devoluciones
+            </h1>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+          <div className="space-y-10">
+            <div>
+              <h2 className="font-serif text-2xl font-semibold text-foreground">Envíos</h2>
+              <ul className="mt-4 space-y-3 text-base leading-relaxed text-muted-foreground">
+                <li>
+                  Una vez que hayamos recibido el pago de tu pedido, te lo enviaremos en un plazo de entre 24 y
+                  72&nbsp;hs.
+                </li>
+                <li>Los envíos en Montevideo y área metropolitana son por cadetería privada.</li>
+                <li>Hacemos envíos al interior del país por DAC – Agencia Central, sin costo de despacho.</li>
+                <li>Los tiempos de entrega son exclusivamente responsabilidad de la agencia.</li>
+              </ul>
+            </div>
+
+            <div>
+              <h2 className="font-serif text-2xl font-semibold text-foreground">Política de cambio y devolución</h2>
+              <ul className="mt-4 space-y-3 text-base leading-relaxed text-muted-foreground">
+                <li>
+                  Si deseás realizar un cambio, éste debe solicitarse dentro de los 5 días hábiles posteriores a
+                  la recepción del producto.
+                </li>
+                <li>El producto debe estar en perfecto estado y con su empaque original.</li>
+                <li>
+                  Para comenzar este proceso, comunicate por teléfono al{" "}
+                  <a href={`tel:${CONTACT_PHONE}`} className="font-medium text-foreground hover:underline">
+                    {CONTACT_PHONE}
+                  </a>{" "}
+                  o por email a{" "}
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium text-foreground hover:underline">
+                    {CONTACT_EMAIL}
+                  </a>
+                  . Vas a recibir, dentro de las siguientes 72 horas hábiles, el detalle de los pasos a seguir
+                  para completar el cambio o la devolución.
+                </li>
+              </ul>
+            </div>
+
+            <div className="rounded-2xl border border-border/70 bg-secondary/30 p-5 text-sm text-muted-foreground">
+              ¿Tenés dudas sobre tu pedido? Escribinos a{" "}
+              <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium text-foreground hover:underline">
+                {CONTACT_EMAIL}
+              </a>{" "}
+              o llamanos al{" "}
+              <a href={`tel:${CONTACT_PHONE}`} className="font-medium text-foreground hover:underline">
+                {CONTACT_PHONE}
+              </a>
+              .
+            </div>
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
+    </div>
+  )
+}
