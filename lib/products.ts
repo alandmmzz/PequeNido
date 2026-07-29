@@ -178,7 +178,7 @@ export const books: Book[] = [
 ]
 
 export function formatPrice(price: number) {
-  return new Intl.NumberFormat("es-ES", { style: "currency", currency: "EUR" }).format(price)
+  return new Intl.NumberFormat("es-UY", { style: "currency", currency: "UYU" }).format(price)
 }
 
 /** Todos los productos (juguetes + libros) en un solo listado. */

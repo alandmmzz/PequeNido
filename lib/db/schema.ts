@@ -29,3 +29,55 @@ export const products = pgTable("products", {
 
 export type ProductRow = typeof products.$inferSelect
 export type NewProductRow = typeof products.$inferInsert
+
+/**
+ * Un pedido generado desde la cesta al iniciar el pago.
+ * Se crea con status "pending" antes de redirigir a Mercado Pago,
+ * y el webhook lo actualiza cuando llega la notificación de pago.
+ */
+export const orders = pgTable("orders", {
+  id: uuid("id").defaultRandom().primaryKey(),
+
+  customerName: text("customer_name").notNull(),
+  customerEmail: text("customer_email").notNull(),
+  customerPhone: text("customer_phone"),
+  address: text("address").notNull(),
+  city: text("city").notNull(),
+  postalCode: text("postal_code").notNull(),
+  notes: text("notes"),
+
+  total: doublePrecision("total").notNull(),
+  status: text("status", { enum: ["pending", "paid", "rejected", "cancelled"] })
+    .notNull()
+    .default("pending"),
+
+  // Referencias a Mercado Pago para poder rastrear el pago
+  mpPreferenceId: text("mp_preference_id"),
+  mpPaymentId: text("mp_payment_id"),
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+})
+
+/**
+ * Ítems de un pedido. Guardamos nombre/precio/imagen "congelados" en el
+ * momento de la compra (no solo el productId) para que el pedido no cambie
+ * si más adelante se edita o borra el producto en el catálogo.
+ */
+export const orderItems = pgTable("order_items", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  orderId: uuid("order_id")
+    .notNull()
+    .references(() => orders.id, { onDelete: "cascade" }),
+  productId: uuid("product_id").references(() => products.id, { onDelete: "set null" }),
+
+  name: text("name").notNull(),
+  price: doublePrecision("price").notNull(),
+  quantity: integer("quantity").notNull(),
+  image: text("image"),
+})
+
+export type OrderRow = typeof orders.$inferSelect
+export type NewOrderRow = typeof orders.$inferInsert
+export type OrderItemRow = typeof orderItems.$inferSelect
+export type NewOrderItemRow = typeof orderItems.$inferInsert
