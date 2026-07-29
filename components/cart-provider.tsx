@@ -1,7 +1,9 @@
 "use client"
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react"
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { CartDrawer } from "@/components/cart-drawer"
+
+const CART_STORAGE_KEY = "pequenido:cart"
 
 export type CartItem = {
   id: string
@@ -30,6 +32,34 @@ const CartContext = createContext<CartContextValue | null>(null)
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [isOpen, setIsOpen] = useState(false)
+  // Empieza en false a propósito: el primer render (servidor y cliente) tiene
+  // que coincidir con carrito vacío para evitar un mismatch de hidratación.
+  // Recién después de montar leemos localStorage y lo activamos.
+  const [hydrated, setHydrated] = useState(false)
+
+  // Cargar el carrito guardado (una sola vez, al montar en el cliente).
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(CART_STORAGE_KEY)
+      if (stored) setItems(JSON.parse(stored))
+    } catch (err) {
+      console.error("No se pudo leer el carrito guardado:", err)
+    } finally {
+      setHydrated(true)
+    }
+  }, [])
+
+  // Guardar en localStorage cada vez que cambie el carrito, pero solo
+  // después de haber cargado lo anterior (si no, pisaríamos lo guardado
+  // con el carrito vacío inicial antes de leerlo).
+  useEffect(() => {
+    if (!hydrated) return
+    try {
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items))
+    } catch (err) {
+      console.error("No se pudo guardar el carrito:", err)
+    }
+  }, [items, hydrated])
 
   const openCart = useCallback(() => setIsOpen(true), [])
   const closeCart = useCallback(() => setIsOpen(false), [])
