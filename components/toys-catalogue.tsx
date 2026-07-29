@@ -3,16 +3,17 @@
 import { useMemo, useState } from "react"
 import { cn } from "@/lib/utils"
 import { ProductCard } from "@/components/product-card"
-import { ageRanges, toys, type AgeRange } from "@/lib/products"
+import { ageRanges, getProductMeta, type AgeRange } from "@/lib/products"
+import type { ProductRow } from "@/lib/db/schema"
 
 type Filter = AgeRange | "todos"
 
-export function ToysCatalogue({ initialAge }: { initialAge?: AgeRange }) {
+export function ToysCatalogue({ items, initialAge }: { items: ProductRow[]; initialAge?: AgeRange }) {
   const [filter, setFilter] = useState<Filter>(initialAge ?? "todos")
 
   const filtered = useMemo(
-    () => (filter === "todos" ? toys : toys.filter((t) => t.age === filter)),
-    [filter],
+    () => (filter === "todos" ? items : items.filter((t) => t.age === filter)),
+    [items, filter],
   )
 
   const filters: { id: Filter; label: string }[] = [
@@ -50,20 +51,17 @@ export function ToysCatalogue({ initialAge }: { initialAge?: AgeRange }) {
 
       {filtered.length > 0 ? (
         <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {filtered.map((toy) => {
-            const range = ageRanges.find((r) => r.id === toy.age)
-            return (
-              <ProductCard
-                key={toy.id}
-                id={toy.id}
-                name={toy.name}
-                description={toy.description}
-                price={toy.price}
-                image={toy.image}
-                meta={range?.short}
-              />
-            )
-          })}
+          {filtered.map((toy) => (
+            <ProductCard
+              key={toy.id}
+              id={toy.id}
+              name={toy.name}
+              description={toy.description}
+              price={toy.price}
+              image={toy.image}
+              meta={getProductMeta(toy)}
+            />
+          ))}
         </div>
       ) : (
         <p className="mt-10 text-center text-muted-foreground">

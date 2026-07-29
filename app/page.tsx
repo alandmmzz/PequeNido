@@ -5,11 +5,15 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ProductCard } from "@/components/product-card"
 import { HeroCarousel } from "@/components/hero-carousel"
-import { ageRanges, books, toys } from "@/lib/products"
+import { getProducts } from "@/lib/actions/products"
+import { ageRanges, getProductMeta } from "@/lib/products"
 
-export default function HomePage() {
-  const destacados = toys.slice(0, 4)
-  const librosDestacados = books.slice(0, 4)
+export const dynamic = "force-dynamic"
+
+export default async function HomePage() {
+  const allProducts = await getProducts()
+  const destacados = allProducts.filter((p) => p.kind === "toy").slice(0, 4)
+  const librosDestacados = allProducts.filter((p) => p.kind === "book").slice(0, 4)
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -120,20 +124,17 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {destacados.map((toy) => {
-              const range = ageRanges.find((r) => r.id === toy.age)
-              return (
-                <ProductCard
-                  key={toy.id}
-                  id={toy.id}
-                  name={toy.name}
-                  description={toy.description}
-                  price={toy.price}
-                  image={toy.image}
-                  meta={range?.short}
-                />
-              )
-            })}
+            {destacados.map((toy) => (
+              <ProductCard
+                key={toy.id}
+                id={toy.id}
+                name={toy.name}
+                description={toy.description}
+                price={toy.price}
+                image={toy.image}
+                meta={getProductMeta(toy)}
+              />
+            ))}
           </div>
         </section>
 
@@ -182,7 +183,7 @@ export default function HomePage() {
                 description={book.description}
                 price={book.price}
                 image={book.image}
-                meta={book.format}
+                meta={getProductMeta(book)}
               />
             ))}
           </div>

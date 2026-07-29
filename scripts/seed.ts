@@ -1,6 +1,6 @@
 import { db } from "../lib/db"
 import { products as productsTable } from "../lib/db/schema"
-import { products as mockProducts } from "../lib/products"
+import { products as mockProducts } from "../lib/seed-data"
 
 async function main() {
   console.log(`Insertando ${mockProducts.length} productos...`)

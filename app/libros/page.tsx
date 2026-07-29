@@ -2,7 +2,8 @@ import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ProductCard } from "@/components/product-card"
-import { books } from "@/lib/products"
+import { getProducts } from "@/lib/actions/products"
+import { getProductMeta } from "@/lib/products"
 
 export const metadata: Metadata = {
   title: "Libros | Pequeñido",
@@ -10,7 +11,12 @@ export const metadata: Metadata = {
     "Libros de tela, cartón y tapa dura para bebés y niños: sensoriales, primeras palabras y cuentos para dormir.",
 }
 
-export default function LibrosPage() {
+export const dynamic = "force-dynamic"
+
+export default async function LibrosPage() {
+  const allProducts = await getProducts()
+  const books = allProducts.filter((p) => p.kind === "book")
+
   return (
     <div className="flex min-h-dvh flex-col">
       <SiteHeader />
@@ -39,7 +45,7 @@ export default function LibrosPage() {
                 description={book.description}
                 price={book.price}
                 image={book.image}
-                meta={`${book.format} · ${book.pages} pág.`}
+                meta={getProductMeta(book)}
               />
             ))}
           </div>

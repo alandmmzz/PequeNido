@@ -8,19 +8,19 @@ import { SiteFooter } from "@/components/site-footer"
 import { ProductCard } from "@/components/product-card"
 import { ProductVideo } from "@/components/product-video"
 import { ProductActions } from "@/components/product-actions"
-import { formatPrice, getProductById, getProductMeta, getRelatedProducts, products } from "@/lib/products"
+import { getProducts } from "@/lib/actions/products"
+import { formatPrice, getProductMeta, getRelatedProducts } from "@/lib/products"
+
+export const dynamic = "force-dynamic"
 
 type Props = {
   params: Promise<{ id: string }>
 }
 
-export function generateStaticParams() {
-  return products.map((p) => ({ id: p.id }))
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
-  const product = getProductById(id)
+  const allProducts = await getProducts()
+  const product = allProducts.find((p) => p.id === id)
   if (!product) return {}
 
   return {
@@ -31,12 +31,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductoPage({ params }: Props) {
   const { id } = await params
-  const product = getProductById(id)
+  const allProducts = await getProducts()
+  const product = allProducts.find((p) => p.id === id)
 
   if (!product) notFound()
 
   const meta = getProductMeta(product)
-  const related = getRelatedProducts(product)
+  const related = getRelatedProducts(product, allProducts)
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -93,18 +94,18 @@ export default async function ProductoPage({ params }: Props) {
                     </div>
                     <div>
                       <dt className="text-muted-foreground">Material</dt>
-                      <dd className="font-medium text-foreground">{product.material}</dd>
+                      <dd className="font-medium text-foreground">{product.material ?? "—"}</dd>
                     </div>
                   </>
                 ) : (
                   <>
                     <div>
                       <dt className="text-muted-foreground">Formato</dt>
-                      <dd className="font-medium text-foreground">{product.format}</dd>
+                      <dd className="font-medium text-foreground">{product.format ?? "—"}</dd>
                     </div>
                     <div>
                       <dt className="text-muted-foreground">Páginas</dt>
-                      <dd className="font-medium text-foreground">{product.pages}</dd>
+                      <dd className="font-medium text-foreground">{product.pages ?? "—"}</dd>
                     </div>
                   </>
                 )}
