@@ -34,7 +34,7 @@ const slides: Slide[] = [
   {
     image: "/images/hero-nursery.png",
     alt: "Rincón de juego para bebés",
-    eyebrow: "Envío gratis +39 €",
+    eyebrow: "Envío gratis +$U 39",
     title: "Todo para su rincón favorito",
     text: "Seleccionamos a mano cada pieza para el juego, el descanso y los descubrimientos.",
     cta: { href: "/juguetes", label: "Descubrir" },

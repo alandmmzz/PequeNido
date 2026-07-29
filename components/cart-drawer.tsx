@@ -1,6 +1,7 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react"
 import { useCart } from "@/components/cart-provider"
 import { formatPrice } from "@/lib/products"
@@ -129,14 +130,15 @@ export function CartDrawer() {
                 </span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Envío gratis a partir de 39 €. Gastos calculados al finalizar.
+                Envío gratis a partir de $U 39. Gastos calculados al finalizar.
               </p>
-              <button
-                type="button"
-                className="mt-4 w-full rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
+              <Link
+                href="/checkout"
+                onClick={closeCart}
+                className="mt-4 flex w-full items-center justify-center rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:opacity-90"
               >
                 Finalizar compra
-              </button>
+              </Link>
               <button
                 type="button"
                 onClick={closeCart}

@@ -13,6 +13,7 @@ const nav = [
   { href: "/juguetes", label: "Juguetes" },
   { href: "/libros", label: "Libros" },
   { href: "/nosotros", label: "Nosotros" },
+  { href: "/admin", label: "Admin" },
 ]
 
 export function SiteHeader() {
@@ -24,7 +25,7 @@ export function SiteHeader() {
     <>
       <div className="bg-primary text-primary-foreground">
         <p className="mx-auto max-w-6xl px-4 py-1.5 text-center text-xs font-medium sm:px-6">
-          Envío gratis a partir de 39 € · Entrega en 24-48 h
+          Envío gratis a partir de $U 39 · Entrega en 24-48 h
         </p>
       </div>
       <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
