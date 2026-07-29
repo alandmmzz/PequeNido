@@ -41,31 +41,38 @@ export async function createOrderAndPreference(
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
-  const [order] = await db
-    .insert(orders)
-    .values({
-      customerName: customer.name,
-      customerEmail: customer.email,
-      customerPhone: customer.phone || null,
-      address: customer.address,
-      city: customer.city,
-      postalCode: customer.postalCode,
-      notes: customer.notes || null,
-      total,
-      status: "pending",
-    })
-    .returning()
+  let order: typeof orders.$inferSelect
 
-  await db.insert(orderItems).values(
-    items.map((item) => ({
-      orderId: order.id,
-      productId: item.id,
-      name: item.name,
-      price: item.price,
-      quantity: item.quantity,
-      image: item.image,
-    })),
-  )
+  try {
+    ;[order] = await db
+      .insert(orders)
+      .values({
+        customerName: customer.name,
+        customerEmail: customer.email,
+        customerPhone: customer.phone || null,
+        address: customer.address,
+        city: customer.city,
+        postalCode: customer.postalCode,
+        notes: customer.notes || null,
+        total,
+        status: "pending",
+      })
+      .returning()
+
+    await db.insert(orderItems).values(
+      items.map((item) => ({
+        orderId: order.id,
+        productId: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        image: item.image,
+      })),
+    )
+  } catch (err) {
+    console.error("Error guardando el pedido en la base:", err)
+    return { error: "No se pudo guardar tu pedido. Probá de nuevo en unos segundos." }
+  }
 
   if (!process.env.MERCADOPAGO_ACCESS_TOKEN) {
     return {
