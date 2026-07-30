@@ -1,12 +1,11 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft, PackageCheck, ShieldCheck, Truck } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ProductCard } from "@/components/product-card"
-import { ProductVideo } from "@/components/product-video"
+import { ProductGallery } from "@/components/product-gallery"
 import { ProductActions } from "@/components/product-actions"
 import { getProducts } from "@/lib/actions/products"
 import { formatPrice, getProductMeta, getRelatedProducts } from "@/lib/products"
@@ -55,21 +54,13 @@ export default async function ProductoPage({ params }: Props) {
 
         <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
           <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
-            {/* Galería: imagen + espacio para el video */}
-            <div className="flex flex-col gap-4">
-              <div className="relative aspect-square overflow-hidden rounded-3xl border border-border/70 bg-secondary/50">
-                <Image
-                  src={product.image || "/placeholder.svg"}
-                  alt={product.name}
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="object-cover"
-                />
-              </div>
-
-              <ProductVideo productName={product.name} />
-            </div>
+            {/* Galería: video primero si existe, después la imagen principal y las adicionales */}
+            <ProductGallery
+              productName={product.name}
+              image={product.image}
+              additionalImages={product.additionalImages}
+              video={product.video}
+            />
 
             {/* Información del producto */}
             <div className="flex flex-col">

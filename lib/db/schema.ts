@@ -13,7 +13,9 @@ export const products = pgTable("products", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   price: doublePrecision("price").notNull(),
-  image: text("image").notNull(),
+  image: text("image").notNull(), // imagen principal: la que se usa en thumbnails/tarjetas
+  additionalImages: text("additional_images").array(), // imágenes extra para la galería de la ficha
+  video: text("video"), // video opcional del producto; si existe, se muestra primero en la ficha
 
   // Campos específicos de juguete
   age: text("age"), // "0-12m" | "12-24m" | "2-4a" | "4a+"
