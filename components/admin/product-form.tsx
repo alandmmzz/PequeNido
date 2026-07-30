@@ -1,28 +1,21 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useState } from "react"
 import Image from "next/image"
-import { Film, X } from "lucide-react"
+import { upload } from "@vercel/blob/client"
+import { Film, Loader2, X } from "lucide-react"
 import type { ProductRow } from "@/lib/db/schema"
 
-/**
- * Un <input type="file"> no puede recibir su valor por props (por seguridad
- * del navegador), pero sí se le puede asignar `.files` con un DataTransfer.
- * Este componente mantiene un input oculto sincronizado con la lista de
- * archivos que se maneja en estado en el form, para que viaje en el FormData
- * al enviar (incluye multi-selección hecha en más de un paso).
- */
-function HiddenFileList({ name, files }: { name: string; files: File[] }) {
-  const ref = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (!ref.current) return
-    const dataTransfer = new DataTransfer()
-    files.forEach((file) => dataTransfer.items.add(file))
-    ref.current.files = dataTransfer.files
-  }, [files])
-
-  return <input ref={ref} type="file" name={name} multiple className="hidden" readOnly />
+// Subimos los archivos directo desde el navegador a Vercel Blob (en vez de
+// mandarlos al server action) para no chocar con el límite de 4.5MB que
+// Vercel le pone al body de las funciones serverless. El form termina
+// mandando solamente las URLs ya subidas.
+async function uploadToBlob(file: File, folder: string) {
+  const blob = await upload(`productos/${folder}/${Date.now()}-${file.name}`, file, {
+    access: "public",
+    handleUploadUrl: "/api/products/upload",
+  })
+  return blob.url
 }
 
 export function ProductForm({
@@ -33,19 +26,64 @@ export function ProductForm({
   initial?: ProductRow
 }) {
   const [kind, setKind] = useState<"toy" | "book">(initial?.kind ?? "toy")
-  const [preview, setPreview] = useState<string | null>(initial?.image ?? null)
 
-  // Imágenes adicionales: las que ya tenía el producto (se pueden quitar)
-  // + las nuevas que se eligen ahora (se suben al guardar).
-  const [existingGallery, setExistingGallery] = useState<string[]>(initial?.additionalImages ?? [])
-  const [newGalleryFiles, setNewGalleryFiles] = useState<File[]>([])
-  const newGalleryPreviews = newGalleryFiles.map((f) => URL.createObjectURL(f))
+  // Imagen principal: la que se usa en thumbnails/tarjetas.
+  const [imageUrl, setImageUrl] = useState(initial?.image ?? "")
+  const [uploadingImage, setUploadingImage] = useState(false)
 
-  // Video: el que ya tenía el producto (se puede quitar) o uno nuevo elegido ahora.
-  const [existingVideoUrl] = useState<string | null>(initial?.video ?? null)
-  const [removeVideo, setRemoveVideo] = useState(false)
-  const [newVideoFile, setNewVideoFile] = useState<File | null>(null)
-  const newVideoPreview = newVideoFile ? URL.createObjectURL(newVideoFile) : null
+  // Imágenes adicionales: se suben apenas se eligen, así que en todo
+  // momento este array son URLs reales (ya sea de antes o recién subidas).
+  const [galleryUrls, setGalleryUrls] = useState<string[]>(initial?.additionalImages ?? [])
+  const [uploadingGallery, setUploadingGallery] = useState(false)
+
+  // Video del producto.
+  const [videoUrl, setVideoUrl] = useState<string | null>(initial?.video ?? null)
+  const [uploadingVideo, setUploadingVideo] = useState(false)
+
+  const isUploading = uploadingImage || uploadingGallery || uploadingVideo
+
+  async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingImage(true)
+    try {
+      setImageUrl(await uploadToBlob(file, "principal"))
+    } catch {
+      alert("No se pudo subir la imagen. Probá de nuevo.")
+    } finally {
+      setUploadingImage(false)
+      e.target.value = ""
+    }
+  }
+
+  async function handleGalleryChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? [])
+    if (files.length === 0) return
+    setUploadingGallery(true)
+    try {
+      const urls = await Promise.all(files.map((file) => uploadToBlob(file, "galeria")))
+      setGalleryUrls((prev) => [...prev, ...urls])
+    } catch {
+      alert("No se pudieron subir una o más imágenes. Probá de nuevo.")
+    } finally {
+      setUploadingGallery(false)
+      e.target.value = ""
+    }
+  }
+
+  async function handleVideoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingVideo(true)
+    try {
+      setVideoUrl(await uploadToBlob(file, "videos"))
+    } catch {
+      alert("No se pudo subir el video. Probá de nuevo.")
+    } finally {
+      setUploadingVideo(false)
+      e.target.value = ""
+    }
+  }
 
   return (
     <form action={action} className="max-w-xl space-y-5">
@@ -155,27 +193,26 @@ export function ProductForm({
         <p className="text-xs text-muted-foreground mb-2">
           Es la que se muestra en las tarjetas de producto y en las miniaturas del catálogo.
         </p>
-        {preview && (
+        {imageUrl && (
           <Image
-            src={preview}
+            src={imageUrl}
             alt="preview"
             width={120}
             height={120}
             className="rounded-md object-cover mb-2 border border-border"
           />
         )}
-        <input
-          name="imageFile"
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            const file = e.target.files?.[0]
-            if (file) setPreview(URL.createObjectURL(file))
-          }}
-          className="w-full text-sm"
-        />
-        {/* Fallback: si no sube archivo, se usa la imagen que ya tenía */}
-        <input type="hidden" name="imageUrl" value={initial?.image ?? ""} />
+        <div className="flex items-center gap-2">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            disabled={uploadingImage}
+            className="w-full text-sm"
+          />
+          {uploadingImage && <Loader2 className="size-4 shrink-0 animate-spin text-muted-foreground" aria-hidden="true" />}
+        </div>
+        <input type="hidden" name="imageUrl" value={imageUrl} />
       </div>
 
       <div>
@@ -185,9 +222,9 @@ export function ProductForm({
           afectan las miniaturas.
         </p>
 
-        {existingGallery.length > 0 && (
+        {galleryUrls.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-2">
-            {existingGallery.map((url) => (
+            {galleryUrls.map((url) => (
               <div key={url} className="relative">
                 <Image
                   src={url}
@@ -198,7 +235,7 @@ export function ProductForm({
                 />
                 <button
                   type="button"
-                  onClick={() => setExistingGallery((prev) => prev.filter((u) => u !== url))}
+                  onClick={() => setGalleryUrls((prev) => prev.filter((u) => u !== url))}
                   className="absolute -right-1.5 -top-1.5 flex size-5 items-center justify-center rounded-full bg-destructive text-destructive-foreground"
                   aria-label="Quitar imagen"
                 >
@@ -209,49 +246,21 @@ export function ProductForm({
           </div>
         )}
 
-        {newGalleryPreviews.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-2">
-            {newGalleryPreviews.map((url, i) => (
-              <div key={url} className="relative">
-                <Image
-                  src={url}
-                  alt="nueva imagen"
-                  width={80}
-                  height={80}
-                  className="rounded-md object-cover border border-primary"
-                />
-                <button
-                  type="button"
-                  onClick={() => setNewGalleryFiles((prev) => prev.filter((_, idx) => idx !== i))}
-                  className="absolute -right-1.5 -top-1.5 flex size-5 items-center justify-center rounded-full bg-destructive text-destructive-foreground"
-                  aria-label="Quitar imagen"
-                >
-                  <X className="size-3" aria-hidden="true" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleGalleryChange}
+            disabled={uploadingGallery}
+            className="w-full text-sm"
+          />
+          {uploadingGallery && <Loader2 className="size-4 shrink-0 animate-spin text-muted-foreground" aria-hidden="true" />}
+        </div>
 
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={(e) => {
-            const files = Array.from(e.target.files ?? [])
-            setNewGalleryFiles((prev) => [...prev, ...files])
-            e.target.value = ""
-          }}
-          className="w-full text-sm"
-        />
-
-        {/* Imágenes que se mantienen (las que no se borraron) */}
-        {existingGallery.map((url) => (
-          <input key={url} type="hidden" name="keepAdditionalImages" value={url} />
+        {galleryUrls.map((url) => (
+          <input key={url} type="hidden" name="additionalImages" value={url} />
         ))}
-        {/* Los archivos nuevos se mandan aparte porque un <input type=file> no puede
-            setearse por JS; los adjuntamos a un input oculto sincronizado con el form. */}
-        <HiddenFileList name="additionalImageFiles" files={newGalleryFiles} />
       </div>
 
       <div>
@@ -261,12 +270,12 @@ export function ProductForm({
           que las imágenes).
         </p>
 
-        {existingVideoUrl && !removeVideo && !newVideoFile && (
+        {videoUrl && (
           <div className="mb-2 flex items-center gap-2">
-            <video src={existingVideoUrl} controls className="max-h-40 rounded-md border border-border" />
+            <video src={videoUrl} controls className="max-h-40 rounded-md border border-border" />
             <button
               type="button"
-              onClick={() => setRemoveVideo(true)}
+              onClick={() => setVideoUrl(null)}
               className="inline-flex items-center gap-1 text-xs text-destructive hover:underline"
             >
               <X className="size-3" aria-hidden="true" />
@@ -275,54 +284,33 @@ export function ProductForm({
           </div>
         )}
 
-        {newVideoPreview && (
-          <div className="mb-2 flex items-center gap-2">
-            <video src={newVideoPreview} controls className="max-h-40 rounded-md border border-primary" />
-            <button
-              type="button"
-              onClick={() => setNewVideoFile(null)}
-              className="inline-flex items-center gap-1 text-xs text-destructive hover:underline"
-            >
-              <X className="size-3" aria-hidden="true" />
-              Cancelar
-            </button>
-          </div>
-        )}
-
-        {!existingVideoUrl && !newVideoFile && (
+        {!videoUrl && !uploadingVideo && (
           <p className="mb-2 flex items-center gap-1.5 text-xs text-muted-foreground">
             <Film className="size-3.5" aria-hidden="true" />
             Este producto todavía no tiene video.
           </p>
         )}
 
-        <input
-          type="file"
-          accept="video/*"
-          onChange={(e) => {
-            const file = e.target.files?.[0]
-            if (file) {
-              setNewVideoFile(file)
-              setRemoveVideo(false)
-            }
-          }}
-          className="w-full text-sm"
-        />
+        <div className="flex items-center gap-2">
+          <input
+            type="file"
+            accept="video/*"
+            onChange={handleVideoChange}
+            disabled={uploadingVideo}
+            className="w-full text-sm"
+          />
+          {uploadingVideo && <Loader2 className="size-4 shrink-0 animate-spin text-muted-foreground" aria-hidden="true" />}
+        </div>
 
-        <input
-          type="hidden"
-          name="existingVideoUrl"
-          value={removeVideo ? "" : existingVideoUrl ?? ""}
-        />
-        <input type="hidden" name="removeVideo" value={removeVideo ? "true" : "false"} />
-        <HiddenFileList name="videoFile" files={newVideoFile ? [newVideoFile] : []} />
+        <input type="hidden" name="videoUrl" value={videoUrl ?? ""} />
       </div>
 
       <button
         type="submit"
-        className="bg-primary text-primary-foreground px-5 py-2 rounded-md text-sm font-medium"
+        disabled={isUploading}
+        className="bg-primary text-primary-foreground px-5 py-2 rounded-md text-sm font-medium disabled:opacity-50"
       >
-        Guardar
+        {isUploading ? "Esperá a que termine de subir..." : "Guardar"}
       </button>
     </form>
   )
