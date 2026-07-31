@@ -70,7 +70,7 @@ export default async function HomePage() {
           <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:grid-cols-3 sm:px-6">
             {[
               { icon: Leaf, title: "Materiales nobles", text: "Madera, algodón y tintes al agua." },
-              { icon: Truck, title: "Envío en 24-48 h", text: "Gratis a partir de $U 39." },
+              { icon: Truck, title: "Envío en 24 a 72 h", text: "Gratis al interior por DAC." },
               { icon: Sparkles, title: "Seleccionado a mano", text: "Cada producto lo probamos antes." },
             ].map(({ icon: Icon, title, text }) => (
               <div key={title} className="flex items-center gap-3">

@@ -34,6 +34,7 @@ export default function CheckoutPage() {
         address: formData.get("address") as string,
         city: formData.get("city") as string,
         postalCode: formData.get("postalCode") as string,
+        shippingZone: formData.get("shippingZone") as "montevideo" | "interior",
         notes: (formData.get("notes") as string) || undefined,
       },
     )
@@ -111,6 +112,33 @@ export default function CheckoutPage() {
               required
               className="w-full rounded-md border border-input bg-background px-3 py-2"
             />
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-foreground">Zona de envío</label>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                { value: "montevideo", label: "Montevideo y área metropolitana", hint: "Cadetería privada" },
+                { value: "interior", label: "Interior del país", hint: "DAC – Agencia Central, sin costo" },
+              ].map((option) => (
+                <label
+                  key={option.value}
+                  className="flex cursor-pointer items-start gap-2.5 rounded-md border border-input bg-background px-3 py-2.5 has-[:checked]:border-primary has-[:checked]:bg-accent/20"
+                >
+                  <input
+                    type="radio"
+                    name="shippingZone"
+                    value={option.value}
+                    defaultChecked={option.value === "montevideo"}
+                    className="mt-0.5 accent-primary"
+                  />
+                  <span>
+                    <span className="block text-sm font-medium text-foreground">{option.label}</span>
+                    <span className="block text-xs text-muted-foreground">{option.hint}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2">

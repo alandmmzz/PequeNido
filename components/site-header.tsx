@@ -25,7 +25,7 @@ export function SiteHeader() {
     <>
       <div className="bg-primary text-primary-foreground">
         <p className="mx-auto max-w-6xl px-4 py-1.5 text-center text-xs font-medium sm:px-6">
-          Envío gratis a partir de $U 39 · Entrega en 24-48 h
+          Envío gratis al interior por DAC · Entrega en 24 a 72 hs
         </p>
       </div>
       <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
@@ -64,13 +64,13 @@ export function SiteHeader() {
             variant="secondary"
             size="sm"
             onClick={openCart}
-            className="relative rounded-full"
+            className={cn("relative rounded-full", count > 0 && "pr-4")}
             aria-label={`Abrir cesta${count > 0 ? `, ${count} artículos` : ""}`}
           >
             <ShoppingBag className="size-4" aria-hidden="true" />
             <span className="hidden sm:inline">Cesta</span>
             {count > 0 && (
-              <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
+              <span className="absolute -right-1.5 -top-1.5 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
                 {count}
               </span>
             )}

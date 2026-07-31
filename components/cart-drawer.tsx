@@ -130,7 +130,8 @@ export function CartDrawer() {
                 </span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Envío gratis a partir de $U 39. Gastos calculados al finalizar.
+                Envío gratis al interior por DAC. En Montevideo y área metropolitana, costo de
+                cadetería calculado al finalizar.
               </p>
               <Link
                 href="/checkout"

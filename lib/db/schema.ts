@@ -46,6 +46,10 @@ export const orders = pgTable("orders", {
   address: text("address").notNull(),
   city: text("city").notNull(),
   postalCode: text("postal_code").notNull(),
+  // Montevideo/área metropolitana (cadetería privada) vs interior (DAC).
+  shippingZone: text("shipping_zone", { enum: ["montevideo", "interior"] })
+    .notNull()
+    .default("montevideo"),
   notes: text("notes"),
 
   total: doublePrecision("total").notNull(),

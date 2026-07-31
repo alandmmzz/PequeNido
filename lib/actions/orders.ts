@@ -21,6 +21,7 @@ export type CheckoutCustomer = {
   address: string
   city: string
   postalCode: string
+  shippingZone: "montevideo" | "interior"
   notes?: string
 }
 
@@ -53,6 +54,7 @@ export async function createOrderAndPreference(
         address: customer.address,
         city: customer.city,
         postalCode: customer.postalCode,
+        shippingZone: customer.shippingZone,
         notes: customer.notes || null,
         total,
         status: "pending",

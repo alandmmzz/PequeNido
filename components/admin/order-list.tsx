@@ -21,6 +21,11 @@ const statusStyles: Record<OrderRow["status"], string> = {
   cancelled: "bg-muted text-muted-foreground",
 }
 
+const shippingZoneLabels: Record<OrderRow["shippingZone"], string> = {
+  montevideo: "Montevideo y área metropolitana",
+  interior: "Interior del país",
+}
+
 export function OrderList({ orders }: { orders: OrderWithItems[] }) {
   const [query, setQuery] = useState("")
 
@@ -58,6 +63,9 @@ export function OrderList({ orders }: { orders: OrderWithItems[] }) {
               </div>
 
               <div className="flex items-center gap-2">
+                <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
+                  {shippingZoneLabels[order.shippingZone]}
+                </span>
                 <span className={`rounded-full px-3 py-1 text-xs font-medium ${statusStyles[order.status]}`}>
                   {statusLabels[order.status]}
                 </span>
