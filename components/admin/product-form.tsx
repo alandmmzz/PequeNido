@@ -130,7 +130,7 @@ export function ProductForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">Precio (USD)</label>
+        <label className="block text-sm font-medium mb-1">Precio (UYU)</label>
         <input
           name="price"
           type="number"

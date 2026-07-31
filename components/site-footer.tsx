@@ -10,7 +10,7 @@ export function SiteFooter() {
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground font-serif text-lg font-semibold">
                 p
               </span>
-              <span className="font-serif text-xl font-semibold text-foreground">Pequeñido</span>
+              <span className="font-serif text-xl font-semibold text-foreground">Pequenido</span>
             </div>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
               Juguetes y libros con alma, pensados para acompañar el crecimiento de los más pequeños.
@@ -59,7 +59,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 border-t border-border/70 pt-6 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Pequeñido. Todos los derechos reservados.
+          © {new Date().getFullYear()} Pequenido. Todos los derechos reservados.
         </div>
       </div>
     </footer>

@@ -6,7 +6,7 @@ import { getProducts } from "@/lib/actions/products"
 import { getProductMeta } from "@/lib/products"
 
 export const metadata: Metadata = {
-  title: "Libros | Pequeñido",
+  title: "Libros | Pequenido",
   description:
     "Libros de tela, cartón y tapa dura para bebés y niños: sensoriales, primeras palabras y cuentos para dormir.",
 }

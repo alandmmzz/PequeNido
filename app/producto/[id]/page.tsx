@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) return {}
 
   return {
-    title: `${product.name} | Pequeñido`,
+    title: `${product.name} | Pequenido`,
     description: product.description,
   }
 }

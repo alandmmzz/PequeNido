@@ -3,11 +3,11 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 
 export const metadata: Metadata = {
-  title: "Envíos y devoluciones | Pequeñido",
-  description: "Política de envíos, cambios y devoluciones de Pequeñido.",
+  title: "Envíos y devoluciones | Pequenido",
+  description: "Política de envíos, cambios y devoluciones de Pequenido.",
 }
 
-// TODO: reemplazar por el teléfono y el email reales de Pequeñido cuando los tengas.
+// TODO: reemplazar por el teléfono y el email reales de Pequenido cuando los tengas.
 const CONTACT_PHONE = "099242467"
 const CONTACT_EMAIL = "jusababyandkids@gmail.com"
 

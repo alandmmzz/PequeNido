@@ -97,9 +97,9 @@ export default async function HomePage() {
               <Link
                 key={range.id}
                 href={`/juguetes?edad=${range.id}`}
-                className="group flex flex-col items-center justify-center gap-2 rounded-2xl border border-border/70 bg-card px-4 py-8 text-center transition-colors hover:border-primary hover:bg-accent/40"
+                className="group flex flex-col items-center justify-center gap-3 rounded-2xl border border-border/70 bg-card px-4 py-8 text-center shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
               >
-                <span className="flex size-14 items-center justify-center rounded-full bg-accent font-serif text-lg font-semibold text-accent-foreground">
+                <span className="flex size-14 items-center justify-center rounded-full bg-accent font-serif text-lg font-semibold text-accent-foreground transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
                   {range.short.split(" ")[0]}
                 </span>
                 <span className="text-sm font-medium text-foreground">{range.label}</span>
@@ -113,7 +113,7 @@ export default async function HomePage() {
           <div className="flex items-end justify-between gap-4">
             <div>
               <h2 className="font-serif text-3xl font-semibold text-foreground">Juguetes destacados</h2>
-              <p className="mt-1 text-muted-foreground">Los favoritos de las familias Pequeñido.</p>
+              <p className="mt-1 text-muted-foreground">Los favoritos de las familias Pequenido.</p>
             </div>
             <Link
               href="/juguetes"
