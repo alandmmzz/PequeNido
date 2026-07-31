@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ProductCard } from "@/components/product-card"
 import { ageRanges, getProductMeta, type AgeRange } from "@/lib/products"
@@ -10,11 +11,16 @@ type Filter = AgeRange | "todos"
 
 export function ToysCatalogue({ items, initialAge }: { items: ProductRow[]; initialAge?: AgeRange }) {
   const [filter, setFilter] = useState<Filter>(initialAge ?? "todos")
+  const [query, setQuery] = useState("")
 
-  const filtered = useMemo(
-    () => (filter === "todos" ? items : items.filter((t) => t.age === filter)),
-    [items, filter],
-  )
+  const filtered = useMemo(() => {
+    const byAge = filter === "todos" ? items : items.filter((t) => t.age === filter)
+    const q = query.trim().toLowerCase()
+    if (!q) return byAge
+    return byAge.filter(
+      (t) => t.name.toLowerCase().includes(q) || t.description.toLowerCase().includes(q),
+    )
+  }, [items, filter, query])
 
   const filters: { id: Filter; label: string }[] = [
     { id: "todos", label: "Todas las edades" },
@@ -23,7 +29,19 @@ export function ToysCatalogue({ items, initialAge }: { items: ProductRow[]; init
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por edad">
+      <div className="relative max-w-sm">
+        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Buscar juguetes..."
+          aria-label="Buscar juguetes"
+          className="w-full rounded-full border border-input bg-background py-2 pl-9 pr-4 text-sm"
+        />
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Filtrar por edad">
         {filters.map((f) => {
           const active = filter === f.id
           return (
@@ -65,7 +83,7 @@ export function ToysCatalogue({ items, initialAge }: { items: ProductRow[]; init
         </div>
       ) : (
         <p className="mt-10 text-center text-muted-foreground">
-          No hay productos para esta edad todavía.
+          No hay productos que coincidan con la búsqueda.
         </p>
       )}
     </div>

@@ -96,7 +96,7 @@ export default async function HomePage() {
             {ageRanges.map((range) => (
               <Link
                 key={range.id}
-                href={`/juguetes?edad=${range.id}`}
+                href={`/juguetes?edad=${encodeURIComponent(range.id)}`}
                 className="group flex flex-col items-center justify-center gap-3 rounded-2xl border border-border/70 bg-card px-4 py-8 text-center shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
               >
                 <span className="flex size-14 items-center justify-center rounded-full bg-accent font-serif text-lg font-semibold text-accent-foreground transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">

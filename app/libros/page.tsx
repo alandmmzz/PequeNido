@@ -1,9 +1,8 @@
 import type { Metadata } from "next"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { ProductCard } from "@/components/product-card"
+import { BooksCatalogue } from "@/components/books-catalogue"
 import { getProducts } from "@/lib/actions/products"
-import { getProductMeta } from "@/lib/products"
 
 export const metadata: Metadata = {
   title: "Libros | Pequenido",
@@ -35,20 +34,7 @@ export default async function LibrosPage() {
         </section>
 
         <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-          <p className="text-sm text-muted-foreground">{books.length} productos</p>
-          <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {books.map((book) => (
-              <ProductCard
-                key={book.id}
-                id={book.id}
-                name={book.name}
-                description={book.description}
-                price={book.price}
-                image={book.image}
-                meta={getProductMeta(book)}
-              />
-            ))}
-          </div>
+          <BooksCatalogue items={books} />
         </section>
       </main>
       <SiteFooter />
