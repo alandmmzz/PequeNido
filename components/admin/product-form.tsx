@@ -147,9 +147,10 @@ export function ProductForm({
             <label className="block text-sm font-medium mb-1">Edad recomendada</label>
             <select
               name="age"
-              defaultValue={initial?.age ?? "0-12m"}
+              defaultValue={initial?.age ?? ""}
               className="w-full rounded-md border border-input bg-background px-3 py-2"
             >
+              <option value="">Sin edad específica</option>
               <option value="0-12m">0 - 12 meses</option>
               <option value="12-24m">12 - 24 meses</option>
               <option value="2-4a">2 - 4 años</option>
