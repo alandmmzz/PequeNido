@@ -3,6 +3,7 @@ import { CheckCircle2 } from "lucide-react"
 import { getOrder } from "@/lib/actions/orders"
 import { formatPrice } from "@/lib/products"
 import { ClearCartOnMount } from "@/components/checkout/clear-cart-on-mount"
+import { BANK_NAME, BANK_ACCOUNT_HOLDER, BANK_ACCOUNT_NUMBER } from "@/lib/bank-info"
 
 export default async function CheckoutSuccessPage({
   searchParams,
@@ -18,10 +19,28 @@ export default async function CheckoutSuccessPage({
       <span className="flex size-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
         <CheckCircle2 className="size-8" aria-hidden="true" />
       </span>
-      <h1 className="font-serif text-2xl font-semibold text-foreground">¡Pago aprobado!</h1>
+      <h1 className="font-serif text-2xl font-semibold text-foreground">
+        {data?.order.paymentMethod === "transferencia" ? "¡Pedido registrado!" : "¡Pago aprobado!"}
+      </h1>
       <p className="text-sm text-muted-foreground">
-        Gracias{data ? ` ${data.order.customerName}` : ""} por tu compra. Te enviamos la confirmación por email.
+        {data?.order.paymentMethod === "transferencia" ? (
+          <>
+            Gracias {data.order.customerName} por tu compra. Tu pedido quedó pendiente hasta que
+            recibamos la transferencia; te confirmamos por email apenas nos llegue.
+          </>
+        ) : (
+          <>Gracias{data ? ` ${data.order.customerName}` : ""} por tu compra. Te enviamos la confirmación por email.</>
+        )}
       </p>
+
+      {data?.order.paymentMethod === "transferencia" && (
+        <div className="w-full rounded-2xl border border-border/70 bg-secondary/30 p-5 text-left text-sm text-muted-foreground">
+          <p className="font-medium text-foreground">Datos para transferir</p>
+          <p className="mt-1">Banco: {BANK_NAME}</p>
+          <p>Titular: {BANK_ACCOUNT_HOLDER}</p>
+          <p>Cuenta: {BANK_ACCOUNT_NUMBER}</p>
+        </div>
+      )}
 
       {data && (
         <div className="mt-4 w-full rounded-2xl border border-border/70 bg-card p-5 text-left">

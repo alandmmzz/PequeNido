@@ -22,6 +22,7 @@ export type CheckoutCustomer = {
   city: string
   postalCode: string
   shippingZone: "montevideo" | "interior"
+  paymentMethod: "mercadopago" | "transferencia"
   notes?: string
 }
 
@@ -55,6 +56,7 @@ export async function createOrderAndPreference(
         city: customer.city,
         postalCode: customer.postalCode,
         shippingZone: customer.shippingZone,
+        paymentMethod: customer.paymentMethod,
         notes: customer.notes || null,
         total,
         status: "pending",
@@ -74,6 +76,14 @@ export async function createOrderAndPreference(
   } catch (err) {
     console.error("Error guardando el pedido en la base:", err)
     return { error: "No se pudo guardar tu pedido. Probá de nuevo en unos segundos." }
+  }
+
+  // Transferencia bancaria: no hay pasarela de pago, el pedido queda
+  // "pending" y mandamos directo a la pantalla de confirmación, donde se
+  // muestran los datos de la cuenta para transferir.
+  if (customer.paymentMethod === "transferencia") {
+    const baseUrl = (process.env.NEXT_PUBLIC_URL ?? "http://localhost:3000").replace(/\/$/, "")
+    return { url: `${baseUrl}/checkout/success?external_reference=${order.id}`, orderId: order.id }
   }
 
   if (!process.env.MERCADOPAGO_ACCESS_TOKEN) {

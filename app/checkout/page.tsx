@@ -8,12 +8,14 @@ import { ShoppingBag } from "lucide-react"
 import { useCart } from "@/components/cart-provider"
 import { formatPrice } from "@/lib/products"
 import { createOrderAndPreference } from "@/lib/actions/orders"
+import { BANK_NAME, BANK_ACCOUNT_HOLDER, BANK_ACCOUNT_NUMBER } from "@/lib/bank-info"
 
 export default function CheckoutPage() {
   const { items, total } = useCart()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [paymentMethod, setPaymentMethod] = useState<"mercadopago" | "transferencia">("mercadopago")
 
   async function handleSubmit(formData: FormData) {
     setError(null)
@@ -35,6 +37,7 @@ export default function CheckoutPage() {
         city: formData.get("city") as string,
         postalCode: formData.get("postalCode") as string,
         shippingZone: formData.get("shippingZone") as "montevideo" | "interior",
+        paymentMethod: formData.get("paymentMethod") as "mercadopago" | "transferencia",
         notes: (formData.get("notes") as string) || undefined,
       },
     )
@@ -76,7 +79,10 @@ export default function CheckoutPage() {
       <div>
         <h1 className="font-serif text-2xl font-semibold text-foreground sm:text-3xl">Finalizar compra</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Completá tus datos de envío. En el siguiente paso vas a pagar de forma segura con Mercado Pago.
+          Completá tus datos de envío.{" "}
+          {paymentMethod === "mercadopago"
+            ? "En el siguiente paso vas a pagar de forma segura con Mercado Pago."
+            : "Confirmá el pedido y te mostramos los datos para hacer la transferencia."}
         </p>
 
         <form action={handleSubmit} className="mt-8 space-y-5">
@@ -141,6 +147,47 @@ export default function CheckoutPage() {
             </div>
           </div>
 
+          <div>
+            <label className="mb-2 block text-sm font-medium text-foreground">Método de pago</label>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                { value: "mercadopago", label: "Mercado Pago", hint: "Tarjeta, dinero en cuenta, etc." },
+                { value: "transferencia", label: "Transferencia bancaria", hint: "Confirmamos el pedido al recibirla" },
+              ].map((option) => (
+                <label
+                  key={option.value}
+                  className="flex cursor-pointer items-start gap-2.5 rounded-md border border-input bg-background px-3 py-2.5 has-[:checked]:border-primary has-[:checked]:bg-accent/20"
+                >
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value={option.value}
+                    checked={paymentMethod === option.value}
+                    onChange={() => setPaymentMethod(option.value as "mercadopago" | "transferencia")}
+                    className="mt-0.5 accent-primary"
+                  />
+                  <span>
+                    <span className="block text-sm font-medium text-foreground">{option.label}</span>
+                    <span className="block text-xs text-muted-foreground">{option.hint}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+
+            {paymentMethod === "transferencia" && (
+              <div className="mt-3 rounded-md border border-border/70 bg-secondary/30 p-3.5 text-sm text-muted-foreground">
+                <p className="font-medium text-foreground">Datos para transferir</p>
+                <p className="mt-1">Banco: {BANK_NAME}</p>
+                <p>Titular: {BANK_ACCOUNT_HOLDER}</p>
+                <p>Cuenta: {BANK_ACCOUNT_NUMBER}</p>
+                <p className="mt-2">
+                  Al confirmar tu pedido queda como pendiente. Una vez que hagas la transferencia y nos
+                  llegue, te confirmamos por email.
+                </p>
+              </div>
+            )}
+          </div>
+
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Ciudad</label>
@@ -188,7 +235,11 @@ export default function CheckoutPage() {
             disabled={loading}
             className="w-full rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-60"
           >
-            {loading ? "Generando pago…" : "Pagar con Mercado Pago"}
+            {loading
+              ? "Confirmando pedido…"
+              : paymentMethod === "mercadopago"
+                ? "Pagar con Mercado Pago"
+                : "Confirmar pedido"}
           </button>
         </form>
       </div>
