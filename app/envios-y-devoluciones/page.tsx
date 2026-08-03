@@ -31,12 +31,54 @@ export default function EnviosYDevolucionesPage() {
               <h2 className="font-serif text-2xl font-semibold text-foreground">Envíos</h2>
               <ul className="mt-4 space-y-3 text-base leading-relaxed text-muted-foreground">
                 <li>
-                  Una vez que hayamos recibido el pago de tu pedido, te lo enviaremos en un plazo de entre 24 y
-                  72&nbsp;hs.
+                  Una vez que hayamos recibido el pago de tu pedido, te lo enviaremos o lo dejaremos listo para
+                  retiro en un plazo de entre 24 y 72&nbsp;hs.
                 </li>
-                <li>Los envíos en Montevideo y área metropolitana son por cadetería privada.</li>
-                <li>Hacemos envíos al interior del país por DAC – Agencia Central, sin costo de despacho.</li>
-                <li>Los tiempos de entrega son exclusivamente responsabilidad de la agencia.</li>
+                <li>
+                  <strong className="font-medium text-foreground">Retiro sin costo:</strong> podés retirar tu
+                  pedido en nuestro pick up center, en la zona de Goes, coordinando previamente el horario.
+                </li>
+                <li>
+                  <strong className="font-medium text-foreground">Envío a Montevideo y área metropolitana:</strong>{" "}
+                  costo fijo de UYU&nbsp;$200 por cadetería privada, para los siguientes barrios:
+                </li>
+                <li>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1 rounded-xl border border-border/70 bg-secondary/30 p-4 text-sm sm:grid-cols-3">
+                    {[
+                      "Ciudad Vieja",
+                      "Centro",
+                      "Cordón",
+                      "Tres Cruces",
+                      "Parque Rodó",
+                      "Punta Carretas",
+                      "Pocitos",
+                      "Buceo",
+                      "Malvín",
+                      "La Blanqueada",
+                      "Parque Batlle",
+                      "Unión",
+                      "Villa Dolores",
+                      "Jacinto Vera",
+                      "Brazo Oriental",
+                      "Prado",
+                      "Reducto",
+                      "Aguada",
+                      "La Comercial",
+                      "Goes",
+                      "Paso Molino",
+                      "Belvedere",
+                      "Sayago",
+                    ].map((barrio) => (
+                      <span key={barrio}>{barrio}</span>
+                    ))}
+                  </div>
+                </li>
+                <li>
+                  <strong className="font-medium text-foreground">Envío al interior del país:</strong> lo
+                  despachamos sin costo por DAC – Agencia Central. El envío en sí (lo que cobra la agencia al
+                  retirar el paquete) corre por cuenta de quien recibe.
+                </li>
+                <li>Los tiempos de entrega de los envíos coordinados son responsabilidad de la agencia o cadetería.</li>
               </ul>
             </div>
 
@@ -44,9 +86,10 @@ export default function EnviosYDevolucionesPage() {
               <h2 className="font-serif text-2xl font-semibold text-foreground">Política de cambio y devolución</h2>
               <ul className="mt-4 space-y-3 text-base leading-relaxed text-muted-foreground">
                 <li>
-                  Si deseás realizar un cambio, éste debe solicitarse dentro de los 5 días hábiles posteriores a
-                  la recepción del producto.
+                  Si deseás realizar un cambio, éste debe solicitarse dentro de los 10 días posteriores a la
+                  recepción del producto.
                 </li>
+                <li>No realizamos devoluciones de dinero: solo se aceptan cambios por otro producto.</li>
                 <li>El producto debe estar en perfecto estado y con su empaque original.</li>
                 <li>
                   Para comenzar este proceso, comunicate por teléfono al{" "}
@@ -58,7 +101,7 @@ export default function EnviosYDevolucionesPage() {
                     {CONTACT_EMAIL}
                   </a>
                   . Vas a recibir, dentro de las siguientes 72 horas hábiles, el detalle de los pasos a seguir
-                  para completar el cambio o la devolución.
+                  para completar el cambio.
                 </li>
               </ul>
             </div>

@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache"
 import { db } from "@/lib/db"
 import { orderItems, orders, type OrderRow } from "@/lib/db/schema"
 import { mpPreference } from "@/lib/mercadopago"
+import { sendNewOrderNotificationToOwner, sendOrderConfirmationEmail } from "@/lib/order-email"
+import { SHIPPING_COST, type ShippingZone } from "@/lib/shipping"
 
 export type CheckoutItem = {
   id: string
@@ -17,11 +19,11 @@ export type CheckoutItem = {
 export type CheckoutCustomer = {
   name: string
   email: string
-  phone?: string
-  address: string
-  city: string
-  postalCode: string
-  shippingZone: "montevideo" | "interior"
+  phone: string
+  address?: string
+  city?: string
+  postalCode?: string
+  shippingZone: ShippingZone
   paymentMethod: "mercadopago" | "transferencia"
   notes?: string
 }
@@ -41,7 +43,17 @@ export async function createOrderAndPreference(
     return { error: "Tu cesta está vacía." }
   }
 
-  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  if (!customer.phone?.trim()) {
+    return { error: "El teléfono es obligatorio." }
+  }
+
+  if (customer.shippingZone !== "retiro" && (!customer.address?.trim() || !customer.city?.trim())) {
+    return { error: "Faltan los datos de envío." }
+  }
+
+  const itemsTotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const shippingCost = SHIPPING_COST[customer.shippingZone]
+  const total = itemsTotal + shippingCost
 
   let order: typeof orders.$inferSelect
 
@@ -51,11 +63,12 @@ export async function createOrderAndPreference(
       .values({
         customerName: customer.name,
         customerEmail: customer.email,
-        customerPhone: customer.phone || null,
-        address: customer.address,
-        city: customer.city,
-        postalCode: customer.postalCode,
+        customerPhone: customer.phone,
+        address: customer.shippingZone === "retiro" ? null : customer.address || null,
+        city: customer.shippingZone === "retiro" ? null : customer.city || null,
+        postalCode: customer.shippingZone === "retiro" ? null : customer.postalCode || null,
         shippingZone: customer.shippingZone,
+        shippingCost,
         paymentMethod: customer.paymentMethod,
         notes: customer.notes || null,
         total,
@@ -78,10 +91,23 @@ export async function createOrderAndPreference(
     return { error: "No se pudo guardar tu pedido. Probá de nuevo en unos segundos." }
   }
 
+  try {
+    await sendNewOrderNotificationToOwner(order, items)
+  } catch (err) {
+    console.error("Error avisándole al dueño de la tienda:", err)
+  }
+
   // Transferencia bancaria: no hay pasarela de pago, el pedido queda
   // "pending" y mandamos directo a la pantalla de confirmación, donde se
   // muestran los datos de la cuenta para transferir.
   if (customer.paymentMethod === "transferencia") {
+    try {
+      await sendOrderConfirmationEmail(order, items)
+    } catch (err) {
+      // No rompemos el checkout si falla el mail: el pedido ya quedó guardado.
+      console.error("Error mandando el mail de confirmación:", err)
+    }
+
     const baseUrl = (process.env.NEXT_PUBLIC_URL ?? "http://localhost:3000").replace(/\/$/, "")
     return { url: `${baseUrl}/checkout/success?external_reference=${order.id}`, orderId: order.id }
   }
@@ -101,14 +127,27 @@ export async function createOrderAndPreference(
   try {
     const preference = await mpPreference.create({
       body: {
-        items: items.map((item) => ({
-          id: item.id,
-          title: item.name,
-          quantity: item.quantity,
-          unit_price: item.price,
-          currency_id: currencyId,
-          picture_url: item.image?.startsWith("http") ? item.image : undefined,
-        })),
+        items: [
+          ...items.map((item) => ({
+            id: item.id,
+            title: item.name,
+            quantity: item.quantity,
+            unit_price: item.price,
+            currency_id: currencyId,
+            picture_url: item.image?.startsWith("http") ? item.image : undefined,
+          })),
+          ...(shippingCost > 0
+            ? [
+                {
+                  id: "envio",
+                  title: "Envío",
+                  quantity: 1,
+                  unit_price: shippingCost,
+                  currency_id: currencyId,
+                },
+              ]
+            : []),
+        ],
         payer: {
           name: customer.name,
           email: customer.email,
@@ -179,6 +218,20 @@ export async function getOrders() {
 
 /** Cambia el estado de un pedido a mano desde el panel de admin. */
 export async function updateOrderStatus(id: string, status: OrderRow["status"]) {
+  const [existing] = await db.select().from(orders).where(eq(orders.id, id))
+
   await db.update(orders).set({ status, updatedAt: new Date() }).where(eq(orders.id, id))
+
+  // Si recién ahora pasa a "pagado" (típicamente al confirmar una
+  // transferencia a mano), le avisamos al cliente por mail.
+  if (existing && existing.status !== "paid" && status === "paid") {
+    try {
+      const items = await db.select().from(orderItems).where(eq(orderItems.orderId, id))
+      await sendOrderConfirmationEmail({ ...existing, status }, items)
+    } catch (err) {
+      console.error("Error mandando el mail de pago confirmado:", err)
+    }
+  }
+
   revalidatePath("/admin/pedidos")
 }

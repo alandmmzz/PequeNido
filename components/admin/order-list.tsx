@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react"
 import type { OrderItemRow, OrderRow } from "@/lib/db/schema"
 import { formatPrice } from "@/lib/products"
+import { SHIPPING_ZONE_LABELS } from "@/lib/shipping"
 import { OrderStatusSelect } from "@/components/admin/order-status-select"
 
 type OrderWithItems = { order: OrderRow; items: OrderItemRow[] }
@@ -19,11 +20,6 @@ const statusStyles: Record<OrderRow["status"], string> = {
   paid: "bg-emerald-100 text-emerald-700",
   rejected: "bg-red-100 text-red-700",
   cancelled: "bg-muted text-muted-foreground",
-}
-
-const shippingZoneLabels: Record<OrderRow["shippingZone"], string> = {
-  montevideo: "Montevideo y área metropolitana",
-  interior: "Interior del país",
 }
 
 const paymentMethodLabels: Record<OrderRow["paymentMethod"], string> = {
@@ -69,7 +65,7 @@ export function OrderList({ orders }: { orders: OrderWithItems[] }) {
 
               <div className="flex items-center gap-2">
                 <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
-                  {shippingZoneLabels[order.shippingZone]}
+                  {SHIPPING_ZONE_LABELS[order.shippingZone]}
                 </span>
                 <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground">
                   {paymentMethodLabels[order.paymentMethod]}
@@ -94,7 +90,7 @@ export function OrderList({ orders }: { orders: OrderWithItems[] }) {
 
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border/70 pt-3">
               <span className="text-sm text-muted-foreground">
-                {order.address}, {order.city} ({order.postalCode})
+                {order.address ? `${order.address}, ${order.city} (${order.postalCode ?? "-"})` : "Retiro en el local"}
               </span>
               <span className="font-semibold">{formatPrice(order.total)}</span>
             </div>

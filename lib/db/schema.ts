@@ -42,14 +42,21 @@ export const orders = pgTable("orders", {
 
   customerName: text("customer_name").notNull(),
   customerEmail: text("customer_email").notNull(),
-  customerPhone: text("customer_phone"),
-  address: text("address").notNull(),
-  city: text("city").notNull(),
-  postalCode: text("postal_code").notNull(),
-  // Montevideo/área metropolitana (cadetería privada) vs interior (DAC).
-  shippingZone: text("shipping_zone", { enum: ["montevideo", "interior"] })
+  // Obligatorio: así el negocio se puede comunicar con quien compra.
+  customerPhone: text("customer_phone").notNull(),
+  // Nulos cuando es retiro en el pick up center (no hace falta dirección).
+  address: text("address"),
+  city: text("city"),
+  postalCode: text("postal_code"),
+  // "retiro" (pick up center en Goes, sin costo), "montevideo" (envío
+  // coordinado, costo fijo) o "interior" (DAC, el cadete cobra al entregar).
+  shippingZone: text("shipping_zone", { enum: ["retiro", "montevideo", "interior"] })
     .notNull()
-    .default("montevideo"),
+    .default("retiro"),
+  // Costo fijo del envío que cobra Pequenido (0 para retiro e interior;
+  // UYU $200 para Montevideo/área metropolitana). No incluye lo que el
+  // cadete cobra aparte al entregar en el caso del interior.
+  shippingCost: doublePrecision("shipping_cost").notNull().default(0),
   notes: text("notes"),
 
   // Mercado Pago (con link de pago) o transferencia bancaria (el cliente

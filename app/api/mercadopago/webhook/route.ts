@@ -1,8 +1,9 @@
 import { eq } from "drizzle-orm"
 import { type NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
-import { orders } from "@/lib/db/schema"
+import { orderItems, orders } from "@/lib/db/schema"
 import { mpPayment } from "@/lib/mercadopago"
+import { sendOrderConfirmationEmail } from "@/lib/order-email"
 
 /**
  * Mercado Pago llama a esta URL cuando cambia el estado de un pago
@@ -30,14 +31,27 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ received: true })
     }
 
+    const [existing] = await db.select().from(orders).where(eq(orders.id, orderId))
+    const newStatus = mapMpStatus(payment.status)
+
     await db
       .update(orders)
       .set({
-        status: mapMpStatus(payment.status),
+        status: newStatus,
         mpPaymentId: String(payment.id),
         updatedAt: new Date(),
       })
       .where(eq(orders.id, orderId))
+
+    // Si recién ahora se aprueba el pago, le mandamos el recibo al cliente.
+    if (existing && existing.status !== "paid" && newStatus === "paid") {
+      try {
+        const items = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId))
+        await sendOrderConfirmationEmail({ ...existing, status: newStatus }, items)
+      } catch (err) {
+        console.error("Error mandando el recibo por mail:", err)
+      }
+    }
 
     return NextResponse.json({ received: true })
   } catch (err) {
