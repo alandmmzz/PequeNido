@@ -4,7 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ShoppingBag } from "lucide-react"
+import { Building2, CreditCard, Landmark, MapPin, ShoppingBag } from "lucide-react"
 import { useCart } from "@/components/cart-provider"
 import { formatPrice } from "@/lib/products"
 import { createOrderAndPreference } from "@/lib/actions/orders"
@@ -120,12 +120,48 @@ export default function CheckoutPage() {
             />
           </div>
 
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-sm font-medium text-foreground">Ciudad</label>
+              <input
+                name="city"
+                required
+                className="w-full rounded-md border border-input bg-background px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-foreground">Código postal</label>
+              <input
+                name="postalCode"
+                required
+                className="w-full rounded-md border border-input bg-background px-3 py-2"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium text-foreground">Notas para la entrega (opcional)</label>
+            <textarea
+              name="notes"
+              rows={3}
+              className="w-full rounded-md border border-input bg-background px-3 py-2"
+            />
+          </div>
+
+          <p className="text-xs text-muted-foreground">
+            Conocé nuestra{" "}
+            <Link href="/envios-y-devoluciones" target="_blank" className="font-medium text-foreground hover:underline">
+              política de envíos y devoluciones
+            </Link>
+            .
+          </p>
+
           <div>
             <label className="mb-2 block text-sm font-medium text-foreground">Zona de envío</label>
             <div className="grid gap-3 sm:grid-cols-2">
               {[
-                { value: "montevideo", label: "Montevideo y área metropolitana", hint: "Cadetería privada" },
-                { value: "interior", label: "Interior del país", hint: "DAC – Agencia Central, sin costo" },
+                { value: "montevideo", label: "Montevideo y área metropolitana", hint: "Cadetería privada", Icon: Building2 },
+                { value: "interior", label: "Interior del país", hint: "DAC – Agencia Central, sin costo", Icon: MapPin },
               ].map((option) => (
                 <label
                   key={option.value}
@@ -138,6 +174,7 @@ export default function CheckoutPage() {
                     defaultChecked={option.value === "montevideo"}
                     className="mt-0.5 accent-primary"
                   />
+                  <option.Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
                   <span>
                     <span className="block text-sm font-medium text-foreground">{option.label}</span>
                     <span className="block text-xs text-muted-foreground">{option.hint}</span>
@@ -151,8 +188,8 @@ export default function CheckoutPage() {
             <label className="mb-2 block text-sm font-medium text-foreground">Método de pago</label>
             <div className="grid gap-3 sm:grid-cols-2">
               {[
-                { value: "mercadopago", label: "Mercado Pago", hint: "Tarjeta, dinero en cuenta, etc." },
-                { value: "transferencia", label: "Transferencia bancaria", hint: "Confirmamos el pedido al recibirla" },
+                { value: "mercadopago", label: "Mercado Pago", hint: "Tarjeta, dinero en cuenta, etc.", Icon: CreditCard },
+                { value: "transferencia", label: "Transferencia bancaria", hint: "Confirmamos el pedido al recibirla", Icon: Landmark },
               ].map((option) => (
                 <label
                   key={option.value}
@@ -166,6 +203,7 @@ export default function CheckoutPage() {
                     onChange={() => setPaymentMethod(option.value as "mercadopago" | "transferencia")}
                     className="mt-0.5 accent-primary"
                   />
+                  <option.Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
                   <span>
                     <span className="block text-sm font-medium text-foreground">{option.label}</span>
                     <span className="block text-xs text-muted-foreground">{option.hint}</span>
@@ -186,42 +224,6 @@ export default function CheckoutPage() {
                 </p>
               </div>
             )}
-          </div>
-
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-sm font-medium text-foreground">Ciudad</label>
-              <input
-                name="city"
-                required
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-foreground">Código postal</label>
-              <input
-                name="postalCode"
-                required
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-              />
-            </div>
-          </div>
-
-          <p className="text-xs text-muted-foreground">
-            Conocé nuestra{" "}
-            <Link href="/envios-y-devoluciones" target="_blank" className="font-medium text-foreground hover:underline">
-              política de envíos y devoluciones
-            </Link>
-            .
-          </p>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-foreground">Notas para la entrega (opcional)</label>
-            <textarea
-              name="notes"
-              rows={3}
-              className="w-full rounded-md border border-input bg-background px-3 py-2"
-            />
           </div>
 
           {error && (
