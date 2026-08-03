@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import { Nunito, Fraunces } from 'next/font/google'
 import { CartProvider } from '@/components/cart-provider'
+import { WhatsappButton } from '@/components/whatsapp-button'
 import './globals.css'
 
 const nunito = Nunito({
@@ -57,6 +58,7 @@ export default function RootLayout({
     >
       <body className="font-sans antialiased">
         <CartProvider>{children}</CartProvider>
+        <WhatsappButton />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

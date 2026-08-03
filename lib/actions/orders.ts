@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 import { db } from "@/lib/db"
 import { orderItems, orders, type OrderRow } from "@/lib/db/schema"
 import { mpPreference } from "@/lib/mercadopago"
+import { sendNewOrderNotificationToOwner, sendOrderConfirmationEmail } from "@/lib/order-email"
 
 export type CheckoutItem = {
   id: string
@@ -22,6 +23,7 @@ export type CheckoutCustomer = {
   city: string
   postalCode: string
   shippingZone: "montevideo" | "interior"
+  paymentMethod: "mercadopago" | "transferencia"
   notes?: string
 }
 
@@ -55,6 +57,7 @@ export async function createOrderAndPreference(
         city: customer.city,
         postalCode: customer.postalCode,
         shippingZone: customer.shippingZone,
+        paymentMethod: customer.paymentMethod,
         notes: customer.notes || null,
         total,
         status: "pending",
@@ -74,6 +77,27 @@ export async function createOrderAndPreference(
   } catch (err) {
     console.error("Error guardando el pedido en la base:", err)
     return { error: "No se pudo guardar tu pedido. Probá de nuevo en unos segundos." }
+  }
+
+  try {
+    await sendNewOrderNotificationToOwner(order, items)
+  } catch (err) {
+    console.error("Error avisándole al dueño de la tienda:", err)
+  }
+
+  // Transferencia bancaria: no hay pasarela de pago, el pedido queda
+  // "pending" y mandamos directo a la pantalla de confirmación, donde se
+  // muestran los datos de la cuenta para transferir.
+  if (customer.paymentMethod === "transferencia") {
+    try {
+      await sendOrderConfirmationEmail(order, items)
+    } catch (err) {
+      // No rompemos el checkout si falla el mail: el pedido ya quedó guardado.
+      console.error("Error mandando el mail de confirmación:", err)
+    }
+
+    const baseUrl = (process.env.NEXT_PUBLIC_URL ?? "http://localhost:3000").replace(/\/$/, "")
+    return { url: `${baseUrl}/checkout/success?external_reference=${order.id}`, orderId: order.id }
   }
 
   if (!process.env.MERCADOPAGO_ACCESS_TOKEN) {
@@ -169,6 +193,20 @@ export async function getOrders() {
 
 /** Cambia el estado de un pedido a mano desde el panel de admin. */
 export async function updateOrderStatus(id: string, status: OrderRow["status"]) {
+  const [existing] = await db.select().from(orders).where(eq(orders.id, id))
+
   await db.update(orders).set({ status, updatedAt: new Date() }).where(eq(orders.id, id))
+
+  // Si recién ahora pasa a "pagado" (típicamente al confirmar una
+  // transferencia a mano), le avisamos al cliente por mail.
+  if (existing && existing.status !== "paid" && status === "paid") {
+    try {
+      const items = await db.select().from(orderItems).where(eq(orderItems.orderId, id))
+      await sendOrderConfirmationEmail({ ...existing, status }, items)
+    } catch (err) {
+      console.error("Error mandando el mail de pago confirmado:", err)
+    }
+  }
+
   revalidatePath("/admin/pedidos")
 }

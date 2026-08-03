@@ -52,6 +52,12 @@ export const orders = pgTable("orders", {
     .default("montevideo"),
   notes: text("notes"),
 
+  // Mercado Pago (con link de pago) o transferencia bancaria (el cliente
+  // transfiere a mano y confirmamos el pedido después).
+  paymentMethod: text("payment_method", { enum: ["mercadopago", "transferencia"] })
+    .notNull()
+    .default("mercadopago"),
+
   total: doublePrecision("total").notNull(),
   status: text("status", { enum: ["pending", "paid", "rejected", "cancelled"] })
     .notNull()

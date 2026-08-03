@@ -1,9 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { ArrowLeft } from "lucide-react"
+import { usePathname, useRouter } from "next/navigation"
+import { ArrowLeft, LogOut } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { logout } from "@/lib/actions/auth"
 
 const tabs = [
   { href: "/admin", label: "Productos" },
@@ -12,6 +13,10 @@ const tabs = [
 
 export function AdminTabs() {
   const pathname = usePathname()
+  const router = useRouter()
+
+  // La pantalla de login no lleva las pestañas del panel.
+  if (pathname === "/admin/login") return null
 
   return (
     <div className="border-b border-border/70">
@@ -23,6 +28,18 @@ export function AdminTabs() {
           <ArrowLeft className="size-4" aria-hidden="true" />
           Ver tienda
         </Link>
+        <button
+          type="button"
+          onClick={async () => {
+            await logout()
+            router.push("/admin/login")
+            router.refresh()
+          }}
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <LogOut className="size-4" aria-hidden="true" />
+          Salir
+        </button>
       </div>
       <nav className="mx-auto flex max-w-4xl gap-1 px-4 pt-2" aria-label="Panel de administración">
         {tabs.map((tab) => {
