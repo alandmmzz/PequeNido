@@ -1,11 +1,22 @@
 import { sendEmail } from "@/lib/email"
 import { formatPrice } from "@/lib/products"
 import { BANK_NAME, BANK_ACCOUNT_HOLDER, BANK_ACCOUNT_NUMBER } from "@/lib/bank-info"
+<<<<<<< HEAD
 import { SHIPPING_ZONE_LABELS } from "@/lib/shipping"
+=======
+>>>>>>> e294c5d6cfd668f3699115927ec48a1635e3c6f9
 import type { OrderRow } from "@/lib/db/schema"
 
 type ReceiptItem = { name: string; price: number; quantity: number }
 
+<<<<<<< HEAD
+=======
+const shippingZoneLabels: Record<OrderRow["shippingZone"], string> = {
+  montevideo: "Montevideo y área metropolitana (cadetería privada)",
+  interior: "Interior del país (envío gratis por DAC)",
+}
+
+>>>>>>> e294c5d6cfd668f3699115927ec48a1635e3c6f9
 function itemsTable(items: ReceiptItem[]) {
   const rows = items
     .map(
@@ -31,6 +42,7 @@ function itemsTable(items: ReceiptItem[]) {
     </table>`
 }
 
+<<<<<<< HEAD
 function shippingSummary(order: OrderRow) {
   const label = SHIPPING_ZONE_LABELS[order.shippingZone]
 
@@ -46,6 +58,8 @@ function shippingSummary(order: OrderRow) {
   return `Envío: ${label}.<br/>${costLine}<br/>Dirección: ${order.address}, ${order.city}`
 }
 
+=======
+>>>>>>> e294c5d6cfd668f3699115927ec48a1635e3c6f9
 /**
  * Le avisa al dueño de la tienda (NOTIFICATION_EMAIL, o ADMIN_EMAIL si no
  * está seteada esa) que entró un pedido nuevo. Se manda apenas se registra
@@ -74,7 +88,12 @@ export async function sendNewOrderNotificationToOwner(order: OrderRow, items: Re
       ${itemsTable(items)}
       <p style="text-align:right;font-size:16px;margin-top:8px;"><strong>Total: ${formatPrice(order.total)}</strong></p>
       <p style="margin-top:16px;font-size:14px;">
+<<<<<<< HEAD
         ${shippingSummary(order)}
+=======
+        Envío: ${shippingZoneLabels[order.shippingZone]}<br/>
+        Dirección: ${order.address}, ${order.city}
+>>>>>>> e294c5d6cfd668f3699115927ec48a1635e3c6f9
       </p>
       <p style="margin-top:20px;">
         <a href="${baseUrl}/admin/pedidos" style="color:#5B6B3C;">Ver el pedido en el panel de administración</a>
@@ -125,7 +144,12 @@ export async function sendOrderConfirmationEmail(order: OrderRow, items: Receipt
       <p style="text-align:right;font-size:16px;margin-top:8px;"><strong>Total: ${formatPrice(order.total)}</strong></p>
       ${bankBlock}
       <p style="margin-top:16px;font-size:14px;">
+<<<<<<< HEAD
         ${shippingSummary(order)}
+=======
+        Envío: ${shippingZoneLabels[order.shippingZone]}<br/>
+        Dirección: ${order.address}, ${order.city}
+>>>>>>> e294c5d6cfd668f3699115927ec48a1635e3c6f9
       </p>
       <p style="margin-top:20px;font-size:13px;color:#6B6B5F;">Pedido #${order.id}</p>
     </div>`

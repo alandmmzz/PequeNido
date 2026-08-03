@@ -6,7 +6,10 @@ import { db } from "@/lib/db"
 import { orderItems, orders, type OrderRow } from "@/lib/db/schema"
 import { mpPreference } from "@/lib/mercadopago"
 import { sendNewOrderNotificationToOwner, sendOrderConfirmationEmail } from "@/lib/order-email"
+<<<<<<< HEAD
 import { SHIPPING_COST, type ShippingZone } from "@/lib/shipping"
+=======
+>>>>>>> e294c5d6cfd668f3699115927ec48a1635e3c6f9
 
 export type CheckoutItem = {
   id: string
