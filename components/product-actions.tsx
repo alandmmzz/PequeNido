@@ -58,12 +58,12 @@ export function ProductActions({ id, name, price, image, meta }: ProductActionsP
         {added ? (
           <>
             <Check className="size-4" aria-hidden="true" />
-            Añadido a la cesta
+            Añadido a la carrito
           </>
         ) : (
           <>
             <ShoppingBag className="size-4" aria-hidden="true" />
-            Añadir a la cesta
+            Añadir a la carrito
           </>
         )}
       </button>

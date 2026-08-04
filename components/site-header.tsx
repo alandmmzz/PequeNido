@@ -65,10 +65,10 @@ export function SiteHeader() {
             size="sm"
             onClick={openCart}
             className={cn("relative rounded-full", count > 0 && "pr-4")}
-            aria-label={`Abrir cesta${count > 0 ? `, ${count} artículos` : ""}`}
+            aria-label={`Abrir carrito${count > 0 ? `, ${count} artículos` : ""}`}
           >
             <ShoppingBag className="size-4" aria-hidden="true" />
-            <span className="hidden sm:inline">Cesta</span>
+            <span className="hidden sm:inline">Carrito</span>
             {count > 0 && (
               <span className="absolute -right-1.5 -top-1.5 flex size-5 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
                 {count}

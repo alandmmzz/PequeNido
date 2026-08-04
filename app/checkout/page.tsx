@@ -70,7 +70,7 @@ export default function CheckoutPage() {
         <span className="flex size-16 items-center justify-center rounded-full bg-accent text-accent-foreground">
           <ShoppingBag className="size-7" aria-hidden="true" />
         </span>
-        <h1 className="font-serif text-2xl font-semibold text-foreground">Tu cesta está vacía</h1>
+        <h1 className="font-serif text-2xl font-semibold text-foreground">Tu carrito está vacía</h1>
         <p className="text-sm text-muted-foreground">Añadí algún producto antes de pasar por caja.</p>
         <Link
           href="/"

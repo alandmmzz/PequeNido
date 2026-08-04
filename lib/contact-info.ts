@@ -1,6 +1,11 @@
-// TODO: reemplazar por el número real de WhatsApp cuando lo tengas.
-// Formato: código de país + número, sin espacios, sin "+" ni "00".
-// Ejemplo Uruguay: "59899123456"
-export const WHATSAPP_NUMBER = "59800000000"
+// Teléfono y email de contacto de Pequenido (los usa la página de envíos y
+// devoluciones, y el botón de WhatsApp).
+export const CONTACT_PHONE = "099472613"
+export const CONTACT_EMAIL = "pequenido.uy@gmail.com"
+
+// Mismo teléfono de contacto, en formato internacional para el link de
+// WhatsApp (598 + el número sin el 0 inicial). Si en algún momento
+// querés un WhatsApp distinto al teléfono de contacto, cambiá solo esta línea.
+export const WHATSAPP_NUMBER = "598" + CONTACT_PHONE.replace(/^0/, "")
 
 export const WHATSAPP_DEFAULT_MESSAGE = "¡Hola! Tengo una consulta sobre un producto de Pequenido."

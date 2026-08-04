@@ -9,7 +9,7 @@ export default function CheckoutFailurePage() {
       </span>
       <h1 className="font-serif text-2xl font-semibold text-foreground">No pudimos procesar el pago</h1>
       <p className="text-sm text-muted-foreground">
-        El pago fue rechazado o cancelado. Tu cesta sigue guardada, podés intentarlo de nuevo o probar con otro
+        El pago fue rechazado o cancelado. Tu carrito sigue guardada, podés intentarlo de nuevo o probar con otro
         medio de pago.
       </p>
       <Link

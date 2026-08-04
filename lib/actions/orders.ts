@@ -40,7 +40,7 @@ export async function createOrderAndPreference(
   customer: CheckoutCustomer,
 ): Promise<CreateOrderResult> {
   if (!items.length) {
-    return { error: "Tu cesta está vacía." }
+    return { error: "Tu carrito está vacía." }
   }
 
   if (!customer.phone?.trim()) {

@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { Download } from "lucide-react"
 import type { OrderItemRow, OrderRow } from "@/lib/db/schema"
 import { formatPrice } from "@/lib/products"
 import { SHIPPING_ZONE_LABELS } from "@/lib/shipping"
@@ -27,29 +28,119 @@ const paymentMethodLabels: Record<OrderRow["paymentMethod"], string> = {
   transferencia: "Transferencia bancaria",
 }
 
+/** Clave "YYYY-MM" a partir de una fecha, para agrupar pedidos por mes. */
+function monthKey(date: Date | string) {
+  const d = new Date(date)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`
+}
+
+function monthLabel(key: string) {
+  const [year, month] = key.split("-").map(Number)
+  const label = new Date(year, month - 1, 1).toLocaleDateString("es-UY", { month: "long", year: "numeric" })
+  return label.charAt(0).toUpperCase() + label.slice(1)
+}
+
+/** Escapa un valor para que no rompa el CSV si tiene comas, comillas o saltos de línea. */
+function csvCell(value: string | number) {
+  const str = String(value)
+  return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str
+}
+
+function downloadSalesSummary(monthKeyValue: string, ordersInMonth: OrderWithItems[]) {
+  const header = ["Fecha", "Cliente", "Email", "Teléfono", "Método de pago", "Entrega", "Estado", "Total"]
+  const rows = ordersInMonth.map(({ order }) => [
+    new Date(order.createdAt).toLocaleDateString("es-UY"),
+    order.customerName,
+    order.customerEmail,
+    order.customerPhone,
+    paymentMethodLabels[order.paymentMethod],
+    SHIPPING_ZONE_LABELS[order.shippingZone],
+    statusLabels[order.status],
+    order.total,
+  ])
+
+  const paidOrders = ordersInMonth.filter(({ order }) => order.status === "paid")
+  const totalFacturado = paidOrders.reduce((sum, { order }) => sum + order.total, 0)
+
+  const lines = [
+    header.map(csvCell).join(","),
+    ...rows.map((row) => row.map(csvCell).join(",")),
+    "",
+    csvCell(`Total de pedidos: ${ordersInMonth.length}`),
+    csvCell(`Pedidos pagados: ${paidOrders.length}`),
+    csvCell(`Total facturado (solo pagados): ${formatPrice(totalFacturado)}`),
+  ]
+
+  const csv = "\uFEFF" + lines.join("\n") // BOM adelante para que Excel muestre bien los acentos
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = `pequenido-ventas-${monthKeyValue}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
 export function OrderList({ orders }: { orders: OrderWithItems[] }) {
   const [query, setQuery] = useState("")
 
+  const months = useMemo(() => {
+    const keys = new Set(orders.map(({ order }) => monthKey(order.createdAt)))
+    return Array.from(keys).sort((a, b) => (a < b ? 1 : -1))
+  }, [orders])
+
+  const [month, setMonth] = useState<string>("todos")
+
+  const byMonth = useMemo(
+    () => (month === "todos" ? orders : orders.filter(({ order }) => monthKey(order.createdAt) === month)),
+    [orders, month],
+  )
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return orders
-    return orders.filter(
+    if (!q) return byMonth
+    return byMonth.filter(
       ({ order }) =>
         order.customerName.toLowerCase().includes(q) ||
         order.customerEmail.toLowerCase().includes(q) ||
         order.id.toLowerCase().includes(q),
     )
-  }, [orders, query])
+  }, [byMonth, query])
 
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Buscar por cliente, email o ID de pedido..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="mb-4 w-full rounded-md border border-input bg-background px-3 py-2"
-      />
+      <div className="mb-4 flex flex-wrap gap-3">
+        <input
+          type="text"
+          placeholder="Buscar por cliente, email o ID de pedido..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="min-w-[240px] flex-1 rounded-md border border-input bg-background px-3 py-2"
+        />
+
+        <select
+          value={month}
+          onChange={(e) => setMonth(e.target.value)}
+          className="rounded-md border border-input bg-background px-3 py-2 text-sm"
+        >
+          <option value="todos">Todos los meses</option>
+          {months.map((key) => (
+            <option key={key} value={key}>
+              {monthLabel(key)}
+            </option>
+          ))}
+        </select>
+
+        <button
+          type="button"
+          onClick={() => downloadSalesSummary(month === "todos" ? "todos" : month, byMonth)}
+          disabled={byMonth.length === 0}
+          className="inline-flex items-center gap-1.5 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary/50 disabled:opacity-50"
+        >
+          <Download className="size-4" aria-hidden="true" />
+          Descargar resumen{month !== "todos" ? ` de ${monthLabel(month).toLowerCase()}` : ""}
+        </button>
+      </div>
 
       <div className="space-y-3">
         {filtered.map(({ order, items }) => (
@@ -99,7 +190,11 @@ export function OrderList({ orders }: { orders: OrderWithItems[] }) {
 
         {filtered.length === 0 && (
           <p className="text-sm text-muted-foreground">
-            {orders.length === 0 ? "Todavía no hay pedidos." : "Ningún pedido coincide con la búsqueda."}
+            {orders.length === 0
+              ? "Todavía no hay pedidos."
+              : byMonth.length === 0
+                ? "No hay pedidos en ese mes."
+                : "Ningún pedido coincide con la búsqueda."}
           </p>
         )}
       </div>

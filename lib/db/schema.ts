@@ -33,7 +33,7 @@ export type ProductRow = typeof products.$inferSelect
 export type NewProductRow = typeof products.$inferInsert
 
 /**
- * Un pedido generado desde la cesta al iniciar el pago.
+ * Un pedido generado desde la carrito al iniciar el pago.
  * Se crea con status "pending" antes de redirigir a Mercado Pago,
  * y el webhook lo actualiza cuando llega la notificación de pago.
  */

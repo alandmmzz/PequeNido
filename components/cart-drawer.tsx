@@ -26,7 +26,7 @@ export function CartDrawer() {
       <aside
         role="dialog"
         aria-modal="true"
-        aria-label="Cesta de la compra"
+        aria-label="Carrito de la compra"
         className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-background shadow-xl transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
@@ -34,14 +34,14 @@ export function CartDrawer() {
         <div className="flex items-center justify-between border-b border-border/70 px-5 py-4">
           <h2 className="flex items-center gap-2 font-serif text-lg font-semibold text-foreground">
             <ShoppingBag className="size-5" aria-hidden="true" />
-            Tu cesta
+            Tu carrito
             {count > 0 && <span className="text-sm font-normal text-muted-foreground">({count})</span>}
           </h2>
           <button
             type="button"
             onClick={closeCart}
             className="inline-flex size-9 items-center justify-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
-            aria-label="Cerrar cesta"
+            aria-label="Cerrar carrito"
           >
             <X className="size-5" />
           </button>
@@ -52,7 +52,7 @@ export function CartDrawer() {
             <span className="flex size-16 items-center justify-center rounded-full bg-accent text-accent-foreground">
               <ShoppingBag className="size-7" aria-hidden="true" />
             </span>
-            <p className="font-medium text-foreground">Tu cesta está vacía</p>
+            <p className="font-medium text-foreground">Tu carrito está vacía</p>
             <p className="text-sm text-muted-foreground">
               Añade juguetes y libros para verlos aquí.
             </p>
@@ -85,7 +85,7 @@ export function CartDrawer() {
                         type="button"
                         onClick={() => removeItem(item.id)}
                         className="shrink-0 text-muted-foreground hover:text-destructive"
-                        aria-label={`Quitar ${item.name} de la cesta`}
+                        aria-label={`Quitar ${item.name} de la carrito`}
                       >
                         <Trash2 className="size-4" />
                       </button>

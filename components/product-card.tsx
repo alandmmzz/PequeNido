@@ -60,7 +60,7 @@ export function ProductCard({ id, name, description, price, image, badge, meta }
               type="button"
               onClick={handleAdd}
               className="inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:px-3.5"
-              aria-label={`Añadir ${name} a la cesta`}
+              aria-label={`Añadir ${name} a la carrito`}
             >
               {added ? (
                 <>
