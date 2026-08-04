@@ -103,6 +103,7 @@ export function OrderList({ orders }: { orders: OrderWithItems[] }) {
       ({ order }) =>
         order.customerName.toLowerCase().includes(q) ||
         order.customerEmail.toLowerCase().includes(q) ||
+        order.customerPhone.toLowerCase().includes(q) ||
         order.id.toLowerCase().includes(q),
     )
   }, [byMonth, query])
@@ -149,6 +150,12 @@ export function OrderList({ orders }: { orders: OrderWithItems[] }) {
               <div>
                 <p className="font-medium">{order.customerName}</p>
                 <p className="text-sm text-muted-foreground">{order.customerEmail}</p>
+                <a
+                  href={`tel:${order.customerPhone}`}
+                  className="text-sm font-medium text-foreground hover:underline"
+                >
+                  {order.customerPhone}
+                </a>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {new Date(order.createdAt).toLocaleString("es-UY")} · #{order.id.slice(0, 8)}
                 </p>
