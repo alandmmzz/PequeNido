@@ -4,11 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-<<<<<<< HEAD
 import { Building2, CreditCard, Landmark, MapPin, ShoppingBag, Store, Truck } from "lucide-react"
-=======
-import { Building2, CreditCard, Landmark, MapPin, ShoppingBag } from "lucide-react"
->>>>>>> e294c5d6cfd668f3699115927ec48a1635e3c6f9
 import { useCart } from "@/components/cart-provider"
 import { formatPrice } from "@/lib/products"
 import { createOrderAndPreference } from "@/lib/actions/orders"
@@ -129,42 +125,6 @@ export default function CheckoutPage() {
             />
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-sm font-medium text-foreground">Ciudad</label>
-              <input
-                name="city"
-                required
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm font-medium text-foreground">Código postal</label>
-              <input
-                name="postalCode"
-                required
-                className="w-full rounded-md border border-input bg-background px-3 py-2"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium text-foreground">Notas para la entrega (opcional)</label>
-            <textarea
-              name="notes"
-              rows={3}
-              className="w-full rounded-md border border-input bg-background px-3 py-2"
-            />
-          </div>
-
-          <p className="text-xs text-muted-foreground">
-            Conocé nuestra{" "}
-            <Link href="/envios-y-devoluciones" target="_blank" className="font-medium text-foreground hover:underline">
-              política de envíos y devoluciones
-            </Link>
-            .
-          </p>
-
           <div>
             <label className="mb-1 block text-sm font-medium text-foreground">Notas (opcional)</label>
             <textarea
@@ -186,13 +146,8 @@ export default function CheckoutPage() {
             <label className="mb-2 block text-sm font-medium text-foreground">¿Cómo recibís tu pedido?</label>
             <div className="grid gap-3 sm:grid-cols-2">
               {[
-<<<<<<< HEAD
                 { value: "retiro" as const, label: "Retiro en el pick up center", hint: "Zona Goes, con previa coordinación · Sin costo", Icon: Store },
                 { value: "envio" as const, label: "Coordinar un envío", hint: "A tu domicilio", Icon: Truck },
-=======
-                { value: "montevideo", label: "Montevideo y área metropolitana", hint: "Cadetería privada", Icon: Building2 },
-                { value: "interior", label: "Interior del país", hint: "DAC – Agencia Central, sin costo", Icon: MapPin },
->>>>>>> e294c5d6cfd668f3699115927ec48a1635e3c6f9
               ].map((option) => (
                 <label
                   key={option.value}
@@ -280,13 +235,8 @@ export default function CheckoutPage() {
             <label className="mb-2 block text-sm font-medium text-foreground">Método de pago</label>
             <div className="grid gap-3 sm:grid-cols-2">
               {[
-<<<<<<< HEAD
                 { value: "mercadopago" as const, label: "Mercado Pago", hint: "Tarjeta, dinero en cuenta, etc.", Icon: CreditCard },
                 { value: "transferencia" as const, label: "Transferencia bancaria", hint: "Confirmamos el pedido al recibirla", Icon: Landmark },
-=======
-                { value: "mercadopago", label: "Mercado Pago", hint: "Tarjeta, dinero en cuenta, etc.", Icon: CreditCard },
-                { value: "transferencia", label: "Transferencia bancaria", hint: "Confirmamos el pedido al recibirla", Icon: Landmark },
->>>>>>> e294c5d6cfd668f3699115927ec48a1635e3c6f9
               ].map((option) => (
                 <label
                   key={option.value}
