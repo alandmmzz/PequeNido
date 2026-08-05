@@ -1,4 +1,8 @@
 import Link from "next/link"
+import { Instagram, Mail, MessageCircle } from "lucide-react"
+import { CONTACT_EMAIL, WHATSAPP_DEFAULT_MESSAGE, WHATSAPP_NUMBER } from "@/lib/contact-info"
+
+const INSTAGRAM_URL = "https://instagram.com/pequenido.uy"
 
 export function SiteFooter() {
   return (
@@ -15,6 +19,33 @@ export function SiteFooter() {
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
               Juguetes y libros con alma, pensados para acompañar el crecimiento de los más pequeños.
             </p>
+            <div className="mt-4 flex items-center gap-3">
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Seguinos en Instagram"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground hover:text-foreground"
+              >
+                <Instagram className="h-4 w-4" />
+              </a>
+              <a
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_DEFAULT_MESSAGE)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Escribinos por WhatsApp"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground hover:text-foreground"
+              >
+                <MessageCircle className="h-4 w-4" />
+              </a>
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                aria-label="Escribinos por mail"
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground hover:text-foreground"
+              >
+                <Mail className="h-4 w-4" />
+              </a>
+            </div>
           </div>
 
           <div>

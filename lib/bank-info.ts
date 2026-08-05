@@ -1,4 +1,3 @@
-// TODO: reemplazar por los datos reales de tu cuenta bancaria cuando los tengas.
-export const BANK_NAME = "Nombre del banco (pendiente)"
-export const BANK_ACCOUNT_HOLDER = "Titular de la cuenta (pendiente)"
-export const BANK_ACCOUNT_NUMBER = "Número de cuenta (pendiente)"
+export const BANK_NAME = "Banco Itaú"
+export const BANK_ACCOUNT_HOLDER = "Katherine Pereira"
+export const BANK_ACCOUNT_NUMBER = "Cuenta corriente n.° 1666327 (UYU)"
