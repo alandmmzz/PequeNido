@@ -1,8 +1,27 @@
 import Link from "next/link"
-import { Instagram, Mail, MessageCircle } from "lucide-react"
+import { Mail, MessageCircle } from "lucide-react"
 import { CONTACT_EMAIL, WHATSAPP_DEFAULT_MESSAGE, WHATSAPP_NUMBER } from "@/lib/contact-info"
 
 const INSTAGRAM_URL = "https://instagram.com/pequenido.uy"
+
+function InstagramIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="h-4 w-4"
+      aria-hidden="true"
+    >
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37a4 4 0 1 1-7.914 1.174 4 4 0 0 1 7.914-1.174z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  )
+}
 
 export function SiteFooter() {
   return (
@@ -27,7 +46,7 @@ export function SiteFooter() {
                 aria-label="Seguinos en Instagram"
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground hover:text-foreground"
               >
-                <Instagram className="h-4 w-4" />
+                <InstagramIcon />
               </a>
               <a
                 href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_DEFAULT_MESSAGE)}`}
