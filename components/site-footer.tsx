@@ -81,7 +81,7 @@ export function SiteFooter() {
             <ul className="mt-4 flex flex-col gap-2 text-sm text-muted-foreground">
               <li><Link href="/envios-y-devoluciones" className="hover:text-foreground">Envíos y devoluciones</Link></li>
               <li><Link href="/" className="hover:text-foreground">Preguntas frecuentes</Link></li>
-              <li><Link href="/" className="hover:text-foreground">Contacto</Link></li>
+              <li><Link href="/contacto" className="hover:text-foreground">Contacto</Link></li>
             </ul>
           </div>
         </div>

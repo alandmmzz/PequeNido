@@ -7,10 +7,12 @@ export async function sendEmail({
   to,
   subject,
   html,
+  replyTo,
 }: {
   to: string | string[]
   subject: string
   html: string
+  replyTo?: string
 }) {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
@@ -30,6 +32,7 @@ export async function sendEmail({
       to,
       subject,
       html,
+      ...(replyTo ? { reply_to: replyTo } : {}),
     }),
   })
 
