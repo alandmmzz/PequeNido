@@ -13,7 +13,7 @@ async function main() {
       description: p.description,
       price: p.price,
       image: p.image,
-      age: p.kind === "toy" ? p.age : null,
+      ages: p.kind === "toy" ? [p.age] : null,
       material: p.kind === "toy" ? p.material : null,
       format: p.kind === "book" ? p.format : null,
       pages: p.kind === "book" ? p.pages : null,

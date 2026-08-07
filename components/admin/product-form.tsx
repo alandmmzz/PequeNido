@@ -145,17 +145,26 @@ export function ProductForm({
         <>
           <div>
             <label className="block text-sm font-medium mb-1">Edad recomendada</label>
-            <select
-              name="age"
-              defaultValue={initial?.age ?? ""}
-              className="w-full rounded-md border border-input bg-background px-3 py-2"
-            >
-              <option value="">Sin edad específica</option>
-              <option value="0-12m">0 - 12 meses</option>
-              <option value="12-24m">12 - 24 meses</option>
-              <option value="2-4a">2 - 4 años</option>
-              <option value="4a+">+4 años</option>
-            </select>
+            <p className="text-xs text-muted-foreground mb-2">Se puede marcar más de una.</p>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { id: "0-12m", label: "0 - 12 meses" },
+                { id: "12-24m", label: "12 - 24 meses" },
+                { id: "2-4a", label: "2 - 4 años" },
+                { id: "4a+", label: "+4 años" },
+              ].map((range) => (
+                <label key={range.id} className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    name="ages"
+                    value={range.id}
+                    defaultChecked={initial?.ages?.includes(range.id) ?? false}
+                    className="size-4 rounded border-input"
+                  />
+                  {range.label}
+                </label>
+              ))}
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Material</label>

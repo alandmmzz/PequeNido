@@ -14,7 +14,7 @@ export function ToysCatalogue({ items, initialAge }: { items: ProductRow[]; init
   const [query, setQuery] = useState("")
 
   const filtered = useMemo(() => {
-    const byAge = filter === "todos" ? items : items.filter((t) => t.age === filter)
+    const byAge = filter === "todos" ? items : items.filter((t) => t.ages?.includes(filter))
     const q = query.trim().toLowerCase()
     if (!q) return byAge
     return byAge.filter(

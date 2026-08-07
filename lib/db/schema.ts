@@ -18,7 +18,7 @@ export const products = pgTable("products", {
   video: text("video"), // video opcional del producto; si existe, se muestra primero en la ficha
 
   // Campos específicos de juguete
-  age: text("age"), // "0-12m" | "12-24m" | "2-4a" | "4a+"
+  ages: text("ages").array(), // varias franjas posibles, ej. ["0-12m", "12-24m"]
   material: text("material"),
 
   // Campos específicos de libro

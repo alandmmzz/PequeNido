@@ -19,7 +19,7 @@ export function formatPrice(price: number) {
 type ProductLike = {
   id: string
   kind: "toy" | "book"
-  age?: string | null
+  ages?: string[] | null
   format?: string | null
   pages?: number | null
 }
@@ -27,8 +27,11 @@ type ProductLike = {
 /** Texto corto para mostrar como "meta" en las cards y en la ficha de producto. */
 export function getProductMeta(product: ProductLike): string {
   if (product.kind === "toy") {
-    const range = ageRanges.find((r) => r.id === product.age)
-    return range?.label ?? range?.short ?? ""
+    const labels = (product.ages ?? [])
+      .map((age) => ageRanges.find((r) => r.id === age))
+      .filter((r): r is (typeof ageRanges)[number] => Boolean(r))
+      .map((r) => r.short ?? r.label)
+    return labels.join(" · ")
   }
   if (product.format && product.pages) return `${product.format} · ${product.pages} pág.`
   return product.format ?? ""
@@ -46,7 +49,7 @@ export function getRelatedProducts<T extends ProductLike>(product: T, all: T[], 
 
   const closest = sameCategory.filter((p) => {
     if (p.id === product.id) return false
-    if (product.kind === "toy") return p.age === product.age
+    if (product.kind === "toy") return (p.ages ?? []).some((age) => (product.ages ?? []).includes(age))
     if (product.kind === "book") return p.format === product.format
     return false
   })
