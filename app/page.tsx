@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { ProductCard } from "@/components/product-card"
 import { HeroCarousel } from "@/components/hero-carousel"
 import { getProducts } from "@/lib/actions/products"
-import { ageRanges, getProductMeta } from "@/lib/products"
+import { ageRanges, ageIcons, getProductMeta } from "@/lib/products"
 
 export const dynamic = "force-dynamic"
 
@@ -93,18 +93,21 @@ export default async function HomePage() {
             <p className="text-muted-foreground">Encuentra el juguete perfecto para cada etapa.</p>
           </div>
           <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {ageRanges.map((range) => (
-              <Link
-                key={range.id}
-                href={`/juguetes?edad=${encodeURIComponent(range.id)}`}
-                className="group flex flex-col items-center justify-center gap-3 rounded-2xl border border-border/70 bg-card px-4 py-8 text-center shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
-              >
-                <span className="flex size-14 items-center justify-center rounded-full bg-accent font-serif text-lg font-semibold text-accent-foreground transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
-                  {range.short.split(" ")[0]}
-                </span>
-                <span className="text-sm font-medium text-foreground">{range.label}</span>
-              </Link>
-            ))}
+            {ageRanges.map((range) => {
+              const Icon = ageIcons[range.id]
+              return (
+                <Link
+                  key={range.id}
+                  href={`/juguetes?edad=${encodeURIComponent(range.id)}`}
+                  className="group flex flex-col items-center justify-center gap-3 rounded-2xl border border-border/70 bg-card px-4 py-8 text-center shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+                >
+                  <span className="flex size-14 items-center justify-center rounded-full bg-accent text-accent-foreground transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
+                    <Icon className="size-6" aria-hidden="true" />
+                  </span>
+                  <span className="text-sm font-medium text-foreground">{range.label}</span>
+                </Link>
+              )
+            })}
           </div>
         </section>
 
