@@ -7,7 +7,7 @@ export function AgeBadge({ ageId }: { ageId: string }) {
   if (!range || !Icon) return null
 
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
       <Icon className="size-3.5" aria-hidden="true" />
       {range.short}
     </span>
