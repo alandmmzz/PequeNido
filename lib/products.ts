@@ -1,3 +1,5 @@
+import { Baby, Footprints, Blocks, Puzzle, type LucideIcon } from "lucide-react"
+
 export type AgeRange = "0-12m" | "12-24m" | "2-4a" | "4a+"
 
 export const ageRanges: { id: AgeRange; label: string; short: string }[] = [
@@ -6,6 +8,14 @@ export const ageRanges: { id: AgeRange; label: string; short: string }[] = [
   { id: "2-4a", label: "2 - 4 años", short: "2-4 años" },
   { id: "4a+", label: "+4 años", short: "+4 años" },
 ]
+
+/** Un ícono por franja de edad, para usar como badge donde se muestre la edad. */
+export const ageIcons: Record<AgeRange, LucideIcon> = {
+  "0-12m": Baby,
+  "12-24m": Footprints,
+  "2-4a": Blocks,
+  "4a+": Puzzle,
+}
 
 export function formatPrice(price: number) {
   return new Intl.NumberFormat("es-UY", { style: "currency", currency: "UYU" }).format(price)

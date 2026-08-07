@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { ProductCard } from "@/components/product-card"
 import { ProductGallery } from "@/components/product-gallery"
 import { ProductActions } from "@/components/product-actions"
+import { AgeBadgeList, AgeIconCircle } from "@/components/age-badge"
 import { getProducts } from "@/lib/actions/products"
 import { formatPrice, getProductMeta, getRelatedProducts } from "@/lib/products"
 
@@ -64,8 +65,14 @@ export default async function ProductoPage({ params }: Props) {
 
             {/* Información del producto */}
             <div className="flex flex-col">
-              {meta && (
-                <p className="text-sm font-medium uppercase tracking-wide text-primary">{meta}</p>
+              {product.kind === "toy" && product.ages && product.ages.length > 0 ? (
+                <div className="flex gap-1.5">
+                  {product.ages.map((ageId) => (
+                    <AgeIconCircle key={ageId} ageId={ageId} />
+                  ))}
+                </div>
+              ) : (
+                meta && <p className="text-sm font-medium uppercase tracking-wide text-primary">{meta}</p>
               )}
               <h1 className="mt-2 font-serif text-3xl font-semibold tracking-tight text-foreground text-balance sm:text-4xl">
                 {product.name}
@@ -81,7 +88,13 @@ export default async function ProductoPage({ params }: Props) {
                   <>
                     <div>
                       <dt className="text-muted-foreground">Edad recomendada</dt>
-                      <dd className="font-medium text-foreground">{meta}</dd>
+                      <dd className="mt-1 font-medium text-foreground">
+                        {product.ages && product.ages.length > 0 ? (
+                          <AgeBadgeList ageIds={product.ages} />
+                        ) : (
+                          "—"
+                        )}
+                      </dd>
                     </div>
                     <div>
                       <dt className="text-muted-foreground">Material</dt>
@@ -151,6 +164,7 @@ export default async function ProductoPage({ params }: Props) {
                     price={item.price}
                     image={item.image}
                     meta={getProductMeta(item)}
+                    ages={item.kind === "toy" ? item.ages ?? undefined : undefined}
                   />
                 ))}
               </div>

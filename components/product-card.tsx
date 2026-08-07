@@ -6,6 +6,7 @@ import { Check, ShoppingBag } from "lucide-react"
 import { useState } from "react"
 import { formatPrice } from "@/lib/products"
 import { useCart } from "@/components/cart-provider"
+import { AgeIconCircle } from "@/components/age-badge"
 
 type ProductCardProps = {
   id: string
@@ -15,9 +16,10 @@ type ProductCardProps = {
   image: string
   badge?: string
   meta?: string
+  ages?: string[]
 }
 
-export function ProductCard({ id, name, description, price, image, badge, meta }: ProductCardProps) {
+export function ProductCard({ id, name, description, price, image, badge, meta, ages }: ProductCardProps) {
   const { addItem } = useCart()
   const [added, setAdded] = useState(false)
 
@@ -45,10 +47,17 @@ export function ProductCard({ id, name, description, price, image, badge, meta }
               {badge}
             </span>
           )}
+          {ages && ages.length > 0 && (
+            <div className="absolute right-3 top-3 flex gap-1.5">
+              {ages.map((ageId) => (
+                <AgeIconCircle key={ageId} ageId={ageId} />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-1 flex-col p-4">
-          {meta && <p className="text-xs font-medium uppercase tracking-wide text-primary">{meta}</p>}
+          {!ages && meta && <p className="text-xs font-medium uppercase tracking-wide text-primary">{meta}</p>}
           <h3 className="mt-1 font-serif text-base font-semibold leading-snug text-foreground text-balance group-hover:underline">
             {name}
           </h3>

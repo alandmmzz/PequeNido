@@ -4,7 +4,7 @@ import { useMemo, useState } from "react"
 import { Search } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ProductCard } from "@/components/product-card"
-import { ageRanges, getProductMeta, type AgeRange } from "@/lib/products"
+import { ageRanges, ageIcons, type AgeRange } from "@/lib/products"
 import type { ProductRow } from "@/lib/db/schema"
 
 type Filter = AgeRange | "todos"
@@ -44,6 +44,7 @@ export function ToysCatalogue({ items, initialAge }: { items: ProductRow[]; init
       <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Filtrar por edad">
         {filters.map((f) => {
           const active = filter === f.id
+          const Icon = f.id !== "todos" ? ageIcons[f.id as AgeRange] : null
           return (
             <button
               key={f.id}
@@ -51,12 +52,13 @@ export function ToysCatalogue({ items, initialAge }: { items: ProductRow[]; init
               onClick={() => setFilter(f.id)}
               aria-pressed={active}
               className={cn(
-                "rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                "inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
                 active
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground",
               )}
             >
+              {Icon && <Icon className="size-4" aria-hidden="true" />}
               {f.label}
             </button>
           )
@@ -77,7 +79,7 @@ export function ToysCatalogue({ items, initialAge }: { items: ProductRow[]; init
               description={toy.description}
               price={toy.price}
               image={toy.image}
-              meta={getProductMeta(toy)}
+              ages={toy.ages ?? undefined}
             />
           ))}
         </div>

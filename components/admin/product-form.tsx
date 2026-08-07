@@ -5,6 +5,7 @@ import Image from "next/image"
 import { upload } from "@vercel/blob/client"
 import { Film, Loader2, X } from "lucide-react"
 import type { ProductRow } from "@/lib/db/schema"
+import { ageRanges, ageIcons, type AgeRange } from "@/lib/products"
 
 // Subimos los archivos directo desde el navegador a Vercel Blob (en vez de
 // mandarlos al server action) para no chocar con el límite de 4.5MB que
@@ -147,23 +148,22 @@ export function ProductForm({
             <label className="block text-sm font-medium mb-1">Edad recomendada</label>
             <p className="text-xs text-muted-foreground mb-2">Se puede marcar más de una.</p>
             <div className="flex flex-wrap gap-3">
-              {[
-                { id: "0-12m", label: "0 - 12 meses" },
-                { id: "12-24m", label: "12 - 24 meses" },
-                { id: "2-4a", label: "2 - 4 años" },
-                { id: "4a+", label: "+4 años" },
-              ].map((range) => (
-                <label key={range.id} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    name="ages"
-                    value={range.id}
-                    defaultChecked={initial?.ages?.includes(range.id) ?? false}
-                    className="size-4 rounded border-input"
-                  />
-                  {range.label}
-                </label>
-              ))}
+              {ageRanges.map((range) => {
+                const Icon = ageIcons[range.id as AgeRange]
+                return (
+                  <label key={range.id} className="flex items-center gap-1.5 text-sm">
+                    <input
+                      type="checkbox"
+                      name="ages"
+                      value={range.id}
+                      defaultChecked={initial?.ages?.includes(range.id) ?? false}
+                      className="size-4 rounded border-input"
+                    />
+                    <Icon className="size-4 text-muted-foreground" aria-hidden="true" />
+                    {range.label}
+                  </label>
+                )
+              })}
             </div>
           </div>
           <div>
