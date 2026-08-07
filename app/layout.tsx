@@ -18,9 +18,9 @@ const fraunces = Fraunces({
 })
 
 export const metadata: Metadata = {
-  title: 'Pequenido | Juguetes y libros para bebés',
+  title: 'Peque Nido | Juguetes y libros para bebés',
   description:
-    'Pequenido es la tienda de juguetes y libros pensados para acompañar cada etapa del bebé, de 0 meses en adelante. Materiales naturales y diseño cuidado.',
+    'Peque Nido es la tienda de juguetes y libros pensados para acompañar cada etapa del bebé, de 0 meses en adelante. Materiales naturales y diseño cuidado.',
   generator: 'v0.app',
   icons: {
     icon: [

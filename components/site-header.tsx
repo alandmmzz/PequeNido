@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
@@ -30,12 +31,17 @@ export function SiteHeader() {
       </div>
       <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2" aria-label="Pequenido, inicio">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground font-serif text-lg font-semibold">
-            p
-          </span>
+        <Link href="/" className="flex items-center gap-2" aria-label="Peque Nido, inicio">
+          <Image
+            src="/images/isotipo.png"
+            alt=""
+            width={36}
+            height={36}
+            className="h-9 w-9"
+            priority
+          />
           <span className="font-serif text-xl font-semibold tracking-tight text-foreground">
-            Pequenido
+            Peque Nido
           </span>
         </Link>
 

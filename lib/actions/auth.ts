@@ -26,9 +26,9 @@ export async function requestMagicLink(formData: FormData) {
       const url = `${getBaseUrl()}/admin/verify?token=${encodeURIComponent(token)}`
       await sendEmail({
         to: email,
-        subject: "Tu acceso al panel de Pequenido",
+        subject: "Tu acceso al panel de Peque Nido",
         html: `
-          <p>Hacé click en el siguiente link para entrar al panel de administración de Pequenido:</p>
+          <p>Hacé click en el siguiente link para entrar al panel de administración de Peque Nido:</p>
           <p><a href="${url}">${url}</a></p>
           <p>El link expira en 15 minutos. Si no lo pediste vos, ignorá este mail.</p>
         `,

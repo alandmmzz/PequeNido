@@ -6,7 +6,7 @@ import { getProducts } from "@/lib/actions/products"
 import { ageRanges, type AgeRange } from "@/lib/products"
 
 export const metadata: Metadata = {
-  title: "Juguetes | Pequenido",
+  title: "Juguetes | Peque Nido",
   description:
     "Descubre juguetes de madera y materiales naturales filtrados por edad: 0-12 meses, 12-24 meses, 2-4 años y +4 años.",
 }

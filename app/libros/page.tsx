@@ -5,7 +5,7 @@ import { BooksCatalogue } from "@/components/books-catalogue"
 import { getProducts } from "@/lib/actions/products"
 
 export const metadata: Metadata = {
-  title: "Libros | Pequenido",
+  title: "Libros | Peque Nido",
   description:
     "Libros de tela, cartón y tapa dura para bebés y niños: sensoriales, primeras palabras y cuentos para dormir.",
 }

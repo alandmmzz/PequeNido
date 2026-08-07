@@ -53,7 +53,7 @@ export const orders = pgTable("orders", {
   shippingZone: text("shipping_zone", { enum: ["retiro", "montevideo", "interior"] })
     .notNull()
     .default("retiro"),
-  // Costo fijo del envío que cobra Pequenido (0 para retiro e interior;
+  // Costo fijo del envío que cobra Peque Nido (0 para retiro e interior;
   // UYU $200 para Montevideo/área metropolitana). No incluye lo que el
   // cadete cobra aparte al entregar en el caso del interior.
   shippingCost: doublePrecision("shipping_cost").notNull().default(0),

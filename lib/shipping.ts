@@ -1,8 +1,8 @@
 export type ShippingZone = "retiro" | "montevideo" | "interior"
 
-// Costo fijo que cobra Pequenido por el envío. En "interior" no hay costo
+// Costo fijo que cobra Peque Nido por el envío. En "interior" no hay costo
 // fijo propio: lo que cobra el cadete al entregar corre por cuenta de quien
-// recibe, así que ahí queda en 0 para Pequenido.
+// recibe, así que ahí queda en 0 para Peque Nido.
 export const SHIPPING_COST: Record<ShippingZone, number> = {
   retiro: 0,
   montevideo: 200,

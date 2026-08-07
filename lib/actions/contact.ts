@@ -43,7 +43,7 @@ export async function sendContactMessage(formData: FormData): Promise<ContactRes
   try {
     await sendEmail({
       to: recipients,
-      subject: `Consulta de ${name} — Pequenido`,
+      subject: `Consulta de ${name} — Peque Nido`,
       html,
       replyTo: email,
     })

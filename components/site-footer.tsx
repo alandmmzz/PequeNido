@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { Mail, MessageCircle } from "lucide-react"
 import { CONTACT_EMAIL, WHATSAPP_DEFAULT_MESSAGE, WHATSAPP_NUMBER } from "@/lib/contact-info"
@@ -30,10 +31,8 @@ export function SiteFooter() {
         <div className="grid gap-10 md:grid-cols-3">
           <div className="md:col-span-1">
             <div className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground font-serif text-lg font-semibold">
-                p
-              </span>
-              <span className="font-serif text-xl font-semibold text-foreground">Pequenido</span>
+              <Image src="/images/isotipo.png" alt="" width={36} height={36} className="h-9 w-9" />
+              <span className="font-serif text-xl font-semibold text-foreground">Peque Nido</span>
             </div>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
               Juguetes y libros con alma, pensados para acompañar el crecimiento de los más pequeños.
@@ -87,7 +86,7 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 border-t border-border/70 pt-6 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Pequenido. Todos los derechos reservados.
+          © {new Date().getFullYear()} Peque Nido. Todos los derechos reservados.
         </div>
       </div>
     </footer>

@@ -6,9 +6,9 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 
 export const metadata: Metadata = {
-  title: "Nosotros | Pequenido",
+  title: "Nosotros | Peque Nido",
   description:
-    "Conoce Pequenido: una tienda familiar de juguetes y libros con materiales naturales, pensada para acompañar cada etapa del crecimiento.",
+    "Conoce Peque Nido: una tienda familiar de juguetes y libros con materiales naturales, pensada para acompañar cada etapa del crecimiento.",
 }
 
 const valores = [
@@ -48,7 +48,7 @@ export default function NosotrosPage() {
                 Un proyecto familiar para crecer jugando
               </h1>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground text-pretty">
-                Pequenido nació de una idea sencilla: rodear a los más pequeños de juguetes y libros
+                Peque Nido nació de una idea sencilla: rodear a los más pequeños de juguetes y libros
                 bonitos, seguros y duraderos. Buscábamos objetos con alma, de esos que pasan de mano en
                 mano y acompañan durante años, y no los encontrábamos fácilmente. Así que decidimos
                 reunirlos nosotros.
@@ -100,7 +100,7 @@ export default function NosotrosPage() {
           <div className="overflow-hidden rounded-3xl bg-primary px-6 py-10 text-primary-foreground sm:px-12 sm:py-14">
             <div className="max-w-xl">
               <h2 className="font-serif text-3xl font-semibold text-balance sm:text-4xl">
-                Gracias por confiar en Pequenido
+                Gracias por confiar en Peque Nido
               </h2>
               <p className="mt-3 text-sm leading-relaxed opacity-90 sm:text-base">
                 Detrás de cada pedido hay una familia como la tuya. Descubre nuestra selección de juguetes y

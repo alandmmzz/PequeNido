@@ -113,7 +113,7 @@ export default async function HomePage() {
           <div className="flex items-end justify-between gap-4">
             <div>
               <h2 className="font-serif text-3xl font-semibold text-foreground">Juguetes destacados</h2>
-              <p className="mt-1 text-muted-foreground">Los favoritos de las familias Pequenido.</p>
+              <p className="mt-1 text-muted-foreground">Los favoritos de las familias Peque Nido.</p>
             </div>
             <Link
               href="/juguetes"

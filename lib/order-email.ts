@@ -100,8 +100,8 @@ export async function sendOrderConfirmationEmail(order: OrderRow, items: Receipt
   const isTransferPending = order.paymentMethod === "transferencia" && order.status === "pending"
 
   const subject = isTransferPending
-    ? `Pequenido — Recibimos tu pedido #${order.id.slice(0, 8)}`
-    : `Pequenido — ¡Pago aprobado! Pedido #${order.id.slice(0, 8)}`
+    ? `Peque Nido — Recibimos tu pedido #${order.id.slice(0, 8)}`
+    : `Peque Nido — ¡Pago aprobado! Pedido #${order.id.slice(0, 8)}`
 
   const intro = isTransferPending
     ? `Gracias ${order.customerName} por tu compra. Tu pedido quedó <strong>pendiente</strong> hasta que recibamos la transferencia — apenas nos llegue, te confirmamos.`
@@ -119,7 +119,7 @@ export async function sendOrderConfirmationEmail(order: OrderRow, items: Receipt
 
   const html = `
     <div style="font-family:sans-serif;color:#2A2A22;max-width:520px;margin:0 auto;">
-      <h2 style="color:#5B6B3C;">Pequenido</h2>
+      <h2 style="color:#5B6B3C;">Peque Nido</h2>
       <p>${intro}</p>
       ${itemsTable(items)}
       <p style="text-align:right;font-size:16px;margin-top:8px;"><strong>Total: ${formatPrice(order.total)}</strong></p>

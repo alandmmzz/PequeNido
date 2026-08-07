@@ -4,8 +4,8 @@ import { SiteFooter } from "@/components/site-footer"
 import { CONTACT_PHONE, CONTACT_EMAIL } from "@/lib/contact-info"
 
 export const metadata: Metadata = {
-  title: "Envíos y devoluciones | Pequenido",
-  description: "Política de envíos, cambios y devoluciones de Pequenido.",
+  title: "Envíos y devoluciones | Peque Nido",
+  description: "Política de envíos, cambios y devoluciones de Peque Nido.",
 }
 
 export default function EnviosYDevolucionesPage() {
