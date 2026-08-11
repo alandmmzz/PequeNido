@@ -72,7 +72,7 @@ export default function EnviosYDevolucionesPage() {
                 </li>
                 <li>
                   <strong className="font-medium text-foreground">Envío al interior del país:</strong> lo
-                  despachamos sin costo por DAC – Agencia Central. El envío en sí (lo que cobra la agencia al
+                  despachamos por DAC – Agencia Central. El envío en sí (lo que cobra la agencia al
                   retirar el paquete) corre por cuenta de quien recibe.
                 </li>
                 <li>Los tiempos de entrega de los envíos coordinados son responsabilidad de la agencia o cadetería.</li>

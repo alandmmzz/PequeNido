@@ -130,7 +130,7 @@ export function CartDrawer() {
                 </span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Envío gratis al interior por DAC. En Montevideo y área metropolitana, costo de
+                Envío al interior por DAC. En Montevideo y área metropolitana, costo de
                 cadetería calculado al finalizar.
               </p>
               <Link

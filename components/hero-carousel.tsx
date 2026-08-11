@@ -35,7 +35,7 @@ const slides: Slide[] = [
     image: "/images/hero-nursery.png",
     alt: "Rincón de juego para bebés",
     eyebrow: "Envíos a todo el país",
-    title: "Envío gratis al interior por DAC",
+    title: "Envío al interior por DAC",
     text: "En Montevideo y área metropolitana lo llevamos por cadetería privada. Recibilo en 24 a 72 hs una vez confirmado el pago.",
     cta: { href: "/envios-y-devoluciones", label: "Ver política de envíos" },
   },

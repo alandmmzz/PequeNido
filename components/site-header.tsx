@@ -25,7 +25,7 @@ export function SiteHeader() {
     <>
       <div className="bg-primary text-primary-foreground">
         <p className="mx-auto max-w-6xl px-4 py-1.5 text-center text-xs font-medium sm:px-6">
-          Envío gratis al interior por DAC · Entrega en 24 a 72 hs
+          Envío al interior por DAC · Entrega en 24 a 72 hs
         </p>
       </div>
       <header className="sticky top-0 z-50 border-b border-border/70 bg-background/85 backdrop-blur-md">

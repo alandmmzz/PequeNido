@@ -142,7 +142,7 @@ export default async function ProductoPage({ params }: Props) {
               {/* Confianza */}
               <div className="mt-8 grid gap-4 border-t border-border/70 pt-6 sm:grid-cols-3">
                 {[
-                  { icon: Truck, title: "Envío 24 a 72 h", text: "Gratis al interior por DAC" },
+                  { icon: Truck, title: "Envío 24 a 72 h", text: "Al interior por DAC" },
                   { icon: ShieldCheck, title: "Seguridad certificada", text: "Normativa europea" },
                   { icon: PackageCheck, title: "Revisado a mano", text: "Antes de cada envío" },
                 ].map(({ icon: Icon, title, text }) => (
