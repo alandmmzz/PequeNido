@@ -44,6 +44,7 @@ export function BooksCatalogue({ items }: { items: ProductRow[] }) {
               name={book.name}
               description={book.description}
               price={book.price}
+              promoPrice={book.promoPrice}
               image={book.image}
               meta={getProductMeta(book)}
             />

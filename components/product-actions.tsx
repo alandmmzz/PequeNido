@@ -19,7 +19,7 @@ export function ProductActions({ id, name, price, image, meta }: ProductActionsP
 
   function handleAdd() {
     for (let i = 0; i < quantity; i++) {
-      addItem({ id, name, price, image, meta })
+      addItem({ id, name, price, image, meta }) // price ya viene calculado (promo o común) desde la página del producto
     }
     setAdded(true)
     setTimeout(() => setAdded(false), 1500)

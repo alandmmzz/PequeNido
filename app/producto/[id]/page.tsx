@@ -9,7 +9,7 @@ import { ProductGallery } from "@/components/product-gallery"
 import { ProductActions } from "@/components/product-actions"
 import { AgeBadgeList, AgeIconCircle } from "@/components/age-badge"
 import { getProducts } from "@/lib/actions/products"
-import { formatPrice, getProductMeta, getRelatedProducts } from "@/lib/products"
+import { formatPrice, getEffectivePrice, getProductMeta, getRelatedProducts, hasPromo } from "@/lib/products"
 
 export const dynamic = "force-dynamic"
 
@@ -38,6 +38,8 @@ export default async function ProductoPage({ params }: Props) {
 
   const meta = getProductMeta(product)
   const related = getRelatedProducts(product, allProducts)
+  const onPromo = hasPromo(product)
+  const effectivePrice = getEffectivePrice(product)
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -65,19 +67,31 @@ export default async function ProductoPage({ params }: Props) {
 
             {/* Información del producto */}
             <div className="flex flex-col">
-              {product.kind === "toy" && product.ages && product.ages.length > 0 ? (
-                <div className="flex gap-1.5">
-                  {product.ages.map((ageId) => (
-                    <AgeIconCircle key={ageId} ageId={ageId} />
-                  ))}
-                </div>
-              ) : (
-                meta && <p className="text-sm font-medium uppercase tracking-wide text-primary">{meta}</p>
-              )}
+              <div className="flex items-center gap-2">
+                {product.kind === "toy" && product.ages && product.ages.length > 0 ? (
+                  <div className="flex gap-1.5">
+                    {product.ages.map((ageId) => (
+                      <AgeIconCircle key={ageId} ageId={ageId} />
+                    ))}
+                  </div>
+                ) : (
+                  meta && <p className="text-sm font-medium uppercase tracking-wide text-primary">{meta}</p>
+                )}
+                {onPromo && (
+                  <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                    Promo
+                  </span>
+                )}
+              </div>
               <h1 className="mt-2 font-serif text-3xl font-semibold tracking-tight text-foreground text-balance sm:text-4xl">
                 {product.name}
               </h1>
-              <p className="mt-4 text-lg font-semibold text-foreground">{formatPrice(product.price)}</p>
+              <p className="mt-4 flex items-center gap-2">
+                {onPromo && (
+                  <span className="text-base text-muted-foreground line-through">{formatPrice(product.price)}</span>
+                )}
+                <span className="text-lg font-semibold text-foreground">{formatPrice(effectivePrice)}</span>
+              </p>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground text-pretty">
                 {product.description}
               </p>
@@ -119,7 +133,7 @@ export default async function ProductoPage({ params }: Props) {
                 <ProductActions
                   id={product.id}
                   name={product.name}
-                  price={product.price}
+                  price={effectivePrice}
                   image={product.image}
                   meta={meta}
                 />
@@ -162,6 +176,7 @@ export default async function ProductoPage({ params }: Props) {
                     name={item.name}
                     description={item.description}
                     price={item.price}
+                    promoPrice={item.promoPrice}
                     image={item.image}
                     meta={getProductMeta(item)}
                     ages={item.kind === "toy" ? item.ages ?? undefined : undefined}

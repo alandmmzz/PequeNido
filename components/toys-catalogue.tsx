@@ -78,6 +78,7 @@ export function ToysCatalogue({ items, initialAge }: { items: ProductRow[]; init
               name={toy.name}
               description={toy.description}
               price={toy.price}
+              promoPrice={toy.promoPrice}
               image={toy.image}
               ages={toy.ages ?? undefined}
             />

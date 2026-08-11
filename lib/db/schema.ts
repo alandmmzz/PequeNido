@@ -13,6 +13,9 @@ export const products = pgTable("products", {
   name: text("name").notNull(),
   description: text("description").notNull(),
   price: doublePrecision("price").notNull(),
+  // Precio promocional opcional. Si está cargado, se muestra como el precio
+  // real del producto (tachando el precio común) y dispara el badge "Promo".
+  promoPrice: doublePrecision("promo_price"),
   image: text("image").notNull(), // imagen principal: la que se usa en thumbnails/tarjetas
   additionalImages: text("additional_images").array(), // imágenes extra para la galería de la ficha
   video: text("video"), // video opcional del producto; si existe, se muestra primero en la ficha

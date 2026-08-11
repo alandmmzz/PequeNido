@@ -142,6 +142,22 @@ export function ProductForm({
         />
       </div>
 
+      <div>
+        <label className="block text-sm font-medium mb-1">Promoción (UYU)</label>
+        <p className="text-xs text-muted-foreground mb-2">
+          Opcional. Si cargás un precio acá, se muestra tachado el precio común y este pasa a ser
+          el precio del producto, con un badge de "Promo" en la tarjeta y en la ficha.
+        </p>
+        <input
+          name="promoPrice"
+          type="number"
+          step="0.01"
+          defaultValue={initial?.promoPrice ?? ""}
+          placeholder="Dejar vacío si no hay promoción"
+          className="w-full rounded-md border border-input bg-background px-3 py-2"
+        />
+      </div>
+
       {kind === "toy" ? (
         <>
           <div>

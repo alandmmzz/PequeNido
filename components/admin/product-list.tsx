@@ -39,9 +39,23 @@ export function ProductList({ items }: { items: ProductRow[] }) {
               className="rounded-md object-cover"
             />
             <div className="flex-1">
-              <p className="font-medium">{p.name}</p>
+              <p className="flex items-center gap-2 font-medium">
+                {p.name}
+                {p.promoPrice != null && (
+                  <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                    Promo
+                  </span>
+                )}
+              </p>
               <p className="text-sm text-muted-foreground">
-                {p.kind === "toy" ? "Juguete" : "Libro"} · ${p.price}
+                {p.kind === "toy" ? "Juguete" : "Libro"} ·{" "}
+                {p.promoPrice != null ? (
+                  <>
+                    <span className="line-through">${p.price}</span> ${p.promoPrice}
+                  </>
+                ) : (
+                  <>${p.price}</>
+                )}
               </p>
             </div>
             <Link href={`/admin/${p.id}/editar`} className="text-sm text-primary hover:underline">

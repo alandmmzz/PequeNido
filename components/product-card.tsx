@@ -4,7 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Check, ShoppingBag } from "lucide-react"
 import { useState } from "react"
-import { formatPrice } from "@/lib/products"
+import { formatPrice, getEffectivePrice, hasPromo } from "@/lib/products"
 import { useCart } from "@/components/cart-provider"
 import { AgeBadgeList } from "@/components/age-badge"
 
@@ -13,20 +13,33 @@ type ProductCardProps = {
   name: string
   description: string
   price: number
+  promoPrice?: number | null
   image: string
   badge?: string
   meta?: string
   ages?: string[]
 }
 
-export function ProductCard({ id, name, description, price, image, badge, meta, ages }: ProductCardProps) {
+export function ProductCard({
+  id,
+  name,
+  description,
+  price,
+  promoPrice,
+  image,
+  badge,
+  meta,
+  ages,
+}: ProductCardProps) {
   const { addItem } = useCart()
   const [added, setAdded] = useState(false)
+  const onPromo = hasPromo({ price, promoPrice })
+  const effectivePrice = getEffectivePrice({ price, promoPrice })
 
   function handleAdd(e: React.MouseEvent) {
     e.preventDefault()
     e.stopPropagation()
-    addItem({ id, name, price, image, meta })
+    addItem({ id, name, price: effectivePrice, image, meta })
     setAdded(true)
     setTimeout(() => setAdded(false), 1200)
   }
@@ -42,7 +55,12 @@ export function ProductCard({ id, name, description, price, image, badge, meta, 
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
-          {badge && (
+          {onPromo && (
+            <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm">
+              Promo
+            </span>
+          )}
+          {badge && !onPromo && (
             <span className="absolute left-3 top-3 rounded-full bg-background/90 px-3 py-1 text-xs font-medium text-foreground shadow-sm">
               {badge}
             </span>
@@ -61,7 +79,12 @@ export function ProductCard({ id, name, description, price, image, badge, meta, 
           <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
 
           <div className="mt-4 flex items-center justify-between gap-2 pt-2">
-            <span className="text-lg font-semibold text-foreground">{formatPrice(price)}</span>
+            <span className="flex flex-col leading-tight">
+              {onPromo && (
+                <span className="text-xs text-muted-foreground line-through">{formatPrice(price)}</span>
+              )}
+              <span className="text-lg font-semibold text-foreground">{formatPrice(effectivePrice)}</span>
+            </span>
             <button
               type="button"
               onClick={handleAdd}

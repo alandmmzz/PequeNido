@@ -34,6 +34,21 @@ type ProductLike = {
   pages?: number | null
 }
 
+type PriceLike = {
+  price: number
+  promoPrice?: number | null
+}
+
+/** True si el producto tiene una promoción cargada. */
+export function hasPromo(product: PriceLike): boolean {
+  return product.promoPrice != null && product.promoPrice > 0
+}
+
+/** Precio a cobrar: el de promo si hay, si no el común. */
+export function getEffectivePrice(product: PriceLike): number {
+  return hasPromo(product) ? (product.promoPrice as number) : product.price
+}
+
 /** Texto corto para mostrar como "meta" en las cards y en la ficha de producto. */
 export function getProductMeta(product: ProductLike): string {
   if (product.kind === "toy") {

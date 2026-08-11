@@ -134,6 +134,7 @@ export default async function HomePage() {
                 name={toy.name}
                 description={toy.description}
                 price={toy.price}
+                promoPrice={toy.promoPrice}
                 image={toy.image}
                 ages={toy.ages ?? undefined}
               />
@@ -185,6 +186,7 @@ export default async function HomePage() {
                 name={book.name}
                 description={book.description}
                 price={book.price}
+                promoPrice={book.promoPrice}
                 image={book.image}
                 meta={getProductMeta(book)}
               />

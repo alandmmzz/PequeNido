@@ -14,7 +14,6 @@ const nav = [
   { href: "/juguetes", label: "Juguetes" },
   { href: "/libros", label: "Libros" },
   { href: "/nosotros", label: "Nosotros" },
-  { href: "/admin", label: "Admin" },
 ]
 
 export function SiteHeader() {
