@@ -93,7 +93,7 @@ export default function CheckoutPage() {
             : "Confirmá el pedido y te mostramos los datos para hacer la transferencia."}
         </p>
 
-        <form action={handleSubmit} className="mt-8 space-y-5">
+        <form id="checkout-form" action={handleSubmit} className="mt-8 space-y-5">
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-sm font-medium text-foreground">Nombre y apellido</label>
@@ -273,23 +273,6 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          {error && (
-            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              {error}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-60"
-          >
-            {loading
-              ? "Confirmando pedido…"
-              : paymentMethod === "mercadopago"
-                ? "Pagar con Mercado Pago"
-                : "Confirmar pedido"}
-          </button>
         </form>
       </div>
 
@@ -339,6 +322,25 @@ export default function CheckoutPage() {
             </span>
           </div>
         </div>
+
+        {error && (
+          <p className="mt-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {error}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          form="checkout-form"
+          disabled={loading}
+          className="mt-4 w-full rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-60"
+        >
+          {loading
+            ? "Confirmando pedido…"
+            : paymentMethod === "mercadopago"
+              ? "Pagar con Mercado Pago"
+              : "Confirmar pedido"}
+        </button>
       </aside>
     </div>
   )

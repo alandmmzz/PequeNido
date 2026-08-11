@@ -173,10 +173,14 @@ export async function createOrderAndPreference(
       .set({ mpPreferenceId: preference.id, updatedAt: new Date() })
       .where(eq(orders.id, order.id))
 
-    // En producción usá preference.init_point. Con credenciales de prueba
-    // (TEST-...) Mercado Pago recomienda usar sandbox_init_point.
-    const isTestCredential = (process.env.MERCADOPAGO_ACCESS_TOKEN ?? "").startsWith("TEST-")
-    const url = (isTestCredential ? preference.sandbox_init_point : preference.init_point) ?? preference.init_point
+    // Mercado Pago usa "APP_USR-..." tanto para credenciales de prueba como
+    // reales ahora (antes las de prueba empezaban con "TEST-", pero ya no es
+    // así), así que no se puede distinguir mirando el token. Por eso lo
+    // controlamos con MERCADOPAGO_SANDBOX: "true" mientras estás probando con
+    // credenciales de prueba, y sacala (o ponela en "false") cuando pases a
+    // cobrar de verdad con las credenciales de producción.
+    const isSandbox = (process.env.MERCADOPAGO_SANDBOX ?? "false").toLowerCase() === "true"
+    const url = (isSandbox ? preference.sandbox_init_point : preference.init_point) ?? preference.init_point
 
     if (!url) {
       return { error: "Mercado Pago no devolvió un link de pago. Revisá el access token.", orderId: order.id }
