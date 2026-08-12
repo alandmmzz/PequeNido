@@ -1,11 +1,12 @@
 "use server"
 
-import { desc, eq } from "drizzle-orm"
+import { desc, eq, inArray } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 import { db } from "@/lib/db"
-import { orderItems, orders, type OrderRow } from "@/lib/db/schema"
+import { orderItems, orders, products, type OrderRow } from "@/lib/db/schema"
 import { mpPreference } from "@/lib/mercadopago"
 import { sendNewOrderNotificationToOwner, sendOrderConfirmationEmail } from "@/lib/order-email"
+import { getEffectivePrice } from "@/lib/products"
 import { SHIPPING_COST, type ShippingZone } from "@/lib/shipping"
 
 export type CheckoutItem = {
@@ -51,7 +52,40 @@ export async function createOrderAndPreference(
     return { error: "Faltan los datos de envío." }
   }
 
-  const itemsTotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  // Nunca confiamos en el precio, el nombre ni la imagen que manda el
+  // navegador: alguien podría editar esos valores en el carrito antes de
+  // pagar. Volvemos a buscar cada producto en la base y reconstruimos el
+  // carrito con los datos reales — así lo que se guarda y lo que se le
+  // cobra a Mercado Pago siempre sale del catálogo, no del cliente.
+  const dbProducts = await db
+    .selectDistinct()
+    .from(products)
+    .where(
+      inArray(
+        products.id,
+        items.map((item) => item.id),
+      ),
+    )
+  const productById = new Map(dbProducts.map((p) => [p.id, p]))
+
+  const verifiedItems: CheckoutItem[] = []
+  for (const item of items) {
+    const product = productById.get(item.id)
+    if (!product) {
+      return { error: "Uno de los productos de tu carrito ya no está disponible. Actualizá la página e intentá de nuevo." }
+    }
+    // Límite sano de cantidad por ítem, para evitar valores absurdos.
+    const quantity = Math.min(Math.max(1, Math.floor(item.quantity) || 1), 50)
+    verifiedItems.push({
+      id: product.id,
+      name: product.name,
+      price: getEffectivePrice(product),
+      image: product.image,
+      quantity,
+    })
+  }
+
+  const itemsTotal = verifiedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const shippingCost = SHIPPING_COST[customer.shippingZone]
   const total = itemsTotal + shippingCost
 
@@ -77,7 +111,7 @@ export async function createOrderAndPreference(
       .returning()
 
     await db.insert(orderItems).values(
-      items.map((item) => ({
+      verifiedItems.map((item) => ({
         orderId: order.id,
         productId: item.id,
         name: item.name,
@@ -92,7 +126,7 @@ export async function createOrderAndPreference(
   }
 
   try {
-    await sendNewOrderNotificationToOwner(order, items)
+    await sendNewOrderNotificationToOwner(order, verifiedItems)
   } catch (err) {
     console.error("Error avisándole al dueño de la tienda:", err)
   }
@@ -102,7 +136,7 @@ export async function createOrderAndPreference(
   // muestran los datos de la cuenta para transferir.
   if (customer.paymentMethod === "transferencia") {
     try {
-      await sendOrderConfirmationEmail(order, items)
+      await sendOrderConfirmationEmail(order, verifiedItems)
     } catch (err) {
       // No rompemos el checkout si falla el mail: el pedido ya quedó guardado.
       console.error("Error mandando el mail de confirmación:", err)
@@ -128,7 +162,7 @@ export async function createOrderAndPreference(
     const preference = await mpPreference.create({
       body: {
         items: [
-          ...items.map((item) => ({
+          ...verifiedItems.map((item) => ({
             id: item.id,
             title: item.name,
             quantity: item.quantity,
