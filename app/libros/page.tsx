@@ -3,6 +3,7 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { BooksCatalogue } from "@/components/books-catalogue"
 import { getProducts } from "@/lib/actions/products"
+import { ageRanges, type AgeRange } from "@/lib/products"
 
 export const metadata: Metadata = {
   title: "Libros | Peque Nido",
@@ -12,7 +13,13 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic"
 
-export default async function LibrosPage() {
+export default async function LibrosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ edad?: string }>
+}) {
+  const { edad } = await searchParams
+  const validAge = ageRanges.find((r) => r.id === edad)?.id as AgeRange | undefined
   const allProducts = await getProducts()
   const books = allProducts.filter((p) => p.kind === "book")
 
@@ -34,7 +41,7 @@ export default async function LibrosPage() {
         </section>
 
         <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-          <BooksCatalogue items={books} />
+          <BooksCatalogue items={books} initialAge={validAge} />
         </section>
       </main>
       <SiteFooter />

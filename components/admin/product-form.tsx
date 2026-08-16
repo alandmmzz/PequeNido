@@ -158,39 +158,38 @@ export function ProductForm({
         />
       </div>
 
+      <div>
+        <label className="block text-sm font-medium mb-1">Edad recomendada</label>
+        <p className="text-xs text-muted-foreground mb-2">Se puede marcar más de una.</p>
+        <div className="flex flex-wrap gap-3">
+          {ageRanges.map((range) => {
+            const Icon = ageIcons[range.id as AgeRange]
+            return (
+              <label key={range.id} className="flex items-center gap-1.5 text-sm">
+                <input
+                  type="checkbox"
+                  name="ages"
+                  value={range.id}
+                  defaultChecked={initial?.ages?.includes(range.id) ?? false}
+                  className="size-4 rounded border-input"
+                />
+                <Icon className="size-4 text-muted-foreground" aria-hidden="true" />
+                {range.label}
+              </label>
+            )
+          })}
+        </div>
+      </div>
+
       {kind === "toy" ? (
-        <>
-          <div>
-            <label className="block text-sm font-medium mb-1">Edad recomendada</label>
-            <p className="text-xs text-muted-foreground mb-2">Se puede marcar más de una.</p>
-            <div className="flex flex-wrap gap-3">
-              {ageRanges.map((range) => {
-                const Icon = ageIcons[range.id as AgeRange]
-                return (
-                  <label key={range.id} className="flex items-center gap-1.5 text-sm">
-                    <input
-                      type="checkbox"
-                      name="ages"
-                      value={range.id}
-                      defaultChecked={initial?.ages?.includes(range.id) ?? false}
-                      className="size-4 rounded border-input"
-                    />
-                    <Icon className="size-4 text-muted-foreground" aria-hidden="true" />
-                    {range.label}
-                  </label>
-                )
-              })}
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Material</label>
-            <input
-              name="material"
-              defaultValue={initial?.material ?? ""}
-              className="w-full rounded-md border border-input bg-background px-3 py-2"
-            />
-          </div>
-        </>
+        <div>
+          <label className="block text-sm font-medium mb-1">Material</label>
+          <input
+            name="material"
+            defaultValue={initial?.material ?? ""}
+            className="w-full rounded-md border border-input bg-background px-3 py-2"
+          />
+        </div>
       ) : (
         <>
           <div>

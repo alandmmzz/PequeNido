@@ -49,15 +49,13 @@ export function getEffectivePrice(product: PriceLike): number {
   return hasPromo(product) ? (product.promoPrice as number) : product.price
 }
 
-/** Texto corto para mostrar como "meta" en las cards y en la ficha de producto. */
+/**
+ * Texto corto para mostrar como "meta" en las cards y en la ficha de producto.
+ * La edad ya no va acá (se muestra aparte como badges/ícono con AgeBadgeList
+ * o AgeIconCircle); esto es solo lo demás: formato/páginas de libros,
+ * material de juguetes si hiciera falta más adelante.
+ */
 export function getProductMeta(product: ProductLike): string {
-  if (product.kind === "toy") {
-    const labels = (product.ages ?? [])
-      .map((age) => ageRanges.find((r) => r.id === age))
-      .filter((r): r is (typeof ageRanges)[number] => Boolean(r))
-      .map((r) => r.short ?? r.label)
-    return labels.join(" · ")
-  }
   if (product.format && product.pages) return `${product.format} · ${product.pages} pág.`
   return product.format ?? ""
 }
@@ -74,8 +72,9 @@ export function getRelatedProducts<T extends ProductLike>(product: T, all: T[], 
 
   const closest = sameCategory.filter((p) => {
     if (p.id === product.id) return false
-    if (product.kind === "toy") return (p.ages ?? []).some((age) => (product.ages ?? []).includes(age))
-    if (product.kind === "book") return p.format === product.format
+    const sharesAge = (p.ages ?? []).some((age) => (product.ages ?? []).includes(age))
+    if (product.kind === "toy") return sharesAge
+    if (product.kind === "book") return sharesAge || p.format === product.format
     return false
   })
 

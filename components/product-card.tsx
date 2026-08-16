@@ -68,10 +68,9 @@ export function ProductCard({
         </div>
 
         <div className="flex flex-1 flex-col p-4">
-          {ages && ages.length > 0 ? (
-            <AgeBadgeList ageIds={ages} />
-          ) : (
-            meta && <p className="text-xs font-medium uppercase tracking-wide text-primary">{meta}</p>
+          {ages && ages.length > 0 && <AgeBadgeList ageIds={ages} />}
+          {meta && (
+            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-primary">{meta}</p>
           )}
           <h3 className="mt-1 font-serif text-base font-semibold leading-snug text-foreground text-balance group-hover:underline">
             {name}

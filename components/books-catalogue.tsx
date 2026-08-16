@@ -2,20 +2,30 @@
 
 import { useMemo, useState } from "react"
 import { Search } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { ProductCard } from "@/components/product-card"
-import { getProductMeta } from "@/lib/products"
+import { ageRanges, ageIcons, getProductMeta, type AgeRange } from "@/lib/products"
 import type { ProductRow } from "@/lib/db/schema"
 
-export function BooksCatalogue({ items }: { items: ProductRow[] }) {
+type Filter = AgeRange | "todos"
+
+export function BooksCatalogue({ items, initialAge }: { items: ProductRow[]; initialAge?: AgeRange }) {
+  const [filter, setFilter] = useState<Filter>(initialAge ?? "todos")
   const [query, setQuery] = useState("")
 
   const filtered = useMemo(() => {
+    const byAge = filter === "todos" ? items : items.filter((b) => b.ages?.includes(filter))
     const q = query.trim().toLowerCase()
-    if (!q) return items
-    return items.filter(
+    if (!q) return byAge
+    return byAge.filter(
       (b) => b.name.toLowerCase().includes(q) || b.description.toLowerCase().includes(q),
     )
-  }, [items, query])
+  }, [items, filter, query])
+
+  const filters: { id: Filter; label: string }[] = [
+    { id: "todos", label: "Todas las edades" },
+    ...ageRanges.map((r) => ({ id: r.id as Filter, label: r.label })),
+  ]
 
   return (
     <div>
@@ -29,6 +39,30 @@ export function BooksCatalogue({ items }: { items: ProductRow[] }) {
           aria-label="Buscar libros"
           className="w-full rounded-full border border-input bg-background py-2 pl-9 pr-4 text-sm"
         />
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Filtrar por edad">
+        {filters.map((f) => {
+          const active = filter === f.id
+          const Icon = f.id !== "todos" ? ageIcons[f.id as AgeRange] : null
+          return (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => setFilter(f.id)}
+              aria-pressed={active}
+              className={cn(
+                "inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                active
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground",
+              )}
+            >
+              {Icon && <Icon className="size-4" aria-hidden="true" />}
+              {f.label}
+            </button>
+          )
+        })}
       </div>
 
       <p className="mt-4 text-sm text-muted-foreground" aria-live="polite">
@@ -47,6 +81,7 @@ export function BooksCatalogue({ items }: { items: ProductRow[] }) {
               promoPrice={book.promoPrice}
               image={book.image}
               meta={getProductMeta(book)}
+              ages={book.ages ?? undefined}
             />
           ))}
         </div>

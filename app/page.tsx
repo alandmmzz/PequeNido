@@ -189,6 +189,7 @@ export default async function HomePage() {
                 promoPrice={book.promoPrice}
                 image={book.image}
                 meta={getProductMeta(book)}
+                ages={book.ages ?? undefined}
               />
             ))}
           </div>

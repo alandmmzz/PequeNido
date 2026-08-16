@@ -68,7 +68,7 @@ export default async function ProductoPage({ params }: Props) {
             {/* Información del producto */}
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                {product.kind === "toy" && product.ages && product.ages.length > 0 ? (
+                {product.ages && product.ages.length > 0 ? (
                   <div className="flex gap-1.5">
                     {product.ages.map((ageId) => (
                       <AgeIconCircle key={ageId} ageId={ageId} />
@@ -117,6 +117,16 @@ export default async function ProductoPage({ params }: Props) {
                   </>
                 ) : (
                   <>
+                    <div>
+                      <dt className="text-muted-foreground">Edad recomendada</dt>
+                      <dd className="mt-1 font-medium text-foreground">
+                        {product.ages && product.ages.length > 0 ? (
+                          <AgeBadgeList ageIds={product.ages} />
+                        ) : (
+                          "—"
+                        )}
+                      </dd>
+                    </div>
                     <div>
                       <dt className="text-muted-foreground">Formato</dt>
                       <dd className="font-medium text-foreground">{product.format ?? "—"}</dd>
@@ -179,7 +189,7 @@ export default async function ProductoPage({ params }: Props) {
                     promoPrice={item.promoPrice}
                     image={item.image}
                     meta={getProductMeta(item)}
-                    ages={item.kind === "toy" ? item.ages ?? undefined : undefined}
+                    ages={item.ages ?? undefined}
                   />
                 ))}
               </div>

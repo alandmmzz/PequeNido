@@ -51,13 +51,10 @@ export async function createProduct(formData: FormData) {
     image: formData.get("imageUrl") as string,
     additionalImages: additionalImages.length > 0 ? additionalImages : null,
     video,
-    ages:
-      kind === "toy"
-        ? (() => {
-            const selected = formData.getAll("ages").map(String).filter(Boolean)
-            return selected.length > 0 ? selected : null
-          })()
-        : null,
+    ages: (() => {
+      const selected = formData.getAll("ages").map(String).filter(Boolean)
+      return selected.length > 0 ? selected : null
+    })(),
     material: kind === "toy" ? (formData.get("material") as string) : null,
     format: kind === "book" ? (formData.get("format") as string) : null,
     pages: kind === "book" ? Number(formData.get("pages")) : null,
@@ -98,13 +95,10 @@ export async function updateProduct(id: string, formData: FormData) {
       image,
       additionalImages: additionalImages.length > 0 ? additionalImages : null,
       video,
-      ages:
-        kind === "toy"
-          ? (() => {
-              const selected = formData.getAll("ages").map(String).filter(Boolean)
-              return selected.length > 0 ? selected : null
-            })()
-          : null,
+      ages: (() => {
+        const selected = formData.getAll("ages").map(String).filter(Boolean)
+        return selected.length > 0 ? selected : null
+      })(),
       material: kind === "toy" ? (formData.get("material") as string) : null,
       format: kind === "book" ? (formData.get("format") as string) : null,
       pages: kind === "book" ? Number(formData.get("pages")) : null,
