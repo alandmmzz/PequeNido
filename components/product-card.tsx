@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { Check, ShoppingBag } from "lucide-react"
+import { Check, ImageOff, ShoppingBag } from "lucide-react"
 import { useState } from "react"
 import { formatPrice, getEffectivePrice, hasPromo } from "@/lib/products"
 import { useCart } from "@/components/cart-provider"
@@ -33,6 +33,7 @@ export function ProductCard({
 }: ProductCardProps) {
   const { addItem } = useCart()
   const [added, setAdded] = useState(false)
+  const [imgFailed, setImgFailed] = useState(false)
   const onPromo = hasPromo({ price, promoPrice })
   const effectivePrice = getEffectivePrice({ price, promoPrice })
 
@@ -48,13 +49,21 @@ export function ProductCard({
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-border/70 bg-card transition-shadow hover:shadow-md">
       <Link href={`/producto/${id}`} className="contents">
         <div className="relative aspect-square overflow-hidden bg-secondary/50">
-          <Image
-            src={image || "/placeholder.svg"}
-            alt={name}
-            fill
-            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+          {!imgFailed ? (
+            <Image
+              src={image || "/placeholder.svg"}
+              alt={name}
+              fill
+              sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              onError={() => setImgFailed(true)}
+            />
+          ) : (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-1.5 text-muted-foreground">
+              <ImageOff className="size-6" aria-hidden="true" />
+              <span className="text-xs">Imagen no disponible</span>
+            </div>
+          )}
           {onPromo && (
             <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm">
               Promo

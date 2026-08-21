@@ -7,6 +7,22 @@ import { Film, Loader2, X } from "lucide-react"
 import type { ProductRow } from "@/lib/db/schema"
 import { ageRanges, ageIcons, type AgeRange } from "@/lib/products"
 
+// Formatos que el navegador puede mostrar sin problema en todos lados. HEIC
+// (el formato que usan los iPhone por default) no lo admitimos: muchos
+// navegadores no lo renderizan y por eso terminan viéndose cards rotas.
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"]
+const MAX_IMAGE_MB = 8
+
+function validateImageFile(file: File): string | null {
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    return `"${file.name}" no es un formato admitido. Usá JPG, PNG o WEBP (si es HEIC/HEIF de iPhone, convertilo antes de subirlo).`
+  }
+  if (file.size > MAX_IMAGE_MB * 1024 * 1024) {
+    return `"${file.name}" pesa demasiado (máx. ${MAX_IMAGE_MB}MB). Achicala e intentá de nuevo.`
+  }
+  return null
+}
+
 // Subimos los archivos directo desde el navegador a Vercel Blob (en vez de
 // mandarlos al server action) para no chocar con el límite de 4.5MB que
 // Vercel le pone al body de las funciones serverless. El form termina
@@ -31,11 +47,13 @@ export function ProductForm({
   // Imagen principal: la que se usa en thumbnails/tarjetas.
   const [imageUrl, setImageUrl] = useState(initial?.image ?? "")
   const [uploadingImage, setUploadingImage] = useState(false)
+  const [imageError, setImageError] = useState<string | null>(null)
 
   // Imágenes adicionales: se suben apenas se eligen, así que en todo
   // momento este array son URLs reales (ya sea de antes o recién subidas).
   const [galleryUrls, setGalleryUrls] = useState<string[]>(initial?.additionalImages ?? [])
   const [uploadingGallery, setUploadingGallery] = useState(false)
+  const [galleryError, setGalleryError] = useState<string | null>(null)
 
   // Video del producto.
   const [videoUrl, setVideoUrl] = useState<string | null>(initial?.video ?? null)
@@ -46,11 +64,18 @@ export function ProductForm({
   async function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    setImageError(null)
+    const validationError = validateImageFile(file)
+    if (validationError) {
+      setImageError(validationError)
+      e.target.value = ""
+      return
+    }
     setUploadingImage(true)
     try {
       setImageUrl(await uploadToBlob(file, "principal"))
     } catch {
-      alert("No se pudo subir la imagen. Probá de nuevo.")
+      setImageError("No se pudo subir la imagen. Probá de nuevo.")
     } finally {
       setUploadingImage(false)
       e.target.value = ""
@@ -60,12 +85,19 @@ export function ProductForm({
   async function handleGalleryChange(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? [])
     if (files.length === 0) return
+    setGalleryError(null)
+    const invalid = files.map(validateImageFile).find(Boolean)
+    if (invalid) {
+      setGalleryError(invalid)
+      e.target.value = ""
+      return
+    }
     setUploadingGallery(true)
     try {
       const urls = await Promise.all(files.map((file) => uploadToBlob(file, "galeria")))
       setGalleryUrls((prev) => [...prev, ...urls])
     } catch {
-      alert("No se pudieron subir una o más imágenes. Probá de nuevo.")
+      setGalleryError("No se pudieron subir una o más imágenes. Probá de nuevo.")
     } finally {
       setUploadingGallery(false)
       e.target.value = ""
@@ -230,13 +262,16 @@ export function ProductForm({
         <div className="flex items-center gap-2">
           <input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/gif"
             onChange={handleImageChange}
             disabled={uploadingImage}
             className="w-full text-sm"
           />
           {uploadingImage && <Loader2 className="size-4 shrink-0 animate-spin text-muted-foreground" aria-hidden="true" />}
         </div>
+        {imageError && (
+          <p className="mt-1.5 text-xs font-medium text-destructive">{imageError}</p>
+        )}
         <input type="hidden" name="imageUrl" value={imageUrl} />
       </div>
 
@@ -274,7 +309,7 @@ export function ProductForm({
         <div className="flex items-center gap-2">
           <input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png,image/webp,image/gif"
             multiple
             onChange={handleGalleryChange}
             disabled={uploadingGallery}
@@ -282,6 +317,9 @@ export function ProductForm({
           />
           {uploadingGallery && <Loader2 className="size-4 shrink-0 animate-spin text-muted-foreground" aria-hidden="true" />}
         </div>
+        {galleryError && (
+          <p className="mt-1.5 text-xs font-medium text-destructive">{galleryError}</p>
+        )}
 
         {galleryUrls.map((url) => (
           <input key={url} type="hidden" name="additionalImages" value={url} />

@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react"
 import Image from "next/image"
-import { Play } from "lucide-react"
+import { ImageOff, Play } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 type GalleryItem =
@@ -29,8 +29,13 @@ export function ProductGallery({ productName, image, additionalImages, video }: 
   ]
 
   const [selected, setSelected] = useState(0)
+  const [failedUrls, setFailedUrls] = useState<Set<string>>(new Set())
   const videoRef = useRef<HTMLVideoElement>(null)
   const current = items[selected]
+
+  function markFailed(url: string) {
+    setFailedUrls((prev) => new Set(prev).add(url))
+  }
 
   return (
     <div className="flex flex-col gap-3">
@@ -43,6 +48,11 @@ export function ProductGallery({ productName, image, additionalImages, video }: 
             playsInline
             className="h-full w-full object-contain bg-foreground"
           />
+        ) : current.type === "image" && failedUrls.has(current.url) ? (
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground">
+            <ImageOff className="size-8" aria-hidden="true" />
+            <span className="text-sm">Imagen no disponible</span>
+          </div>
         ) : (
           <Image
             src={current.url || "/placeholder.svg"}
@@ -51,6 +61,7 @@ export function ProductGallery({ productName, image, additionalImages, video }: 
             priority
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-cover"
+            onError={() => markFailed(current.url)}
           />
         )}
       </div>
@@ -75,8 +86,18 @@ export function ProductGallery({ productName, image, additionalImages, video }: 
                     <Play className="size-5 fill-background text-background" aria-hidden="true" />
                   </span>
                 </>
+              ) : failedUrls.has(item.url) ? (
+                <span className="flex h-full w-full items-center justify-center text-muted-foreground">
+                  <ImageOff className="size-4" aria-hidden="true" />
+                </span>
               ) : (
-                <Image src={item.url || "/placeholder.svg"} alt="" fill className="object-cover" />
+                <Image
+                  src={item.url || "/placeholder.svg"}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  onError={() => markFailed(item.url)}
+                />
               )}
             </button>
           ))}
