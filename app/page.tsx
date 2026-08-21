@@ -29,7 +29,7 @@ export default async function HomePage() {
             {[
               {
                 href: "/juguetes",
-                image: "/images/banner-toys.png",
+                image: "/images/banner-toys-real.png",
                 title: "Juguetes",
                 text: "De madera y materiales nobles",
               },
