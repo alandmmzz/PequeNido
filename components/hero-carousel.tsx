@@ -16,8 +16,8 @@ type Slide = {
 
 const slides: Slide[] = [
   {
-    image: "/images/hero-toys.png",
-    alt: "Juguetes de madera para bebés",
+    image: "/images/hero-train-set.png",
+    alt: "Nene jugando con set de tren de madera Peque Nido",
     eyebrow: "Nueva temporada",
     title: "Juguetes que crecen con tu bebé",
     text: "Madera natural y materiales seguros para acompañar cada etapa, desde los 0 meses.",
@@ -63,11 +63,11 @@ export function HeroCarousel() {
 
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative overflow-hidden bg-secondary/30"
       aria-roledescription="carrusel"
       aria-label="Destacados de la tienda"
     >
-      <div className="relative aspect-[3/4] w-full sm:aspect-[21/9] lg:aspect-[24/8] lg:max-h-[440px] lg:max-w-[1600px] lg:mx-auto">
+      <div className="relative aspect-[4/5] w-full sm:aspect-[16/9] lg:aspect-[21/9] lg:max-h-[440px]">
         {slides.map((slide, i) => (
           <div
             key={slide.image}
@@ -75,19 +75,12 @@ export function HeroCarousel() {
             style={{ opacity: i === current ? 1 : 0 }}
             aria-hidden={i !== current}
           >
-            <Image
-              src={slide.image || "/placeholder.svg"}
-              alt={slide.alt}
-              fill
-              priority={i === 0}
-              sizes="100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/55 to-transparent" />
-
-            <div className="relative mx-auto flex h-full max-w-6xl items-center px-6 pb-14 sm:px-8 sm:pb-0">
-              <div className="max-w-lg">
-                <span className="inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+            {/* Layout: texto sobre fondo sólido a la izquierda, la foto contenida
+                en su propia tarjeta a la derecha (nunca a pantalla completa), así
+                el recorte respeta el encuadre original de cada foto. */}
+            <div className="mx-auto flex h-full max-w-6xl flex-col-reverse items-center px-6 py-6 sm:flex-row sm:gap-8 sm:px-8 sm:py-0 lg:gap-12">
+              <div className="z-10 flex w-full flex-1 flex-col justify-center py-2 sm:py-0">
+                <span className="inline-flex w-fit items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
                   {slide.eyebrow}
                 </span>
                 <h2 className="mt-3 font-serif text-2xl font-semibold leading-tight tracking-tight text-foreground text-balance sm:text-4xl lg:text-5xl">
@@ -98,11 +91,25 @@ export function HeroCarousel() {
                 </p>
                 <Link
                   href={slide.cta.href}
-                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:mt-6"
+                  className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:mt-6"
                 >
                   {slide.cta.label}
                   <ArrowRight className="size-4" aria-hidden="true" />
                 </Link>
+              </div>
+
+              <div className="relative aspect-[4/5] w-full max-w-[280px] shrink-0 overflow-hidden rounded-3xl shadow-lg sm:aspect-square sm:max-w-sm lg:max-w-md">
+                <Image
+                  src={slide.image || "/placeholder.svg"}
+                  alt={slide.alt}
+                  fill
+                  priority={i === 0}
+                  sizes="(min-width: 1024px) 420px, (min-width: 640px) 384px, 280px"
+                  className="object-cover"
+                />
+                {/* Degradado sutil en el borde izquierdo de la foto, para que se
+                    funda con el fondo sólido en vez de cortar en seco. */}
+                <div className="absolute inset-y-0 left-0 hidden w-10 bg-gradient-to-r from-secondary/60 to-transparent sm:block" />
               </div>
             </div>
           </div>
@@ -126,7 +133,7 @@ export function HeroCarousel() {
         <ChevronRight className="size-5" />
       </button>
 
-      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2">
+      <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-2 sm:bottom-4">
         {slides.map((slide, i) => (
           <button
             key={slide.image}

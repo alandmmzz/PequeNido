@@ -1,4 +1,5 @@
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata, Viewport } from 'next'
 import { Nunito, Fraunces } from 'next/font/google'
 import { CartProvider } from '@/components/cart-provider'
@@ -54,6 +55,7 @@ export default function RootLayout({
         <CartProvider>{children}</CartProvider>
         <WhatsappButton />
         {process.env.NODE_ENV === 'production' && <Analytics />}
+        {process.env.NODE_ENV === 'production' && <SpeedInsights />}
       </body>
     </html>
   )
