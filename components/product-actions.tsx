@@ -27,7 +27,7 @@ export function ProductActions({ id, name, price, image, meta }: ProductActionsP
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-      <div className="inline-flex items-center gap-1 rounded-full border border-border bg-background p-1">
+      <div className="inline-flex w-fit shrink-0 items-center gap-1 self-start rounded-full border border-border bg-background p-1 sm:self-auto">
         <button
           type="button"
           onClick={() => setQuantity((q) => Math.max(1, q - 1))}
