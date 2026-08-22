@@ -4,7 +4,12 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
+    ],
   },
   experimental: {
     // Por defecto los Server Actions solo aceptan hasta 1MB de body.
