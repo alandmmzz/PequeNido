@@ -32,7 +32,7 @@ export function SiteHeader() {
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2" aria-label="Peque Nido, inicio">
           <Image
-            src="/images/isotipo.png"
+            src="/images/logo.png"
             alt=""
             width={36}
             height={36}

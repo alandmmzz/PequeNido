@@ -2,7 +2,7 @@
 
 import { db } from "@/lib/db"
 import { products } from "@/lib/db/schema"
-import { eq } from "drizzle-orm"
+import { and, desc, eq, sql } from "drizzle-orm"
 import { del } from "@vercel/blob"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
@@ -11,7 +11,74 @@ export async function getProducts() {
   return db.select().from(products).orderBy(products.createdAt)
 }
 
-export async function getProduct(id: string) {
+/**
+ * Versión paginada, para el catálogo público (Juguetes/Libros) con el botón
+ * "Cargar más". Filtra en la propia consulta a Neon (kind + edad opcional),
+ * no trae todo el catálogo de una — así el tamaño de página real limita
+ * cuánto se descarga, no solo cuánto se pinta en pantalla.
+ */
+export async function getProductsPage({
+  kind,
+  age,
+  offset,
+  limit,
+}: {
+  kind: "toy" | "book"
+  age?: string
+  offset: number
+  limit: number
+}) {
+  const conditions = [eq(products.kind, kind)]
+  if (age) {
+    // "ages" es un array de Postgres; esto chequea que el valor esté contenido.
+    conditions.push(sql`${products.ages} @> ARRAY[${age}]::text[]`)
+  }
+
+  const where = and(...conditions)
+
+  const [items, [{ count }]] = await Promise.all([
+    db
+      .select()
+      .from(products)
+      .where(where)
+      .orderBy(desc(products.createdAt))
+      .limit(limit)
+      .offset(offset),
+    db.select({ count: sql<number>`count(*)::int` }).from(products).where(where),
+  ])
+
+  return { items, hasMore: offset + items.length < count, total: count }
+}
+
+/**
+ * Versión paginada para la lista de productos del admin, con "Página
+ * siguiente/anterior" y búsqueda por nombre (server-side, así busca en
+ * todo el catálogo y no solo en la página cargada).
+ */
+export async function getProductsAdminPage({
+  offset,
+  limit,
+  query,
+}: {
+  offset: number
+  limit: number
+  query?: string
+}) {
+  const where = query ? sql`${products.name} ILIKE ${"%" + query + "%"}` : undefined
+
+  const [items, [{ count }]] = await Promise.all([
+    db
+      .select()
+      .from(products)
+      .where(where)
+      .orderBy(desc(products.createdAt))
+      .limit(limit)
+      .offset(offset),
+    db.select({ count: sql<number>`count(*)::int` }).from(products).where(where),
+  ])
+
+  return { items, total: count }
+}
   const [row] = await db.select().from(products).where(eq(products.id, id))
   return row
 }

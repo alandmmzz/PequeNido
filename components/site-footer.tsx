@@ -31,7 +31,7 @@ export function SiteFooter() {
         <div className="grid gap-10 md:grid-cols-3">
           <div className="md:col-span-1">
             <div className="flex items-center gap-2">
-              <Image src="/images/isotipo.png" alt="" width={36} height={36} className="h-9 w-9" />
+              <Image src="/images/logo.png" alt="" width={36} height={36} className="h-9 w-9" />
               <span className="font-serif text-xl font-semibold text-foreground">Peque Nido</span>
             </div>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">

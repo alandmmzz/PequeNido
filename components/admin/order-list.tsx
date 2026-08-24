@@ -1,11 +1,14 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { Download } from "lucide-react"
+import { useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
+import { Download, Loader2 } from "lucide-react"
 import type { OrderItemRow, OrderRow } from "@/lib/db/schema"
 import { formatPrice } from "@/lib/products"
 import { SHIPPING_ZONE_LABELS } from "@/lib/shipping"
 import { OrderStatusSelect } from "@/components/admin/order-status-select"
+import { AdminPager } from "@/components/admin/pager"
+import { getOrdersForMonth } from "@/lib/actions/orders"
 
 type OrderWithItems = { order: OrderRow; items: OrderItemRow[] }
 
@@ -26,12 +29,6 @@ const statusStyles: Record<OrderRow["status"], string> = {
 const paymentMethodLabels: Record<OrderRow["paymentMethod"], string> = {
   mercadopago: "Mercado Pago",
   transferencia: "Transferencia bancaria",
-}
-
-/** Clave "YYYY-MM" a partir de una fecha, para agrupar pedidos por mes. */
-function monthKey(date: Date | string) {
-  const d = new Date(date)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`
 }
 
 function monthLabel(key: string) {
@@ -81,32 +78,49 @@ function downloadSalesSummary(monthKeyValue: string, ordersInMonth: OrderWithIte
   URL.revokeObjectURL(url)
 }
 
-export function OrderList({ orders }: { orders: OrderWithItems[] }) {
-  const [query, setQuery] = useState("")
+export function OrderList({
+  orders,
+  total,
+  page,
+  pageSize,
+  query,
+  month,
+  months,
+}: {
+  orders: OrderWithItems[]
+  total: number
+  page: number
+  pageSize: number
+  query: string
+  month: string
+  months: string[]
+}) {
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+  const [downloading, setDownloading] = useState(false)
+  const totalPages = Math.max(1, Math.ceil(total / pageSize))
 
-  const months = useMemo(() => {
-    const keys = new Set(orders.map(({ order }) => monthKey(order.createdAt)))
-    return Array.from(keys).sort((a, b) => (a < b ? 1 : -1))
-  }, [orders])
+  function goTo(params: { q?: string; month?: string }) {
+    const next = new URLSearchParams()
+    const nextQuery = params.q ?? query
+    const nextMonth = params.month ?? month
+    if (nextQuery) next.set("q", nextQuery)
+    if (nextMonth && nextMonth !== "todos") next.set("month", nextMonth)
+    // Cambiar filtros siempre vuelve a la página 1.
+    startTransition(() => router.push(`/admin/pedidos${next.toString() ? `?${next.toString()}` : ""}`))
+  }
 
-  const [month, setMonth] = useState<string>("todos")
-
-  const byMonth = useMemo(
-    () => (month === "todos" ? orders : orders.filter(({ order }) => monthKey(order.createdAt) === month)),
-    [orders, month],
-  )
-
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return byMonth
-    return byMonth.filter(
-      ({ order }) =>
-        order.customerName.toLowerCase().includes(q) ||
-        order.customerEmail.toLowerCase().includes(q) ||
-        order.customerPhone.toLowerCase().includes(q) ||
-        order.id.toLowerCase().includes(q),
-    )
-  }, [byMonth, query])
+  async function handleDownload() {
+    setDownloading(true)
+    try {
+      const monthToExport = month !== "todos" ? month : (months[0] ?? "")
+      if (!monthToExport) return
+      const ordersInMonth = await getOrdersForMonth(monthToExport)
+      downloadSalesSummary(monthToExport, ordersInMonth)
+    } finally {
+      setDownloading(false)
+    }
+  }
 
   return (
     <div>
@@ -114,14 +128,17 @@ export function OrderList({ orders }: { orders: OrderWithItems[] }) {
         <input
           type="text"
           placeholder="Buscar por cliente, email o ID de pedido..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          defaultValue={query}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") goTo({ q: e.currentTarget.value })
+          }}
+          onBlur={(e) => goTo({ q: e.currentTarget.value })}
           className="min-w-[240px] flex-1 rounded-md border border-input bg-background px-3 py-2"
         />
 
         <select
           value={month}
-          onChange={(e) => setMonth(e.target.value)}
+          onChange={(e) => goTo({ month: e.target.value })}
           className="rounded-md border border-input bg-background px-3 py-2 text-sm"
         >
           <option value="todos">Todos los meses</option>
@@ -134,17 +151,25 @@ export function OrderList({ orders }: { orders: OrderWithItems[] }) {
 
         <button
           type="button"
-          onClick={() => downloadSalesSummary(month === "todos" ? "todos" : month, byMonth)}
-          disabled={byMonth.length === 0}
+          onClick={handleDownload}
+          disabled={downloading || (month === "todos" && months.length === 0)}
           className="inline-flex items-center gap-1.5 rounded-md border border-input bg-background px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary/50 disabled:opacity-50"
         >
-          <Download className="size-4" aria-hidden="true" />
-          Descargar resumen{month !== "todos" ? ` de ${monthLabel(month).toLowerCase()}` : ""}
+          {downloading ? (
+            <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+          ) : (
+            <Download className="size-4" aria-hidden="true" />
+          )}
+          Descargar resumen{month !== "todos" ? ` de ${monthLabel(month).toLowerCase()}` : " del último mes"}
         </button>
       </div>
 
-      <div className="space-y-3">
-        {filtered.map(({ order, items }) => (
+      <p className="mb-3 text-sm text-muted-foreground">
+        {total} pedido{total === 1 ? "" : "s"}
+      </p>
+
+      <div className={`space-y-3 ${isPending ? "opacity-60" : ""}`}>
+        {orders.map(({ order, items }) => (
           <div key={order.id} className="rounded-md border border-border p-4">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
@@ -195,16 +220,24 @@ export function OrderList({ orders }: { orders: OrderWithItems[] }) {
           </div>
         ))}
 
-        {filtered.length === 0 && (
+        {orders.length === 0 && (
           <p className="text-sm text-muted-foreground">
-            {orders.length === 0
+            {total === 0 && !query && month === "todos"
               ? "Todavía no hay pedidos."
-              : byMonth.length === 0
-                ? "No hay pedidos en ese mes."
-                : "Ningún pedido coincide con la búsqueda."}
+              : "Ningún pedido coincide con la búsqueda/filtro."}
           </p>
         )}
       </div>
+
+      <AdminPager
+        basePath="/admin/pedidos"
+        page={page}
+        totalPages={totalPages}
+        extraParams={{
+          ...(query ? { q: query } : {}),
+          ...(month !== "todos" ? { month } : {}),
+        }}
+      />
     </div>
   )
 }

@@ -1,26 +1,63 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { Search } from "lucide-react"
+import { useMemo, useState, useTransition } from "react"
+import { Search, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ProductCard } from "@/components/product-card"
 import { ageRanges, ageIcons, getProductMeta, type AgeRange } from "@/lib/products"
+import { getProductsPage } from "@/lib/actions/products"
 import type { ProductRow } from "@/lib/db/schema"
 
 type Filter = AgeRange | "todos"
 
-export function BooksCatalogue({ items, initialAge }: { items: ProductRow[]; initialAge?: AgeRange }) {
+export function BooksCatalogue({
+  initialItems,
+  initialHasMore,
+  initialTotal,
+  initialAge,
+  pageSize,
+}: {
+  initialItems: ProductRow[]
+  initialHasMore: boolean
+  initialTotal: number
+  initialAge?: AgeRange
+  pageSize: number
+}) {
   const [filter, setFilter] = useState<Filter>(initialAge ?? "todos")
   const [query, setQuery] = useState("")
+  const [items, setItems] = useState(initialItems)
+  const [hasMore, setHasMore] = useState(initialHasMore)
+  const [total, setTotal] = useState(initialTotal)
+  const [isPending, startTransition] = useTransition()
 
+  // Igual que en juguetes: la búsqueda filtra sobre lo ya cargado, no
+  // vuelve a consultar al servidor.
   const filtered = useMemo(() => {
-    const byAge = filter === "todos" ? items : items.filter((b) => b.ages?.includes(filter))
     const q = query.trim().toLowerCase()
-    if (!q) return byAge
-    return byAge.filter(
-      (b) => b.name.toLowerCase().includes(q) || b.description.toLowerCase().includes(q),
-    )
-  }, [items, filter, query])
+    if (!q) return items
+    return items.filter((b) => b.name.toLowerCase().includes(q) || b.description.toLowerCase().includes(q))
+  }, [items, query])
+
+  function changeFilter(next: Filter) {
+    setFilter(next)
+    setQuery("")
+    startTransition(async () => {
+      const age = next === "todos" ? undefined : next
+      const result = await getProductsPage({ kind: "book", age, offset: 0, limit: pageSize })
+      setItems(result.items)
+      setHasMore(result.hasMore)
+      setTotal(result.total)
+    })
+  }
+
+  function loadMore() {
+    startTransition(async () => {
+      const age = filter === "todos" ? undefined : filter
+      const result = await getProductsPage({ kind: "book", age, offset: items.length, limit: pageSize })
+      setItems((prev) => [...prev, ...result.items])
+      setHasMore(result.hasMore)
+    })
+  }
 
   const filters: { id: Filter; label: string }[] = [
     { id: "todos", label: "Todas las edades" },
@@ -49,7 +86,7 @@ export function BooksCatalogue({ items, initialAge }: { items: ProductRow[]; ini
             <button
               key={f.id}
               type="button"
-              onClick={() => setFilter(f.id)}
+              onClick={() => changeFilter(f.id)}
               aria-pressed={active}
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
@@ -66,11 +103,11 @@ export function BooksCatalogue({ items, initialAge }: { items: ProductRow[]; ini
       </div>
 
       <p className="mt-4 text-sm text-muted-foreground" aria-live="polite">
-        {filtered.length} {filtered.length === 1 ? "producto" : "productos"}
+        {query ? `${filtered.length} de ${items.length} cargados` : `${items.length} de ${total} producto${total === 1 ? "" : "s"}`}
       </p>
 
       {filtered.length > 0 ? (
-        <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className={cn("mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4", isPending && "opacity-60")}>
           {filtered.map((book) => (
             <ProductCard
               key={book.id}
@@ -89,6 +126,20 @@ export function BooksCatalogue({ items, initialAge }: { items: ProductRow[]; ini
         <p className="mt-10 text-center text-muted-foreground">
           No hay productos que coincidan con la búsqueda.
         </p>
+      )}
+
+      {!query && hasMore && (
+        <div className="mt-8 flex justify-center">
+          <button
+            type="button"
+            onClick={loadMore}
+            disabled={isPending}
+            className="inline-flex items-center gap-2 rounded-full border border-primary px-6 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-primary-foreground disabled:opacity-60"
+          >
+            {isPending && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+            Cargar más
+          </button>
+        </div>
       )}
     </div>
   )

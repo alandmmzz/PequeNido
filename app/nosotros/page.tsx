@@ -61,7 +61,7 @@ export default function NosotrosPage() {
             </div>
             <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border/70 bg-secondary/50">
               <Image
-                src="/images/nosotros.png"
+                src="/images/about-us.png"
                 alt="Manos ordenando juguetes de madera y libros infantiles"
                 fill
                 priority

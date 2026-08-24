@@ -1,11 +1,25 @@
 import Link from "next/link"
-import { getProducts } from "@/lib/actions/products"
+import { getProductsAdminPage } from "@/lib/actions/products"
 import { ProductList } from "@/components/admin/product-list"
 
 export const dynamic = "force-dynamic"
 
-export default async function AdminPage() {
-  const items = await getProducts()
+const PAGE_SIZE = 24
+
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string; q?: string }>
+}) {
+  const { page: pageParam, q } = await searchParams
+  const page = Math.max(1, Number(pageParam) || 1)
+  const query = q?.trim() ?? ""
+
+  const { items, total } = await getProductsAdminPage({
+    offset: (page - 1) * PAGE_SIZE,
+    limit: PAGE_SIZE,
+    query: query || undefined,
+  })
 
   return (
     <div className="max-w-4xl mx-auto py-10 px-4">
@@ -19,7 +33,7 @@ export default async function AdminPage() {
         </Link>
       </div>
 
-      <ProductList items={items} />
+      <ProductList items={items} total={total} page={page} pageSize={PAGE_SIZE} query={query} />
     </div>
   )
 }

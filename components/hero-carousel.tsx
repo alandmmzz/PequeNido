@@ -16,7 +16,7 @@ type Slide = {
 
 const slides: Slide[] = [
   {
-    image: "/images/hero-train-set.png",
+    image: "/images/hero-slide-1.png",
     alt: "Nene jugando con set de tren de madera Peque Nido",
     eyebrow: "Nueva temporada",
     title: "Juguetes que crecen con tu bebé",
@@ -24,7 +24,7 @@ const slides: Slide[] = [
     cta: { href: "/juguetes", label: "Ver juguetes" },
   },
   {
-    image: "/images/hero-books.png",
+    image: "/images/hero-slide-2.png",
     alt: "Libros para bebés y peques",
     eyebrow: "Para leer juntos",
     title: "Primeras historias, grandes momentos",
@@ -32,7 +32,7 @@ const slides: Slide[] = [
     cta: { href: "/libros", label: "Explorar libros" },
   },
   {
-    image: "/images/hero-nursery.png",
+    image: "/images/hero-slide-3.png",
     alt: "Rincón de juego para bebés",
     eyebrow: "Envíos a todo el país",
     title: "Envío al interior por DAC",

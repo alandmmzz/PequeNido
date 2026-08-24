@@ -1,32 +1,44 @@
-"use client"
-
-import { useMemo, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import type { ProductRow } from "@/lib/db/schema"
 import { DeleteButton } from "@/components/admin/delete-button"
+import { AdminPager } from "@/components/admin/pager"
 
-export function ProductList({ items }: { items: ProductRow[] }) {
-  const [query, setQuery] = useState("")
-
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return items
-    return items.filter((p) => p.name.toLowerCase().includes(q))
-  }, [items, query])
+export function ProductList({
+  items,
+  total,
+  page,
+  pageSize,
+  query,
+}: {
+  items: ProductRow[]
+  total: number
+  page: number
+  pageSize: number
+  query: string
+}) {
+  const totalPages = Math.max(1, Math.ceil(total / pageSize))
 
   return (
     <div>
-      <input
-        type="text"
-        placeholder="Buscar producto por nombre..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="w-full rounded-md border border-input bg-background px-3 py-2 mb-4"
-      />
+      {/* Form nativo (sin JS) para la búsqueda: navega a /admin?q=... y reinicia la página. */}
+      <form action="/admin" className="mb-4">
+        <input
+          type="text"
+          name="q"
+          defaultValue={query}
+          placeholder="Buscar producto por nombre..."
+          className="w-full rounded-md border border-input bg-background px-3 py-2"
+        />
+      </form>
+
+      <p className="mb-3 text-sm text-muted-foreground">
+        {total} producto{total === 1 ? "" : "s"}
+        {query && ` que coinciden con "${query}"`}
+      </p>
 
       <div className="space-y-2">
-        {filtered.map((p) => (
+        {items.map((p) => (
           <div
             key={p.id}
             className="flex items-center gap-4 border border-border rounded-md p-3"
@@ -65,14 +77,16 @@ export function ProductList({ items }: { items: ProductRow[] }) {
           </div>
         ))}
 
-        {filtered.length === 0 && (
+        {items.length === 0 && (
           <p className="text-muted-foreground text-sm">
-            {items.length === 0
+            {total === 0 && !query
               ? "Todavía no hay productos cargados."
               : "Ningún producto coincide con la búsqueda."}
           </p>
         )}
       </div>
+
+      <AdminPager basePath="/admin" page={page} totalPages={totalPages} extraParams={query ? { q: query } : {}} />
     </div>
   )
 }

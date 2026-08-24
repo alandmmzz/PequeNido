@@ -1,6 +1,6 @@
 "use server"
 
-import { desc, eq, inArray } from "drizzle-orm"
+import { and, desc, eq, inArray, sql, type SQL } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 import { db } from "@/lib/db"
 import { orderItems, orders, products, type OrderRow } from "@/lib/db/schema"
@@ -235,6 +235,80 @@ export async function getOrder(id: string) {
   if (!order) return null
   const items = await db.select().from(orderItems).where(eq(orderItems.orderId, id))
   return { order, items }
+}
+
+/**
+ * Pedidos paginados para la lista principal del admin, con búsqueda
+ * server-side (cliente, email, teléfono o ID) y filtro opcional por mes
+ * ("YYYY-MM"). Trae solo la tanda pedida, no todo el historial.
+ */
+export async function getOrdersPage({
+  offset,
+  limit,
+  query,
+  month,
+}: {
+  offset: number
+  limit: number
+  query?: string
+  month?: string
+}) {
+  const conditions: SQL[] = []
+  if (query) {
+    conditions.push(
+      sql`(${orders.customerName} ILIKE ${"%" + query + "%"} OR ${orders.customerEmail} ILIKE ${"%" + query + "%"} OR ${orders.customerPhone} ILIKE ${"%" + query + "%"} OR ${orders.id}::text ILIKE ${"%" + query + "%"})`,
+    )
+  }
+  if (month) {
+    conditions.push(sql`to_char(${orders.createdAt}, 'YYYY-MM') = ${month}`)
+  }
+  const where = conditions.length > 0 ? and(...conditions) : undefined
+
+  const [orderRows, [{ count }]] = await Promise.all([
+    db.select().from(orders).where(where).orderBy(desc(orders.createdAt)).limit(limit).offset(offset),
+    db.select({ count: sql<number>`count(*)::int` }).from(orders).where(where),
+  ])
+
+  const ids = orderRows.map((o) => o.id)
+  const items = ids.length > 0 ? await db.select().from(orderItems).where(inArray(orderItems.orderId, ids)) : []
+  const itemsByOrder = new Map<string, typeof items>()
+  for (const item of items) {
+    const list = itemsByOrder.get(item.orderId) ?? []
+    list.push(item)
+    itemsByOrder.set(item.orderId, list)
+  }
+
+  return {
+    items: orderRows.map((order) => ({ order, items: itemsByOrder.get(order.id) ?? [] })),
+    total: count,
+  }
+}
+
+/** Meses (YYYY-MM) que tienen al menos un pedido, para el desplegable de filtro. No depende de la paginación. */
+export async function getOrderMonths() {
+  const monthCol = sql<string>`to_char(${orders.createdAt}, 'YYYY-MM')`
+  const rows = await db.select({ month: monthCol }).from(orders).groupBy(monthCol).orderBy(desc(monthCol))
+  return rows.map((r) => r.month)
+}
+
+/** Todos los pedidos de un mes puntual, para el CSV de resumen de ventas. Acotado por mes, no trae todo el historial. */
+export async function getOrdersForMonth(month: string) {
+  const orderRows = await db
+    .select()
+    .from(orders)
+    .where(sql`to_char(${orders.createdAt}, 'YYYY-MM') = ${month}`)
+    .orderBy(desc(orders.createdAt))
+
+  const ids = orderRows.map((o) => o.id)
+  const items = ids.length > 0 ? await db.select().from(orderItems).where(inArray(orderItems.orderId, ids)) : []
+  const itemsByOrder = new Map<string, typeof items>()
+  for (const item of items) {
+    const list = itemsByOrder.get(item.orderId) ?? []
+    list.push(item)
+    itemsByOrder.set(item.orderId, list)
+  }
+
+  return orderRows.map((order) => ({ order, items: itemsByOrder.get(order.id) ?? [] }))
 }
 
 /** Todos los pedidos con sus ítems, del más reciente al más viejo. Para el panel de admin. */

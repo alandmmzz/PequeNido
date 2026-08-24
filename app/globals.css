@@ -49,19 +49,26 @@
 
 :root {
   color-scheme: light;
-  --background: oklch(0.985 0.008 95);
+  /* 🔧 PLANTILLA: estos son los únicos colores que hace falta tocar para
+     una tienda nueva. El resto de las variables de abajo (secondary, muted,
+     chart, etc.) se recalculan solas en base a estos tres, no hace falta
+     tocarlas una por una. Usá oklch() — el primer número es luminosidad
+     (0=negro, 1=blanco), no hace falta entender la escala completa para
+     ajustarlo, con probar valores cercanos a los actuales alcanza. */
+  --background: oklch(0.985 0.008 95); /* fondo general del sitio (crema) */
+  --primary: oklch(0.52 0.08 122); /* color principal (hoy: verde oliva) */
+  --accent: oklch(0.76 0.14 55); /* color secundario/destacados (hoy: naranja) */
+
   --foreground: oklch(0.3 0.025 120);
   --card: oklch(0.998 0.005 95);
   --card-foreground: oklch(0.3 0.025 120);
   --popover: oklch(0.998 0.005 95);
   --popover-foreground: oklch(0.3 0.025 120);
-  --primary: oklch(0.52 0.08 122);
   --primary-foreground: oklch(0.98 0.01 95);
   --secondary: oklch(0.95 0.028 80);
   --secondary-foreground: oklch(0.4 0.045 60);
   --muted: oklch(0.95 0.015 100);
   --muted-foreground: oklch(0.52 0.03 118);
-  --accent: oklch(0.76 0.14 55);
   --accent-foreground: oklch(0.99 0.01 95);
   --destructive: oklch(0.577 0.18 27.325);
   --border: oklch(0.9 0.02 110);

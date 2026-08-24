@@ -29,13 +29,13 @@ export default async function HomePage() {
             {[
               {
                 href: "/juguetes",
-                image: "/images/banner-toys-real.png",
+                image: "/images/category-1.png",
                 title: "Juguetes",
                 text: "De madera y materiales nobles",
               },
               {
                 href: "/libros",
-                image: "/images/banner-books.png",
+                image: "/images/category-2.png",
                 title: "Libros",
                 text: "Para los primeros lectores",
               },
