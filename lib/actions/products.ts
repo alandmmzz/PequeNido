@@ -79,6 +79,8 @@ export async function getProductsAdminPage({
 
   return { items, total: count }
 }
+
+export async function getProduct(id: string) {
   const [row] = await db.select().from(products).where(eq(products.id, id))
   return row
 }
