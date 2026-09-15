@@ -12,16 +12,18 @@ type Slide = {
   title: string
   text: string
   cta: { href: string; label: string }
+  secondaryCta?: { href: string; label: string }
 }
 
 const slides: Slide[] = [
   {
-    image: "/images/hero-slide-1.png",
-    alt: "Nene jugando con set de tren de madera Peque Nido",
-    eyebrow: "Nueva temporada",
-    title: "Juguetes que crecen con tu bebé",
-    text: "Madera natural y materiales seguros para acompañar cada etapa, desde los 0 meses.",
-    cta: { href: "/juguetes", label: "Ver juguetes" },
+    image: "/images/hero-principal.png",
+    alt: "Dos niños jugando con juguetes en un espacio cálido",
+    eyebrow: "Pequenido",
+    title: "Jugar también es crecer.",
+    text: "Juguetes y libros pensados para acompañar cada etapa de la infancia.",
+    cta: { href: "/juguetes", label: "Explorar juguetes" },
+    secondaryCta: { href: "/libros", label: "Descubrir libros" },
   },
   {
     image: "/images/hero-slide-2.png",
@@ -103,13 +105,24 @@ export function HeroCarousel() {
                 <p className="mt-1.5 max-w-md text-xs leading-relaxed text-muted-foreground text-pretty min-[550px]:mt-2 min-[550px]:text-sm md:mt-3 md:text-base">
                   {slide.text}
                 </p>
-                <Link
-                  href={slide.cta.href}
-                  className="mt-3 inline-flex w-fit items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90 min-[550px]:mt-4 md:mt-6 md:px-6 md:py-3 md:text-sm"
-                >
-                  {slide.cta.label}
-                  <ArrowRight className="size-4" aria-hidden="true" />
-                </Link>
+                <div className="mt-3 flex flex-wrap gap-3 min-[550px]:mt-4 md:mt-6">
+                  <Link
+                    href={slide.cta.href}
+                    className="inline-flex w-fit items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90 md:px-6 md:py-3 md:text-sm"
+                  >
+                    {slide.cta.label}
+                    <ArrowRight className="size-4" aria-hidden="true" />
+                  </Link>
+                  {slide.secondaryCta ? (
+                    <Link
+                      href={slide.secondaryCta.href}
+                      className="inline-flex w-fit items-center gap-2 rounded-full border border-primary px-5 py-2.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10 md:px-6 md:py-3 md:text-sm"
+                    >
+                      {slide.secondaryCta.label}
+                      <ArrowRight className="size-4" aria-hidden="true" />
+                    </Link>
+                  ) : null}
+                </div>
               </div>
 
               <div className="relative order-1 aspect-[16/9] w-full shrink-0 overflow-hidden rounded-2xl shadow-lg min-[550px]:order-2 min-[550px]:aspect-square min-[550px]:w-[38%] min-[550px]:max-w-[170px] min-[550px]:rounded-3xl md:max-w-xs lg:max-w-md">
