@@ -31,7 +31,7 @@ export default async function HomePage() {
                 href: "/juguetes",
                 image: "/images/category-1.png",
                 title: "Juguetes",
-                text: "De madera y materiales nobles",
+                text: "Elegidos con intención",
               },
               {
                 href: "/libros",
