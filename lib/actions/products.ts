@@ -8,7 +8,14 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 export async function getProducts() {
-  return db.select().from(products).orderBy(products.createdAt)
+  try {
+    return await db.select().from(products).orderBy(products.createdAt)
+  } catch (error) {
+    // The storefront should remain renderable if Neon is temporarily unavailable
+    // in a preview. The admin surface can retry once the database is reachable.
+    console.error("[v0] Could not load products from Neon:", error)
+    return []
+  }
 }
 
 /**
