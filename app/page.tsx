@@ -74,14 +74,6 @@ export default async function HomePage() {
         {/* Ventajas */}
         <section className="border-y border-border/70 bg-secondary/30">
           <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-            <div className="mb-8 max-w-xl">
-              <h2 className="font-serif text-3xl font-semibold text-foreground text-balance">
-                Pensados para cada etapa
-              </h2>
-              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
-                Encontrá propuestas según la edad y los intereses de cada peque.
-              </p>
-            </div>
             <div className="grid gap-6 sm:grid-cols-3">
             {[
               { icon: Leaf, title: "Pensados para cada etapa", text: "Encontrá propuestas según la edad y los intereses de cada peque." },
