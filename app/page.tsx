@@ -14,6 +14,7 @@ export default async function HomePage() {
   const allProducts = await getProducts()
   const destacados = allProducts.filter((p) => p.kind === "toy").slice(0, 4)
   const librosDestacados = allProducts.filter((p) => p.kind === "book").slice(0, 4)
+  const regalosDestacados = allProducts.filter((p) => p.kind === "gift").slice(0, 4)
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -31,7 +32,7 @@ export default async function HomePage() {
                 href: "/juguetes",
                 image: "/images/category-1.png",
                 title: "Juguetes",
-                text: "De madera y materiales nobles",
+                text: "Elegidos con intención",
               },
               {
                 href: "/libros",
@@ -73,22 +74,24 @@ export default async function HomePage() {
 
         {/* Ventajas */}
         <section className="border-y border-border/70 bg-secondary/30">
-          <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:grid-cols-3 sm:px-6">
+          <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+            <div className="grid gap-6 sm:grid-cols-3">
             {[
-              { icon: Leaf, title: "Materiales nobles", text: "Madera, algodón y tintes al agua." },
+              { icon: Leaf, title: "Pensados para cada etapa", text: "Propuestas según la edad y los intereses de cada peque." },
               { icon: Truck, title: "Envío en 24 a 72 h", text: "Al interior por DAC." },
               { icon: Sparkles, title: "Seleccionado a mano", text: "Cada producto lo probamos antes." },
             ].map(({ icon: Icon, title, text }) => (
-              <div key={title} className="flex items-center gap-3">
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
-                  <Icon className="size-5" aria-hidden="true" />
+              <div key={title} className="flex items-center gap-4">
+                <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-[#f59a4a] text-[#fffaf0]">
+                  <Icon className="size-6" aria-hidden="true" />
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-foreground">{title}</p>
-                  <p className="text-sm text-muted-foreground">{text}</p>
+                  <p className="text-base font-medium text-foreground">{title}</p>
+                  <p className="mt-1 text-base leading-relaxed text-muted-foreground">{text}</p>
                 </div>
               </div>
             ))}
+            </div>
           </div>
         </section>
 
@@ -117,12 +120,12 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Juguetes destacados */}
+        {/* Los más elegidos */}
         <section className="mx-auto max-w-6xl px-4 pb-14 sm:px-6">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <h2 className="font-serif text-3xl font-semibold text-foreground">Juguetes destacados</h2>
-              <p className="mt-1 text-muted-foreground">Los favoritos de las familias Peque Nido.</p>
+              <h2 className="font-serif text-3xl font-semibold text-foreground">Los más elegidos</h2>
+              <p className="mt-1 text-muted-foreground">Los favoritos de las familias que eligen Peque Nido.</p>
             </div>
             <Link
               href="/juguetes"
@@ -196,6 +199,37 @@ export default async function HomePage() {
                 image={book.image}
                 meta={getProductMeta(book)}
                 ages={book.ages ?? undefined}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Regalos destacados */}
+        <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h2 className="font-serif text-3xl font-semibold text-foreground">Regalos para celebrar</h2>
+              <p className="mt-1 text-muted-foreground">Detalles elegidos para momentos especiales.</p>
+            </div>
+            <Link
+              href="/regalos"
+              className="hidden shrink-0 items-center gap-1.5 text-sm font-medium text-primary hover:underline sm:inline-flex"
+            >
+              Ver todos
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+          </div>
+          <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+            {regalosDestacados.map((gift) => (
+              <ProductCard
+                key={gift.id}
+                id={gift.id}
+                name={gift.name}
+                description={gift.description}
+                price={gift.price}
+                promoPrice={gift.promoPrice}
+                image={gift.image}
+                ages={gift.ages ?? undefined}
               />
             ))}
           </div>
