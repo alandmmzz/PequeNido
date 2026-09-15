@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Heart, Leaf, ShieldCheck, Sparkles } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 
@@ -10,29 +10,6 @@ export const metadata: Metadata = {
   description:
     "Conoce Peque Nido: una tienda familiar de juguetes y libros con materiales naturales, pensada para acompañar cada etapa del crecimiento.",
 }
-
-const valores = [
-  {
-    icon: Leaf,
-    title: "Propuestas según la edad",
-    text: "Los intereses de cada peque guían nuestra selección.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Seguridad primero",
-    text: "Seleccionamos productos de proveedores y marcas que trabajan con estándares de seguridad infantil.",
-  },
-  {
-    icon: Heart,
-    title: "Hecho con cariño",
-    text: "Seleccionamos piezas de pequeños talleres y marcas que cuidan cada detalle.",
-  },
-  {
-    icon: Sparkles,
-    title: "Juego con sentido",
-    text: "Juguetes y libros que acompañan el desarrollo real de cada etapa, sin prisas.",
-  },
-]
 
 export default function NosotrosPage() {
   return (
@@ -45,18 +22,20 @@ export default function NosotrosPage() {
             <div>
               <p className="text-sm font-medium uppercase tracking-wide text-primary">Nuestra historia</p>
               <h1 className="mt-2 font-serif text-4xl font-semibold tracking-tight text-foreground text-balance sm:text-5xl">
-                Un proyecto familiar para crecer jugando
+                Detrás de Peque Nido está Katy, mamá de Emi.
               </h1>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground text-pretty">
-                Peque Nido nació de una idea sencilla: rodear a los más pequeños de juguetes y libros
-                bonitos, seguros y duraderos. Buscábamos objetos con alma, de esos que pasan de mano en
-                mano y acompañan durante años, y no los encontrábamos fácilmente. Así que decidimos
-                reunirlos nosotros.
+                Peque Nido nació después de convertirme en mamá. Con Emi descubrí un mundo nuevo: el de
+                acompañar cada etapa, observar cómo juega, qué despierta su curiosidad y qué cosas la hacen
+                imaginar, crear y disfrutar.
               </p>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground text-pretty">
-                Hoy seleccionamos a mano cada pieza de nuestro catálogo pensando en cómo juega, descubre y
-                descansa un bebé en cada etapa, desde los primeros meses hasta los primeros cuentos leídos
-                en familia.
+                En ese camino empecé a mirar los juguetes y los libros de otra manera. A buscar propuestas
+                que fueran lindas, pero también que tuvieran algo más: que invitaran a explorar, imaginar,
+                crear y compartir.
+              </p>
+              <p className="mt-4 text-base leading-relaxed text-muted-foreground text-pretty">
+                Así nació Peque Nido.
               </p>
             </div>
             <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-border/70 bg-secondary/50">
@@ -72,26 +51,23 @@ export default function NosotrosPage() {
           </div>
         </section>
 
-        {/* Valores */}
+        {/* Selección */}
         <section className="border-y border-border/70 bg-secondary/30">
-          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-            <div className="max-w-2xl">
-              <h2 className="font-serif text-3xl font-semibold text-foreground">En qué creemos</h2>
-              <p className="mt-2 text-muted-foreground">
-                Cuatro principios que guían todo lo que ponemos en la tienda.
-              </p>
-            </div>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {valores.map(({ icon: Icon, title, text }) => (
-                <div key={title} className="rounded-2xl border border-border/70 bg-card p-6">
-                  <span className="flex size-11 items-center justify-center rounded-full bg-accent text-accent-foreground">
-                    <Icon className="size-5" aria-hidden="true" />
-                  </span>
-                  <h3 className="mt-4 font-serif text-lg font-semibold text-foreground">{title}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{text}</p>
-                </div>
-              ))}
-            </div>
+          <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6">
+            <h2 className="font-serif text-3xl font-semibold text-foreground">¿Qué vas a encontrar?</h2>
+            <p className="mt-5 text-base leading-relaxed text-muted-foreground text-pretty">
+              Una selección de libros, juguetes, juegos de rol y propuestas para crear e imaginar, elegidos
+              pensando en distintas etapas de la infancia.
+            </p>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground text-pretty">
+              Cada producto que llega a Peque Nido pasa por una elección personal. Me pregunto qué puede
+              despertar, qué posibilidades de juego ofrece y qué lugar puede ocupar en la vida cotidiana de
+              un peque.
+            </p>
+            <p className="mt-4 font-serif text-xl text-foreground text-pretty">
+              Porque creo que no se trata de tener más juguetes, sino de elegir aquellos que realmente
+              inviten a jugar.
+            </p>
           </div>
         </section>
 
@@ -100,11 +76,16 @@ export default function NosotrosPage() {
           <div className="overflow-hidden rounded-3xl bg-primary px-6 py-10 text-primary-foreground sm:px-12 sm:py-14">
             <div className="max-w-xl">
               <h2 className="font-serif text-3xl font-semibold text-balance sm:text-4xl">
-                Gracias por confiar en Peque Nido
+                Lo que quiero construir con Peque Nido
               </h2>
               <p className="mt-3 text-sm leading-relaxed opacity-90 sm:text-base">
-                Detrás de cada pedido hay una familia como la tuya. Descubre nuestra selección de juguetes y
-                libros y encuentra el compañero perfecto para cada etapa.
+                Un espacio donde puedas encontrar ideas para regalar, para acompañar una etapa, para
+                compartir un momento o simplemente para dejar que un peque explore y descubra a su manera.
+              </p>
+              <p className="mt-3 text-sm leading-relaxed opacity-90 sm:text-base">
+                Porque detrás de cada compra hay alguien que quiere regalar algo más que un objeto. Por eso,
+                detrás de cada elección hay mucho de mí, de mi experiencia como mamá y de lo que quiero
+                transmitir con Peque Nido.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
