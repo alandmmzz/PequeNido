@@ -76,11 +76,9 @@ export function HeroCarousel() {
         - Menos de 550px: apilado. La imagen arriba, ancho completo, con
           proporción de banner (bien achatada, no un cuadrado ni un
           retrato) para que no ocupe media pantalla. El texto abajo.
-        - 550px o más: lado a lado, texto a la izquierda / imagen en una
-          tarjeta contenida a la derecha. Achicamos bastante la tarjeta y
-          el tamaño de letra justo en este primer tramo (550-768px) para
-          que el título no se rompa palabra por palabra; a partir de
-          md (768px) ya vuelve a crecer con más aire.
+        - 550px o más: lado a lado, texto a la izquierda / imagen panorámica
+          a la derecha, fundida hacia el texto con un degradado suave. El título
+          se adapta en el primer tramo (550-768px) y crece desde md.
 
         Las flechas de navegación (prev/next) se muestran recién desde
         md (768px): en el tramo angosto de 550-768px no hay margen para
@@ -125,7 +123,7 @@ export function HeroCarousel() {
                 </div>
               </div>
 
-              <div className="relative order-1 aspect-[16/9] w-full shrink-0 overflow-hidden rounded-2xl shadow-lg min-[550px]:order-2 min-[550px]:aspect-square min-[550px]:w-[38%] min-[550px]:max-w-[170px] min-[550px]:rounded-3xl md:max-w-xs lg:max-w-md">
+              <div className="relative order-1 aspect-[16/9] w-full shrink-0 overflow-hidden rounded-2xl shadow-lg min-[550px]:order-2 min-[550px]:w-[52%] min-[550px]:max-w-[360px] min-[550px]:rounded-3xl md:max-w-lg lg:max-w-xl">
                 <Image
                   src={slide.image || "/placeholder.svg"}
                   alt={slide.alt}
@@ -137,7 +135,7 @@ export function HeroCarousel() {
                 {/* Degradado sutil en el borde izquierdo de la foto, para que se
                     funda con el fondo sólido en vez de cortar en seco. Solo
                     aplica en el layout lado a lado. */}
-                <div className="absolute inset-y-0 left-0 hidden w-8 bg-gradient-to-r from-secondary/60 to-transparent min-[550px]:block" />
+                <div className="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-secondary via-secondary/80 to-transparent min-[550px]:block" />
               </div>
             </div>
           </div>
