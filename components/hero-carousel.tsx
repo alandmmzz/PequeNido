@@ -92,8 +92,17 @@ export function HeroCarousel() {
             style={{ opacity: i === current ? 1 : 0 }}
             aria-hidden={i !== current}
           >
-            <div className="mx-auto flex h-full max-w-6xl flex-col items-center gap-3 px-5 py-4 min-[550px]:flex-row min-[550px]:gap-5 min-[550px]:px-6 min-[550px]:py-0 md:gap-8 md:px-8 lg:gap-12">
-              <div className="z-10 order-2 flex w-full flex-1 flex-col justify-center min-[550px]:order-1 min-[550px]:py-0">
+            <div className="relative mx-auto flex h-full max-w-6xl flex-col items-center gap-3 overflow-hidden px-5 py-4 min-[550px]:flex-row min-[550px]:gap-5 min-[550px]:px-6 min-[550px]:py-0 md:gap-8 md:px-8 lg:gap-12">
+              <Image
+                src={slide.image || "/placeholder.svg"}
+                alt={slide.alt}
+                fill
+                priority={i === 0}
+                sizes="100vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/90 via-35% to-secondary/10 min-[550px]:from-secondary min-[550px]:via-secondary/75 min-[550px]:via-38% min-[550px]:to-transparent" />
+              <div className="relative z-10 order-2 flex w-full flex-1 flex-col justify-center min-[550px]:order-1 min-[550px]:py-0">
                 <span className="inline-flex w-fit items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
                   {slide.eyebrow}
                 </span>
@@ -123,20 +132,6 @@ export function HeroCarousel() {
                 </div>
               </div>
 
-              <div className="relative order-1 aspect-[16/9] w-full shrink-0 overflow-hidden rounded-2xl shadow-lg min-[550px]:order-2 min-[550px]:w-[52%] min-[550px]:max-w-[360px] min-[550px]:rounded-3xl md:max-w-lg lg:max-w-xl">
-                <Image
-                  src={slide.image || "/placeholder.svg"}
-                  alt={slide.alt}
-                  fill
-                  priority={i === 0}
-                  sizes="(min-width: 1024px) 420px, (min-width: 768px) 320px, (min-width: 550px) 170px, 100vw"
-                  className="object-cover"
-                />
-                {/* Degradado sutil en el borde izquierdo de la foto, para que se
-                    funda con el fondo sólido en vez de cortar en seco. Solo
-                    aplica en el layout lado a lado. */}
-                <div className="absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-secondary via-secondary/80 to-transparent min-[550px]:block" />
-              </div>
             </div>
           </div>
         ))}
