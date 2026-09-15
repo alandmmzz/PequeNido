@@ -17,7 +17,7 @@ type Slide = {
 
 const slides: Slide[] = [
   {
-    image: "/images/hero-principal.png",
+    image: "/images/hero-principal-original.png",
     alt: "Dos niños jugando con juguetes en un espacio cálido",
     eyebrow: "Pequenido",
     title: "Jugar también es crecer.",
