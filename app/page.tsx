@@ -84,7 +84,7 @@ export default async function HomePage() {
             </div>
             <div className="grid gap-6 sm:grid-cols-3">
             {[
-              { icon: Leaf, title: "Materiales nobles", text: "Madera, algodón y tintes al agua." },
+              { icon: Leaf, title: "Pensados para cada etapa", text: "Encontrá propuestas según la edad y los intereses de cada peque." },
               { icon: Truck, title: "Envío en 24 a 72 h", text: "Al interior por DAC." },
               { icon: Sparkles, title: "Seleccionado a mano", text: "Cada producto lo probamos antes." },
             ].map(({ icon: Icon, title, text }) => (
