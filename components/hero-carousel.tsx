@@ -17,8 +17,8 @@ type Slide = {
 
 const slides: Slide[] = [
   {
-    image: "/images/hero-principal-original.png",
-    alt: "Dos niños jugando con juguetes en un espacio cálido",
+    image: "/images/hero-slide-1-wide.png",
+    alt: "Dos niños jugando con juguetes de madera en un espacio cálido",
     eyebrow: "Pequenido",
     title: "Jugar también es crecer.",
     text: "Juguetes y libros pensados para acompañar cada etapa de la infancia.",
@@ -26,7 +26,7 @@ const slides: Slide[] = [
     secondaryCta: { href: "/libros", label: "Descubrir libros" },
   },
   {
-    image: "/images/hero-slide-2.png",
+    image: "/images/hero-slide-2-wide.png",
     alt: "Libros para bebés y peques",
     eyebrow: "Para leer juntos",
     title: "Primeras historias, grandes momentos",
@@ -34,8 +34,8 @@ const slides: Slide[] = [
     cta: { href: "/libros", label: "Explorar libros" },
   },
   {
-    image: "/images/hero-slide-3.png",
-    alt: "Rincón de juego para bebés",
+    image: "/images/hero-slide-3-wide.png",
+    alt: "Rincón de juego para bebés con canasto de peluches y gimnasio de madera",
     eyebrow: "Envíos a todo el país",
     title: "Envíos dentro de Montevideo, Pick Up y envíos a todo el interior",
     text: "Preparamos tu pedido en 24 a 72 hs hábiles.",
@@ -92,16 +92,22 @@ export function HeroCarousel() {
             style={{ opacity: i === current ? 1 : 0 }}
             aria-hidden={i !== current}
           >
-            <div className="relative mx-auto flex h-full max-w-6xl flex-col items-center gap-3 overflow-hidden px-5 py-4 min-[550px]:flex-row min-[550px]:gap-5 min-[550px]:px-6 min-[550px]:py-0 md:gap-8 md:px-8 lg:gap-12">
-              <Image
-                src={slide.image || "/placeholder.svg"}
-                alt={slide.alt}
-                fill
-                priority={i === 0}
-                sizes="100vw"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/90 via-35% to-secondary/10 min-[550px]:from-secondary min-[550px]:via-secondary/75 min-[550px]:via-38% min-[550px]:to-transparent" />
+            {/*
+              La imagen y el degradado son full-bleed (ocupan todo el ancho
+              de la sección, no el max-w-6xl del contenido) para que no
+              queden espacios vacíos a los costados en pantallas anchas.
+              El contenido de texto sí respeta el max-w-6xl por separado.
+            */}
+            <Image
+              src={slide.image || "/placeholder.svg"}
+              alt={slide.alt}
+              fill
+              priority={i === 0}
+              sizes="100vw"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/85 via-35% to-secondary/5 min-[550px]:from-secondary min-[550px]:via-secondary/65 min-[550px]:via-38% min-[550px]:to-transparent" />
+            <div className="relative mx-auto flex h-full max-w-6xl flex-col items-center gap-3 px-5 py-4 min-[550px]:flex-row min-[550px]:gap-5 min-[550px]:px-6 min-[550px]:py-0 md:gap-8 md:px-8 lg:gap-12">
               <div className="relative z-10 order-2 flex w-full flex-1 flex-col justify-center min-[550px]:order-1 min-[550px]:py-0">
                 <span className="inline-flex w-fit items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
                   {slide.eyebrow}
