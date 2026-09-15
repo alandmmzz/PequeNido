@@ -14,6 +14,7 @@ export default async function HomePage() {
   const allProducts = await getProducts()
   const destacados = allProducts.filter((p) => p.kind === "toy").slice(0, 4)
   const librosDestacados = allProducts.filter((p) => p.kind === "book").slice(0, 4)
+  const regalosDestacados = allProducts.filter((p) => p.kind === "gift").slice(0, 4)
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -198,6 +199,37 @@ export default async function HomePage() {
                 image={book.image}
                 meta={getProductMeta(book)}
                 ages={book.ages ?? undefined}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Regalos destacados */}
+        <section className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h2 className="font-serif text-3xl font-semibold text-foreground">Regalos para celebrar</h2>
+              <p className="mt-1 text-muted-foreground">Detalles elegidos para momentos especiales.</p>
+            </div>
+            <Link
+              href="/regalos"
+              className="hidden shrink-0 items-center gap-1.5 text-sm font-medium text-primary hover:underline sm:inline-flex"
+            >
+              Ver todos
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+          </div>
+          <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+            {regalosDestacados.map((gift) => (
+              <ProductCard
+                key={gift.id}
+                id={gift.id}
+                name={gift.name}
+                description={gift.description}
+                price={gift.price}
+                promoPrice={gift.promoPrice}
+                image={gift.image}
+                ages={gift.ages ?? undefined}
               />
             ))}
           </div>
