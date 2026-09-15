@@ -30,7 +30,7 @@ export async function getProductsPage({
   offset,
   limit,
 }: {
-  kind: "toy" | "book"
+  kind: "toy" | "book" | "gift"
   age?: string
   offset: number
   limit: number

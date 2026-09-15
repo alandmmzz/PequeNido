@@ -42,7 +42,7 @@ export function ProductForm({
   action: (formData: FormData) => void
   initial?: ProductRow
 }) {
-  const [kind, setKind] = useState<"toy" | "book">(initial?.kind ?? "toy")
+  const [kind, setKind] = useState<"toy" | "book" | "gift">(initial?.kind ?? "toy")
 
   // Imagen principal: la que se usa en thumbnails/tarjetas.
   const [imageUrl, setImageUrl] = useState(initial?.image ?? "")
@@ -123,7 +123,7 @@ export function ProductForm({
       <div>
         <label className="block text-sm font-medium mb-1">Tipo de producto</label>
         <div className="flex gap-2">
-          {(["toy", "book"] as const).map((k) => (
+          {(["toy", "book", "gift"] as const).map((k) => (
             <button
               key={k}
               type="button"
@@ -134,7 +134,7 @@ export function ProductForm({
                   : "border-border"
               }`}
             >
-              {k === "toy" ? "Juguete" : "Libro"}
+              {k === "toy" ? "Juguete" : k === "book" ? "Libro" : "Regalo"}
             </button>
           ))}
         </div>
@@ -222,7 +222,7 @@ export function ProductForm({
             className="w-full rounded-md border border-input bg-background px-3 py-2"
           />
         </div>
-      ) : (
+      ) : kind === "book" ? (
         <>
           <div>
             <label className="block text-sm font-medium mb-1">Formato</label>
@@ -243,7 +243,7 @@ export function ProductForm({
             />
           </div>
         </>
-      )}
+      ) : null}
 
       <div>
         <label className="block text-sm font-medium mb-1">Imagen principal</label>
