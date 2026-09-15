@@ -43,18 +43,24 @@ export async function getProductsPage({
 
   const where = and(...conditions)
 
-  const [items, [{ count }]] = await Promise.all([
-    db
-      .select()
-      .from(products)
-      .where(where)
-      .orderBy(desc(products.createdAt))
-      .limit(limit)
-      .offset(offset),
-    db.select({ count: sql<number>`count(*)::int` }).from(products).where(where),
-  ])
+  try {
+    const [items, [{ count }]] = await Promise.all([
+      db
+        .select()
+        .from(products)
+        .where(where)
+        .orderBy(desc(products.createdAt))
+        .limit(limit)
+        .offset(offset),
+      db.select({ count: sql<number>`count(*)::int` }).from(products).where(where),
+    ])
 
-  return { items, hasMore: offset + items.length < count, total: count }
+    return { items, hasMore: offset + items.length < count, total: count }
+  } catch (error) {
+    // Keep the public catalog renderable when the preview cannot reach Neon.
+    console.error("[v0] Could not load paginated products from Neon:", error)
+    return { items: [], hasMore: false, total: 0 }
+  }
 }
 
 /**
