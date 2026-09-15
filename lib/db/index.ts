@@ -1,11 +1,23 @@
-import { neon } from "@neondatabase/serverless"
-import { drizzle } from "drizzle-orm/neon-http"
+import { drizzle } from "drizzle-orm/node-postgres"
+import { Pool } from "pg"
 import * as schema from "./schema"
 
-// Next.js loads DATABASE_URL from the connected Neon integration at runtime.
-// The build worker may collect route data without project env vars, so avoid
-// throwing during module evaluation; Neon will use the real URL at runtime.
-const databaseUrl = process.env.DATABASE_URL ?? "postgresql://build:build@localhost:5432/build"
-const sql = neon(databaseUrl)
+// Use Neon's pooled connection through node-postgres. The serverless HTTP
+// driver can fail in the preview runtime when its fetch transport is blocked.
+const databaseUrl =
+  process.env.DATABASE_URL ??
+  process.env.NEON_POSTGRES_URL ??
+  process.env.NEON_DATABASE_URL ??
+  // Keep module evaluation safe during static route collection. Runtime
+  // requests in the preview/deployment receive the connected Neon variables.
+  "postgresql://build:build@localhost:5432/build"
 
-export const db = drizzle(sql, { schema })
+export const pool = new Pool({
+  connectionString: databaseUrl,
+  max: 5,
+  idleTimeoutMillis: 20_000,
+  connectionTimeoutMillis: 10_000,
+  ssl: { rejectUnauthorized: false },
+})
+
+export const db = drizzle(pool, { schema })
