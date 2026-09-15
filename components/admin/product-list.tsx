@@ -60,7 +60,7 @@ export function ProductList({
                 )}
               </p>
               <p className="text-sm text-muted-foreground">
-                {p.kind === "toy" ? "Juguete" : "Libro"} ·{" "}
+                {p.kind === "toy" ? "Juguete" : p.kind === "book" ? "Libro" : "Regalo"} ·{" "}
                 {p.promoPrice != null ? (
                   <>
                     <span className="line-through">${p.price}</span> ${p.promoPrice}

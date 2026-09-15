@@ -8,7 +8,14 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 export async function getProducts() {
-  return db.select().from(products).orderBy(products.createdAt)
+  try {
+    return await db.select().from(products).orderBy(products.createdAt)
+  } catch (error) {
+    // The storefront should remain renderable if Neon is temporarily unavailable
+    // in a preview. The admin surface can retry once the database is reachable.
+    console.error("[v0] Could not load products from Neon:", error)
+    return []
+  }
 }
 
 /**
@@ -23,7 +30,7 @@ export async function getProductsPage({
   offset,
   limit,
 }: {
-  kind: "toy" | "book"
+  kind: "toy" | "book" | "gift"
   age?: string
   offset: number
   limit: number
@@ -36,18 +43,24 @@ export async function getProductsPage({
 
   const where = and(...conditions)
 
-  const [items, [{ count }]] = await Promise.all([
-    db
-      .select()
-      .from(products)
-      .where(where)
-      .orderBy(desc(products.createdAt))
-      .limit(limit)
-      .offset(offset),
-    db.select({ count: sql<number>`count(*)::int` }).from(products).where(where),
-  ])
+  try {
+    const [items, [{ count }]] = await Promise.all([
+      db
+        .select()
+        .from(products)
+        .where(where)
+        .orderBy(desc(products.createdAt))
+        .limit(limit)
+        .offset(offset),
+      db.select({ count: sql<number>`count(*)::int` }).from(products).where(where),
+    ])
 
-  return { items, hasMore: offset + items.length < count, total: count }
+    return { items, hasMore: offset + items.length < count, total: count }
+  } catch (error) {
+    // Keep the public catalog renderable when the preview cannot reach Neon.
+    console.error("[v0] Could not load paginated products from Neon:", error)
+    return { items: [], hasMore: false, total: 0 }
+  }
 }
 
 /**

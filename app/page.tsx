@@ -39,6 +39,12 @@ export default async function HomePage() {
                 title: "Libros",
                 text: "Para los primeros lectores",
               },
+              {
+                href: "/regalos",
+                image: "/images/banner-nursery.png",
+                title: "Regalos",
+                text: "Detalles para momentos especiales",
+              },
             ].map((cat) => (
               <Link
                 key={cat.href}

@@ -1,14 +1,23 @@
-import { config } from "dotenv"
-import { neon } from "@neondatabase/serverless"
-import { drizzle } from "drizzle-orm/neon-http"
+import { drizzle } from "drizzle-orm/node-postgres"
+import { Pool } from "pg"
 import * as schema from "./schema"
 
-config({ path: ".env.local" })
+// Use Neon's pooled connection through node-postgres. The serverless HTTP
+// driver can fail in the preview runtime when its fetch transport is blocked.
+const databaseUrl =
+  process.env.DATABASE_URL ??
+  process.env.NEON_POSTGRES_URL ??
+  process.env.NEON_DATABASE_URL ??
+  // Keep module evaluation safe during static route collection. Runtime
+  // requests in the preview/deployment receive the connected Neon variables.
+  "postgresql://build:build@localhost:5432/build"
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("Falta DATABASE_URL en las variables de entorno (revisá .env.local)")
-}
+export const pool = new Pool({
+  connectionString: databaseUrl,
+  max: 5,
+  idleTimeoutMillis: 20_000,
+  connectionTimeoutMillis: 10_000,
+  ssl: { rejectUnauthorized: false },
+})
 
-const sql = neon(process.env.DATABASE_URL)
-
-export const db = drizzle(sql, { schema })
+export const db = drizzle(pool, { schema })

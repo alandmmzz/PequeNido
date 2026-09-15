@@ -28,7 +28,7 @@ export function formatPrice(price: number) {
  */
 type ProductLike = {
   id: string
-  kind: "toy" | "book"
+  kind: "toy" | "book" | "gift"
   ages?: string[] | null
   format?: string | null
   pages?: number | null

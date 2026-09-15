@@ -18,6 +18,7 @@ type ProductCardProps = {
   badge?: string
   meta?: string
   ages?: string[]
+  kind?: "toy" | "book" | "gift"
 }
 
 export function ProductCard({

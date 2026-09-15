@@ -9,7 +9,7 @@ import { pgTable, text, integer, doublePrecision, timestamp, uuid } from "drizzl
 export const products = pgTable("products", {
   id: uuid("id").defaultRandom().primaryKey(),
   slug: text("slug").notNull().unique(), // reemplaza el "id" legible que usabas en lib/products.ts (ej. "sonajero-madera")
-  kind: text("kind", { enum: ["toy", "book"] }).notNull(),
+  kind: text("kind", { enum: ["toy", "book", "gift"] }).notNull(),
   name: text("name").notNull(),
   description: text("description").notNull(),
   price: doublePrecision("price").notNull(),
