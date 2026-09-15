@@ -73,22 +73,32 @@ export default async function HomePage() {
 
         {/* Ventajas */}
         <section className="border-y border-border/70 bg-secondary/30">
-          <div className="mx-auto grid max-w-6xl gap-6 px-4 py-8 sm:grid-cols-3 sm:px-6">
+          <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+            <div className="mb-8 max-w-xl">
+              <h2 className="font-serif text-3xl font-semibold text-foreground text-balance">
+                Pensados para cada etapa
+              </h2>
+              <p className="mt-2 text-base leading-relaxed text-muted-foreground">
+                Encontrá propuestas según la edad y los intereses de cada peque.
+              </p>
+            </div>
+            <div className="grid gap-6 sm:grid-cols-3">
             {[
               { icon: Leaf, title: "Materiales nobles", text: "Madera, algodón y tintes al agua." },
               { icon: Truck, title: "Envío en 24 a 72 h", text: "Al interior por DAC." },
               { icon: Sparkles, title: "Seleccionado a mano", text: "Cada producto lo probamos antes." },
             ].map(({ icon: Icon, title, text }) => (
-              <div key={title} className="flex items-center gap-3">
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
-                  <Icon className="size-5" aria-hidden="true" />
+              <div key={title} className="flex items-center gap-4">
+                <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-[#f59a4a] text-[#fffaf0]">
+                  <Icon className="size-6" aria-hidden="true" />
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-foreground">{title}</p>
-                  <p className="text-sm text-muted-foreground">{text}</p>
+                  <p className="text-base font-medium text-foreground">{title}</p>
+                  <p className="mt-1 text-base leading-relaxed text-muted-foreground">{text}</p>
                 </div>
               </div>
             ))}
+            </div>
           </div>
         </section>
 
