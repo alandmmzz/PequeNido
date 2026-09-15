@@ -20,7 +20,7 @@ const valores = [
   {
     icon: ShieldCheck,
     title: "Seguridad primero",
-    text: "Cada producto cumple la normativa europea de seguridad infantil y lo revisamos a mano.",
+    text: "Seleccionamos productos de proveedores y marcas que trabajan con estándares de seguridad infantil.",
   },
   {
     icon: Heart,
