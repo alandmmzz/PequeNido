@@ -140,7 +140,7 @@ export function HeroCarousel() {
       <button
         type="button"
         onClick={prev}
-        className="absolute left-3 top-1/2 hidden -translate-y-1/2 items-center justify-center rounded-full bg-background/80 p-2 text-foreground shadow-sm backdrop-blur transition-colors hover:bg-background md:inline-flex"
+        className="absolute left-3 top-3 hidden items-center justify-center rounded-full bg-background/80 p-2 text-foreground shadow-sm backdrop-blur transition-colors hover:bg-background md:inline-flex"
         aria-label="Anterior"
       >
         <ChevronLeft className="size-5" />
@@ -148,7 +148,7 @@ export function HeroCarousel() {
       <button
         type="button"
         onClick={next}
-        className="absolute right-3 top-1/2 hidden -translate-y-1/2 items-center justify-center rounded-full bg-background/80 p-2 text-foreground shadow-sm backdrop-blur transition-colors hover:bg-background md:inline-flex"
+        className="absolute right-3 top-3 hidden items-center justify-center rounded-full bg-background/80 p-2 text-foreground shadow-sm backdrop-blur transition-colors hover:bg-background md:inline-flex"
         aria-label="Siguiente"
       >
         <ChevronRight className="size-5" />
