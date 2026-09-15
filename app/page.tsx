@@ -76,7 +76,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
             <div className="grid gap-6 sm:grid-cols-3">
             {[
-              { icon: Leaf, title: "Pensados para cada etapa", text: "Encontrá propuestas según la edad y los intereses de cada peque." },
+              { icon: Leaf, title: "Pensados para cada etapa", text: "Propuestas según la edad y los intereses de cada peque." },
               { icon: Truck, title: "Envío en 24 a 72 h", text: "Al interior por DAC." },
               { icon: Sparkles, title: "Seleccionado a mano", text: "Cada producto lo probamos antes." },
             ].map(({ icon: Icon, title, text }) => (
