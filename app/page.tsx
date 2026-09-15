@@ -119,12 +119,12 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Juguetes destacados */}
+        {/* Los más elegidos */}
         <section className="mx-auto max-w-6xl px-4 pb-14 sm:px-6">
           <div className="flex items-end justify-between gap-4">
             <div>
-              <h2 className="font-serif text-3xl font-semibold text-foreground">Juguetes destacados</h2>
-              <p className="mt-1 text-muted-foreground">Los favoritos de las familias Peque Nido.</p>
+              <h2 className="font-serif text-3xl font-semibold text-foreground">Los más elegidos</h2>
+              <p className="mt-1 text-muted-foreground">Los favoritos de las familias que eligen Peque Nido.</p>
             </div>
             <Link
               href="/juguetes"
