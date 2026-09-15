@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 const valores = [
   {
     icon: Leaf,
-    title: "Materiales naturales",
-    text: "Madera, algodón y tintes al agua. Nada de plásticos innecesarios ni químicos agresivos.",
+    title: "Propuestas según la edad",
+    text: "Los intereses de cada peque guían nuestra selección.",
   },
   {
     icon: ShieldCheck,
