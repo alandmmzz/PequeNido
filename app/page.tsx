@@ -36,13 +36,13 @@ export default async function HomePage() {
               },
               {
                 href: "/libros",
-                image: "/images/category-2.png",
+                image: "/images/category-books-new.png",
                 title: "Libros",
                 text: "Para los primeros lectores",
               },
               {
                 href: "/regalos",
-                image: "/images/banner-nursery.png",
+                image: "/images/category-gifts-new.png",
                 title: "Regalos",
                 text: "Detalles para momentos especiales",
               },
