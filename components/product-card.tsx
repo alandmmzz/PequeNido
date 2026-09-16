@@ -98,7 +98,7 @@ export function ProductCard({
               type="button"
               onClick={handleAdd}
               className="inline-flex items-center gap-1.5 rounded-full bg-primary px-2.5 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:px-3.5"
-              aria-label={`Añadir ${name} a la carrito`}
+              aria-label={`Agregar ${name} al carrito`}
             >
               {added ? (
                 <>
@@ -108,7 +108,7 @@ export function ProductCard({
               ) : (
                 <>
                   <ShoppingBag className="size-4" aria-hidden="true" />
-                  <span className="hidden sm:inline">Añadir</span>
+                  <span className="hidden sm:inline">Agregar</span>
                 </>
               )}
             </button>
