@@ -112,16 +112,16 @@ export function HeroCarousel() {
                 <span className="inline-flex w-fit items-center rounded-full bg-primary px-3 py-1 text-[11px] font-medium text-primary-foreground min-[550px]:text-xs">
                   {slide.eyebrow}
                 </span>
-                <h2 className="mt-2 max-w-[21rem] font-serif text-[1.15rem] font-semibold leading-[1.08] tracking-tight text-foreground text-balance min-[550px]:mt-3 min-[550px]:max-w-none min-[550px]:text-xl md:text-3xl lg:text-5xl">
+                <h2 className="mt-2 max-w-[21rem] font-serif text-[1.45rem] font-semibold leading-[1.08] tracking-tight text-foreground text-balance min-[550px]:mt-3 min-[550px]:max-w-none min-[550px]:text-xl md:text-3xl lg:text-5xl">
                   {slide.title}
                 </h2>
-                <p className="mt-1.5 max-w-md text-xs leading-relaxed text-muted-foreground text-pretty min-[550px]:mt-2 min-[550px]:text-sm md:mt-3 md:text-base">
+                <p className="mt-1.5 max-w-md text-sm leading-relaxed text-muted-foreground text-pretty min-[550px]:mt-2 min-[550px]:text-sm md:mt-3 md:text-base">
                   {slide.text}
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2 min-[550px]:mt-4 md:gap-3 md:mt-6">
                   <Link
                     href={slide.cta.href}
-                    className="inline-flex w-fit items-center gap-2 rounded-full bg-primary px-4 py-2 text-[11px] font-medium text-primary-foreground transition-opacity hover:opacity-90 min-[550px]:px-5 min-[550px]:py-2.5 min-[550px]:text-xs md:px-6 md:py-3 md:text-sm"
+                    className="inline-flex w-fit items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90 min-[550px]:px-5 min-[550px]:py-2.5 min-[550px]:text-xs md:px-6 md:py-3 md:text-sm"
                   >
                     {slide.cta.label}
                     <ArrowRight className="size-4" aria-hidden="true" />
@@ -129,7 +129,7 @@ export function HeroCarousel() {
                   {slide.secondaryCta ? (
                     <Link
                       href={slide.secondaryCta.href}
-                      className="inline-flex w-fit items-center gap-2 rounded-full border border-primary px-5 py-2.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10 md:px-6 md:py-3 md:text-sm"
+                      className="inline-flex w-fit items-center gap-2 rounded-full border border-primary px-4 py-2.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10 min-[550px]:px-5 min-[550px]:py-2.5 md:px-6 md:py-3 md:text-sm"
                     >
                       {slide.secondaryCta.label}
                       <ArrowRight className="size-4" aria-hidden="true" />
