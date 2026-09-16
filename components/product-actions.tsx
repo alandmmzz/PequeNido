@@ -63,7 +63,7 @@ export function ProductActions({ id, name, price, image, meta }: ProductActionsP
         ) : (
           <>
             <ShoppingBag className="size-4" aria-hidden="true" />
-            Añadir a la carrito
+            Agregar al carrito
           </>
         )}
       </button>

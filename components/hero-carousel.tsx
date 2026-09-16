@@ -106,22 +106,22 @@ export function HeroCarousel() {
               sizes="100vw"
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/85 via-35% to-secondary/5 min-[550px]:from-secondary min-[550px]:via-secondary/65 min-[550px]:via-38% min-[550px]:to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-secondary via-secondary/80 via-55% to-secondary/5 min-[550px]:bg-gradient-to-r min-[550px]:from-secondary min-[550px]:via-secondary/65 min-[550px]:via-38% min-[550px]:to-transparent" />
             <div className="relative mx-auto flex h-full max-w-6xl flex-col items-center gap-3 px-5 py-4 min-[550px]:flex-row min-[550px]:gap-5 min-[550px]:px-6 min-[550px]:py-0 md:gap-8 md:px-8 lg:gap-12">
-              <div className="relative z-10 order-2 flex w-full flex-1 flex-col justify-center min-[550px]:order-1 min-[550px]:py-0">
-                <span className="inline-flex w-fit items-center rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+              <div className="absolute bottom-12 left-5 right-5 z-10 flex w-auto flex-col justify-end min-[550px]:static min-[550px]:w-full min-[550px]:flex-1 min-[550px]:justify-center">
+                <span className="inline-flex w-fit items-center rounded-full bg-primary px-3 py-1 text-[11px] font-medium text-primary-foreground min-[550px]:text-xs">
                   {slide.eyebrow}
                 </span>
-                <h2 className="mt-2 font-serif text-lg font-semibold leading-tight tracking-tight text-foreground text-balance min-[550px]:mt-3 min-[550px]:text-xl md:text-3xl lg:text-5xl">
+                <h2 className="mt-2 max-w-[21rem] font-serif text-[1.45rem] font-semibold leading-[1.08] tracking-tight text-foreground text-balance min-[550px]:mt-3 min-[550px]:max-w-none min-[550px]:text-xl md:text-3xl lg:text-5xl">
                   {slide.title}
                 </h2>
-                <p className="mt-1.5 max-w-md text-xs leading-relaxed text-muted-foreground text-pretty min-[550px]:mt-2 min-[550px]:text-sm md:mt-3 md:text-base">
+                <p className="mt-1.5 max-w-md text-sm leading-relaxed text-muted-foreground text-pretty min-[550px]:mt-2 min-[550px]:text-sm md:mt-3 md:text-base">
                   {slide.text}
                 </p>
-                <div className="mt-3 flex flex-wrap gap-3 min-[550px]:mt-4 md:mt-6">
+                <div className="mt-3 flex flex-wrap gap-2 min-[550px]:mt-4 md:gap-3 md:mt-6">
                   <Link
                     href={slide.cta.href}
-                    className="inline-flex w-fit items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90 md:px-6 md:py-3 md:text-sm"
+                    className="inline-flex w-fit items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-xs font-medium text-primary-foreground transition-opacity hover:opacity-90 min-[550px]:px-5 min-[550px]:py-2.5 min-[550px]:text-xs md:px-6 md:py-3 md:text-sm"
                   >
                     {slide.cta.label}
                     <ArrowRight className="size-4" aria-hidden="true" />
@@ -129,7 +129,7 @@ export function HeroCarousel() {
                   {slide.secondaryCta ? (
                     <Link
                       href={slide.secondaryCta.href}
-                      className="inline-flex w-fit items-center gap-2 rounded-full border border-primary px-5 py-2.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10 md:px-6 md:py-3 md:text-sm"
+                      className="inline-flex w-fit items-center gap-2 rounded-full border border-primary px-4 py-2.5 text-xs font-medium text-primary transition-colors hover:bg-primary/10 min-[550px]:px-5 min-[550px]:py-2.5 md:px-6 md:py-3 md:text-sm"
                     >
                       {slide.secondaryCta.label}
                       <ArrowRight className="size-4" aria-hidden="true" />
@@ -160,7 +160,7 @@ export function HeroCarousel() {
         <ChevronRight className="size-5" />
       </button>
 
-      <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-2 min-[550px]:bottom-3 md:bottom-4">
+      <div className="absolute bottom-2.5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 min-[550px]:bottom-3 md:bottom-4">
         {slides.map((slide, i) => (
           <button
             key={slide.image}
