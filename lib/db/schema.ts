@@ -1,4 +1,4 @@
-import { pgTable, text, integer, doublePrecision, timestamp, uuid } from "drizzle-orm/pg-core"
+import { pgTable, text, integer, doublePrecision, timestamp, uuid, boolean } from "drizzle-orm/pg-core"
 
 /**
  * Una sola tabla para juguetes y libros, distinguidos por "kind".
@@ -69,6 +69,9 @@ export const orders = pgTable("orders", {
     .default("mercadopago"),
 
   total: doublePrecision("total").notNull(),
+  couponCode: text("coupon_code"),
+  couponPercent: integer("coupon_percent"),
+  couponDiscount: doublePrecision("coupon_discount").notNull().default(0),
   status: text("status", { enum: ["pending", "paid", "rejected", "cancelled"] })
     .notNull()
     .default("pending"),
@@ -99,6 +102,19 @@ export const orderItems = pgTable("order_items", {
   image: text("image"),
 })
 
+export const coupons = pgTable("coupons", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  code: text("code").notNull().unique(),
+  discountPercent: integer("discount_percent").notNull(),
+  startsAt: timestamp("starts_at"),
+  expiresAt: timestamp("expires_at"),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+})
+
+export type CouponRow = typeof coupons.$inferSelect
+export type NewCouponRow = typeof coupons.$inferInsert
 export type OrderRow = typeof orders.$inferSelect
 export type NewOrderRow = typeof orders.$inferInsert
 export type OrderItemRow = typeof orderItems.$inferSelect

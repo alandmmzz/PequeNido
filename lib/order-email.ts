@@ -72,6 +72,7 @@ export async function sendNewOrderNotificationToOwner(order: OrderRow, items: Re
         acaba de hacer un pedido por <strong>${paymentLabel}</strong>.
       </p>
       ${itemsTable(items)}
+      ${order.couponCode ? `<p style="text-align:right;font-size:14px;margin-top:8px;">Cupón ${order.couponCode} (${order.couponPercent}%): −${formatPrice(order.couponDiscount)}</p>` : ""}
       <p style="text-align:right;font-size:16px;margin-top:8px;"><strong>Total: ${formatPrice(order.total)}</strong></p>
       <p style="margin-top:16px;font-size:14px;">
         ${shippingSummary(order)}
@@ -122,6 +123,7 @@ export async function sendOrderConfirmationEmail(order: OrderRow, items: Receipt
       <h2 style="color:#5B6B3C;">Peque Nido</h2>
       <p>${intro}</p>
       ${itemsTable(items)}
+      ${order.couponCode ? `<p style="text-align:right;font-size:14px;margin-top:8px;">Cupón ${order.couponCode} (${order.couponPercent}%): −${formatPrice(order.couponDiscount)}</p>` : ""}
       <p style="text-align:right;font-size:16px;margin-top:8px;"><strong>Total: ${formatPrice(order.total)}</strong></p>
       ${bankBlock}
       <p style="margin-top:16px;font-size:14px;">

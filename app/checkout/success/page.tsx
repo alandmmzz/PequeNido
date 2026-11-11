@@ -46,6 +46,12 @@ export default async function CheckoutSuccessPage({
         <div className="mt-4 w-full rounded-2xl border border-border/70 bg-card p-5 text-left">
           <p className="text-xs text-muted-foreground">Pedido</p>
           <p className="font-mono text-sm text-foreground">{data.order.id}</p>
+          {data.order.couponCode && (
+            <div className="mt-3 flex items-center justify-between border-t border-border/70 pt-3 text-sm text-primary">
+              <span>Cupón {data.order.couponCode} ({data.order.couponPercent}%)</span>
+              <span>−{formatPrice(data.order.couponDiscount)}</span>
+            </div>
+          )}
           <div className="mt-3 flex items-center justify-between border-t border-border/70 pt-3">
             <span className="text-sm text-muted-foreground">Total pagado</span>
             <span className="font-serif text-lg font-semibold text-foreground">{formatPrice(data.order.total)}</span>

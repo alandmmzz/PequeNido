@@ -3,7 +3,8 @@
 import { and, desc, eq, inArray, sql, type SQL } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 import { db } from "@/lib/db"
-import { orderItems, orders, products, type OrderRow } from "@/lib/db/schema"
+import { coupons, orderItems, orders, products, type OrderRow } from "@/lib/db/schema"
+import { calculateDiscountedTotals, isCouponValidAt } from "@/lib/coupon-calculations"
 import { mpPreference } from "@/lib/mercadopago"
 import { sendNewOrderNotificationToOwner, sendOrderConfirmationEmail } from "@/lib/order-email"
 import { getEffectivePrice } from "@/lib/products"
@@ -27,6 +28,7 @@ export type CheckoutCustomer = {
   shippingZone: ShippingZone
   paymentMethod: "mercadopago" | "transferencia"
   notes?: string
+  couponCode?: string
 }
 
 type CreateOrderResult = { url: string; orderId: string } | { error: string; orderId?: string }
@@ -85,9 +87,26 @@ export async function createOrderAndPreference(
     })
   }
 
-  const itemsTotal = verifiedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  let coupon: typeof coupons.$inferSelect | null = null
+  const requestedCouponCode = customer.couponCode?.trim().toUpperCase()
+  if (requestedCouponCode) {
+    if (!/^[A-Z0-9][A-Z0-9_-]{2,31}$/.test(requestedCouponCode)) {
+      return { error: "El cupón no es válido o ya no está vigente." }
+    }
+    try {
+      ;[coupon] = await db.select().from(coupons).where(eq(coupons.code, requestedCouponCode)).limit(1)
+    } catch (err) {
+      console.error("Error comprobando cupón al crear el pedido:", err)
+      return { error: "No se pudo validar el cupón. Intentá de nuevo." }
+    }
+    if (!coupon || !isCouponValidAt(coupon)) {
+      return { error: "El cupón no es válido o ya venció. Quitalo o ingresá otro para continuar." }
+    }
+  }
+
+  const quote = calculateDiscountedTotals(verifiedItems, coupon?.discountPercent ?? 0)
   const shippingCost = SHIPPING_COST[customer.shippingZone]
-  const total = itemsTotal + shippingCost
+  const total = quote.discountedSubtotal + shippingCost
 
   let order: typeof orders.$inferSelect
 
@@ -106,6 +125,9 @@ export async function createOrderAndPreference(
         paymentMethod: customer.paymentMethod,
         notes: customer.notes || null,
         total,
+        couponCode: coupon?.code ?? null,
+        couponPercent: coupon?.discountPercent ?? null,
+        couponDiscount: quote.discountAmount,
         status: "pending",
       })
       .returning()
@@ -162,11 +184,11 @@ export async function createOrderAndPreference(
     const preference = await mpPreference.create({
       body: {
         items: [
-          ...verifiedItems.map((item) => ({
+          ...quote.items.map((item) => ({
             id: item.id,
             title: item.name,
             quantity: item.quantity,
-            unit_price: item.price,
+            unit_price: item.discountedPrice,
             currency_id: currencyId,
             picture_url: item.image?.startsWith("http") ? item.image : undefined,
           })),
