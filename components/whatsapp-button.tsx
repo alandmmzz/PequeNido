@@ -1,10 +1,18 @@
+"use client"
+
+import { usePathname } from "next/navigation"
 import { WHATSAPP_DEFAULT_MESSAGE, WHATSAPP_NUMBER } from "@/lib/contact-info"
 
 /**
  * Botón flotante que abre un chat de WhatsApp con el número del negocio.
- * Visible en todas las páginas (se agrega una sola vez en el layout).
+ * Visible en todas las páginas públicas (se agrega una sola vez en el layout)
+ * y oculto en el panel de administración.
  */
 export function WhatsappButton() {
+  const pathname = usePathname()
+
+  if (pathname === "/admin" || pathname?.startsWith("/admin/")) return null
+
   const href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_DEFAULT_MESSAGE)}`
 
   return (
