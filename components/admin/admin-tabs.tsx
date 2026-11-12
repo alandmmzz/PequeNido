@@ -9,6 +9,7 @@ import { logout } from "@/lib/actions/auth"
 const tabs = [
   { href: "/admin", label: "Productos" },
   { href: "/admin/pedidos", label: "Pedidos" },
+  { href: "/admin/cupones", label: "Cupones" },
 ]
 
 export function AdminTabs() {
@@ -44,7 +45,10 @@ export function AdminTabs() {
       <nav className="mx-auto flex max-w-4xl gap-1 px-4 pt-2" aria-label="Panel de administración">
         {tabs.map((tab) => {
           // "/admin/nuevo" y "/admin/[id]/editar" también cuentan como la pestaña "Productos".
-          const active = tab.href === "/admin" ? !pathname.startsWith("/admin/pedidos") : pathname.startsWith(tab.href)
+          const active =
+            tab.href === "/admin"
+              ? !pathname.startsWith("/admin/pedidos") && !pathname.startsWith("/admin/cupones")
+              : pathname.startsWith(tab.href)
           return (
             <Link
               key={tab.href}

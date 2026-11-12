@@ -8,6 +8,7 @@ import { Building2, CreditCard, Landmark, MapPin, ShoppingBag, Store, Truck } fr
 import { useCart } from "@/components/cart-provider"
 import { formatPrice } from "@/lib/products"
 import { createOrderAndPreference } from "@/lib/actions/orders"
+import { CouponField, type CouponPreview } from "@/components/checkout/coupon-field"
 import { BANK_NAME, BANK_ACCOUNT_HOLDER, BANK_ACCOUNT_NUMBER } from "@/lib/bank-info"
 import { SHIPPING_COST, type ShippingZone } from "@/lib/shipping"
 
@@ -17,6 +18,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [paymentMethod, setPaymentMethod] = useState<"mercadopago" | "transferencia">("mercadopago")
+  const [appliedCoupon, setAppliedCoupon] = useState<CouponPreview | null>(null)
 
   // "retiro" (sin dirección) vs coordinar un envío, que a su vez se divide
   // en Montevideo (costo fijo) o interior (lo cobra el cadete al entregar).
@@ -47,6 +49,7 @@ export default function CheckoutPage() {
         shippingZone,
         paymentMethod: formData.get("paymentMethod") as "mercadopago" | "transferencia",
         notes: (formData.get("notes") as string) || undefined,
+        couponCode: appliedCoupon?.code,
       },
     )
 
@@ -300,35 +303,23 @@ export default function CheckoutPage() {
             </li>
           ))}
         </ul>
-        <div className="mt-5 border-t border-border/70 pt-4">
-          <label htmlFor="coupon" className="text-sm font-medium text-foreground">
-            ¿Tenés un cupón de descuento?
-          </label>
-          <div className="mt-2 flex gap-2">
-            <input
-              id="coupon"
-              name="coupon"
-              type="text"
-              placeholder="Ingresá tu cupón"
-              autoComplete="off"
-              className="min-w-0 flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary"
-            />
-            <button
-              type="button"
-              disabled
-              className="shrink-0 rounded-md border border-input px-3 py-2 text-sm font-medium text-muted-foreground disabled:cursor-not-allowed disabled:opacity-70"
-            >
-              Aplicar
-            </button>
-          </div>
-          <p className="mt-1.5 text-xs text-muted-foreground">Próximamente disponible.</p>
-        </div>
+        <CouponField
+          items={items.map((item) => ({ id: item.id, quantity: item.quantity }))}
+          itemsKey={items.map((item) => `${item.id}:${item.quantity}`).join("|")}
+          onCouponChange={setAppliedCoupon}
+        />
 
         <div className="mt-5 space-y-2 border-t border-border/70 pt-4">
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <span>Subtotal</span>
-            <span>{formatPrice(total)}</span>
+            <span>{formatPrice(appliedCoupon?.subtotal ?? total)}</span>
           </div>
+          {appliedCoupon && (
+            <div className="flex items-center justify-between text-sm text-primary">
+              <span>Cupón {appliedCoupon.code} ({appliedCoupon.discountPercent}%)</span>
+              <span>−{formatPrice(appliedCoupon.discountAmount)}</span>
+            </div>
+          )}
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <span>Envío</span>
             <span>
@@ -342,7 +333,7 @@ export default function CheckoutPage() {
           <div className="flex items-center justify-between pt-2">
             <span className="text-sm text-muted-foreground">Total</span>
             <span className="font-serif text-lg font-semibold text-foreground">
-              {formatPrice(total + shippingCost)}
+              {formatPrice((appliedCoupon?.discountedSubtotal ?? total) + shippingCost)}
             </span>
           </div>
         </div>

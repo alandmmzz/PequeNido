@@ -44,7 +44,7 @@ function csvCell(value: string | number) {
 }
 
 function downloadSalesSummary(monthKeyValue: string, ordersInMonth: OrderWithItems[]) {
-  const header = ["Fecha", "Cliente", "Email", "Teléfono", "Método de pago", "Entrega", "Estado", "Total"]
+  const header = ["Fecha", "Cliente", "Email", "Teléfono", "Método de pago", "Entrega", "Estado", "Cupón", "Descuento", "Total"]
   const rows = ordersInMonth.map(({ order }) => [
     new Date(order.createdAt).toLocaleDateString("es-UY"),
     order.customerName,
@@ -53,6 +53,8 @@ function downloadSalesSummary(monthKeyValue: string, ordersInMonth: OrderWithIte
     paymentMethodLabels[order.paymentMethod],
     SHIPPING_ZONE_LABELS[order.shippingZone],
     statusLabels[order.status],
+    order.couponCode ?? "",
+    order.couponDiscount,
     order.total,
   ])
 
@@ -209,6 +211,12 @@ export function OrderList({
                   <span className="text-muted-foreground">{formatPrice(item.price * item.quantity)}</span>
                 </div>
               ))}
+              {order.couponCode && (
+                <div className="flex items-center justify-between py-1.5 text-sm text-primary">
+                  <span>Cupón {order.couponCode} ({order.couponPercent}%)</span>
+                  <span>−{formatPrice(order.couponDiscount)}</span>
+                </div>
+              )}
             </div>
 
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border/70 pt-3">
