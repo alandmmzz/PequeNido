@@ -3,7 +3,6 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { BooksCatalogue } from "@/components/books-catalogue"
 import { getProductsPage } from "@/lib/actions/products"
-import { ageRanges, type AgeRange } from "@/lib/products"
 
 export const metadata: Metadata = {
   title: "Libros | Peque Nido",
@@ -11,20 +10,14 @@ export const metadata: Metadata = {
     "Libros de tela, cartón y tapa dura para bebés y niños: sensoriales, primeras palabras y cuentos para dormir.",
 }
 
-export const dynamic = "force-dynamic"
+// Sin searchParams la página es estática: el filtro ?edad= lo aplica el cliente.
+export const revalidate = 3600
 
 const PAGE_SIZE = 24
 
-export default async function LibrosPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ edad?: string }>
-}) {
-  const { edad } = await searchParams
-  const validAge = ageRanges.find((r) => r.id === edad)?.id as AgeRange | undefined
+export default async function LibrosPage() {
   const { items: books, hasMore, total } = await getProductsPage({
     kind: "book",
-    age: validAge,
     offset: 0,
     limit: PAGE_SIZE,
   })
@@ -51,7 +44,6 @@ export default async function LibrosPage({
             initialItems={books}
             initialHasMore={hasMore}
             initialTotal={total}
-            initialAge={validAge}
             pageSize={PAGE_SIZE}
           />
         </section>

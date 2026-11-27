@@ -11,7 +11,7 @@ import { AgeBadgeList, AgeIconCircle } from "@/components/age-badge"
 import { getProducts } from "@/lib/actions/products"
 import { formatPrice, getEffectivePrice, getProductMeta, getRelatedProducts, hasPromo } from "@/lib/products"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 3600
 
 type Props = {
   params: Promise<{ id: string }>

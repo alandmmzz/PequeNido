@@ -7,7 +7,10 @@ import { del } from "@vercel/blob"
 import { revalidatePath, unstable_cache, updateTag } from "next/cache"
 import { redirect } from "next/navigation"
 
-const PUBLIC_PRODUCTS_CACHE_SECONDS = 3600
+// El catálogo solo cambia desde el admin, y cada alta/edición/baja llama a
+// updateTag("products"), así que la caché se invalida sola al instante.
+// Por eso puede ser larga: Neon se consulta como mucho una vez por día por clave.
+const PUBLIC_PRODUCTS_CACHE_SECONDS = 86400
 
 const getCachedProducts = unstable_cache(
   async () => db.select().from(products).orderBy(products.createdAt),
