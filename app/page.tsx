@@ -8,7 +8,7 @@ import { HeroCarousel } from "@/components/hero-carousel"
 import { getProducts } from "@/lib/actions/products"
 import { ageRanges, ageIcons, getProductMeta } from "@/lib/products"
 
-export const dynamic = "force-dynamic"
+export const revalidate = 3600
 
 export default async function HomePage() {
   const allProducts = await getProducts()

@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState, useTransition } from "react"
+import { useEffect, useMemo, useState, useTransition } from "react"
 import { Search, Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ProductCard } from "@/components/product-card"
@@ -14,16 +14,14 @@ export function BooksCatalogue({
   initialItems,
   initialHasMore,
   initialTotal,
-  initialAge,
   pageSize,
 }: {
   initialItems: ProductRow[]
   initialHasMore: boolean
   initialTotal: number
-  initialAge?: AgeRange
   pageSize: number
 }) {
-  const [filter, setFilter] = useState<Filter>(initialAge ?? "todos")
+  const [filter, setFilter] = useState<Filter>("todos")
   const [query, setQuery] = useState("")
   const [items, setItems] = useState(initialItems)
   const [hasMore, setHasMore] = useState(initialHasMore)
@@ -49,6 +47,15 @@ export function BooksCatalogue({
       setTotal(result.total)
     })
   }
+
+  // La página es estática (no lee searchParams), así que el filtro ?edad= se
+  // aplica acá, una sola vez al montar.
+  useEffect(() => {
+    const edad = new URLSearchParams(window.location.search).get("edad")
+    const valid = ageRanges.find((r) => r.id === edad)?.id as AgeRange | undefined
+    if (valid) changeFilter(valid)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function loadMore() {
     startTransition(async () => {

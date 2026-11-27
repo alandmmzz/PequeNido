@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: "Ideas de regalos especiales para bebés, peques y familias.",
 }
 
-export const dynamic = "force-dynamic"
+export const revalidate = 3600
 
 const PAGE_SIZE = 24
 
