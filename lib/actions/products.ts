@@ -4,12 +4,45 @@ import { db } from "@/lib/db"
 import { products } from "@/lib/db/schema"
 import { and, desc, eq, sql } from "drizzle-orm"
 import { del } from "@vercel/blob"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, unstable_cache, updateTag } from "next/cache"
 import { redirect } from "next/navigation"
+
+const PUBLIC_PRODUCTS_CACHE_SECONDS = 3600
+
+const getCachedProducts = unstable_cache(
+  async () => db.select().from(products).orderBy(products.createdAt),
+  ["public-products"],
+  { revalidate: PUBLIC_PRODUCTS_CACHE_SECONDS, tags: ["products"] },
+)
+
+const getCachedProductsPage = unstable_cache(
+  async (kind: "toy" | "book" | "gift", age: string | undefined, offset: number, limit: number) => {
+    const conditions = [eq(products.kind, kind)]
+    if (age) {
+      conditions.push(sql`${products.ages} @> ARRAY[${age}]::text[]`)
+    }
+
+    const where = and(...conditions)
+    const [items, [{ count }]] = await Promise.all([
+      db
+        .select()
+        .from(products)
+        .where(where)
+        .orderBy(desc(products.createdAt))
+        .limit(limit)
+        .offset(offset),
+      db.select({ count: sql<number>`count(*)::int` }).from(products).where(where),
+    ])
+
+    return { items, hasMore: offset + items.length < count, total: count }
+  },
+  ["public-products-page"],
+  { revalidate: PUBLIC_PRODUCTS_CACHE_SECONDS, tags: ["products"] },
+)
 
 export async function getProducts() {
   try {
-    return await db.select().from(products).orderBy(products.createdAt)
+    return await getCachedProducts()
   } catch (error) {
     // The storefront should remain renderable if Neon is temporarily unavailable
     // in a preview. The admin surface can retry once the database is reachable.
@@ -35,27 +68,8 @@ export async function getProductsPage({
   offset: number
   limit: number
 }) {
-  const conditions = [eq(products.kind, kind)]
-  if (age) {
-    // "ages" es un array de Postgres; esto chequea que el valor esté contenido.
-    conditions.push(sql`${products.ages} @> ARRAY[${age}]::text[]`)
-  }
-
-  const where = and(...conditions)
-
   try {
-    const [items, [{ count }]] = await Promise.all([
-      db
-        .select()
-        .from(products)
-        .where(where)
-        .orderBy(desc(products.createdAt))
-        .limit(limit)
-        .offset(offset),
-      db.select({ count: sql<number>`count(*)::int` }).from(products).where(where),
-    ])
-
-    return { items, hasMore: offset + items.length < count, total: count }
+    return await getCachedProductsPage(kind, age, offset, limit)
   } catch (error) {
     // Keep the public catalog renderable when the preview cannot reach Neon.
     console.error("[v0] Could not load paginated products from Neon:", error)
@@ -142,6 +156,7 @@ export async function createProduct(formData: FormData) {
     pages: kind === "book" ? Number(formData.get("pages")) : null,
   })
 
+  updateTag("products")
   revalidatePath("/admin")
   redirect("/admin")
 }
@@ -188,6 +203,7 @@ export async function updateProduct(id: string, formData: FormData) {
     })
     .where(eq(products.id, id))
 
+  updateTag("products")
   revalidatePath("/admin")
   redirect("/admin")
 }
@@ -199,5 +215,6 @@ export async function deleteProduct(id: string) {
   await cleanupRemovedBlobs([row?.image, row?.video, ...(row?.additionalImages ?? [])])
 
   await db.delete(products).where(eq(products.id, id))
+  updateTag("products")
   revalidatePath("/admin")
 }
